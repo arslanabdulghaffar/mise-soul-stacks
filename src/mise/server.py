@@ -411,8 +411,25 @@ def create_app(*, runs_dir: Path | None = None, read_only: bool = False,
 
     @app.get("/api/benchmarks")
     def benchmarks():
-        return {"records": [], "hardware": app.state.manager.hardware,
-                "note": "No model benchmarks recorded. Scoped controller timings are available in each run's CSV."}
+        path = ROOT / "artifacts/benchmarks/latest.json"
+        if not path.exists():
+            return {"records": [], "hardware": app.state.manager.hardware,
+                    "note": "No model benchmarks recorded. Run `make bench` after exporting the policy."}
+        try:
+            report = json.loads(path.read_text())
+            records = report.get("records")
+            if not isinstance(records, list):
+                raise ValueError("records must be a list")
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            raise HTTPException(500, f"Benchmark artifact is invalid: {exc}") from exc
+        return {**report, "csv": "/api/benchmark-artifacts/latest.csv"}
+
+    @app.get("/api/benchmark-artifacts/latest.csv")
+    def benchmark_csv():
+        path = ROOT / "artifacts/benchmarks/latest.csv"
+        if not path.is_file():
+            raise HTTPException(404, "Benchmark CSV is not available")
+        return FileResponse(path, filename="mise-openvino-benchmark.csv", media_type="text/csv")
 
     @app.get("/api/recovery-comparison")
     def recovery_comparison():

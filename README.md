@@ -1,5 +1,7 @@
 # MISE · Robotics Console
 
+[![Reproducibility checks](https://github.com/arslanabdulghaffar/mise-soul-stacks/actions/workflows/ci.yml/badge.svg)](https://github.com/arslanabdulghaffar/mise-soul-stacks/actions/workflows/ci.yml)
+
 **Multi-modal Instruction to Skill Execution** — two simulated SO-101 arms,
 verified table-setting outcomes, bounded recovery, and inspectable run evidence.
 The updated requirements are in `MISE_project_description.docx`.
@@ -9,6 +11,10 @@ from the console. Enter `Set the table.` to execute seven graph steps: arm A ope
 the passive drawer and places the plate, retrieves the spoon, transfers it to arm B,
 then both arms finish the spoon, fork and mug placements. A separate evaluator checks
 contact provenance, the A-to-B handoff, stable released goals and collisions.
+
+**Submission evidence:** [watch the 10-seed demonstration](docs/evidence/ten-seed-demo.mp4)
+or inspect the [per-seed results](docs/evidence/ten-seed-results.csv). The fixed,
+predeclared suite passed **10/10** with zero forbidden collisions and no assisted runs.
 
 With **Contact expert** selected, `Open the drawer with arm A.` runs a second
 physical skill. Arm A localizes the yellow knob from RGB, grasps it, pulls the
@@ -58,7 +64,8 @@ make eval             # ten retained full-task attempts from eval/seeds.yaml
 make eval-headless    # faster fixed-seed physics regression with JSON/CSV results
 make check-plan       # deterministic scheduling checks only
 make test             # planner, recovery, evaluator, API and simulation checks
-make bench            # actual runtime inventory; no invented model timings
+make bench            # measured OpenVINO latency/throughput and host identity
+make submission-video # concatenate ten verified full-task seed recordings
 make data EPISODES=20 # aligned drawer fixture data (not robot grasp demonstrations)
 make planner-data PLANNER_SAMPLES=100
 make labels LABEL_SAMPLES=12 # privileged fixture-label plumbing, not deployed recovery evidence
@@ -171,6 +178,12 @@ integrated. Physical concurrency is enabled only for the validated drawer/mug pa
 other combinations remain resource-locked. See the
 [implementation status](docs/implementation-status.md).
 
+The required deliverables and final Intel commands are tracked in the
+[submission checklist](docs/submission-checklist.md). The OpenVINO benchmark writes
+machine-readable JSON and CSV under `artifacts/benchmarks`; the console reads those
+files on refresh. It only marks Intel Core Ultra verification when host identity and
+an explicit Series 2/3 declaration agree.
+
 ## Verified complete run
 
 The production worker integration run `d47ac0311efe` completed the full seven-step
@@ -199,6 +212,10 @@ passed **9/10**; monitored cost-selected recovery passed **10/10** with one phys
 regrasp and no reset. The raw JSON and CSV are
 `artifacts/evaluations/recovery_matched_seeds.*`. Run `make eval-recovery` to
 reproduce the comparison.
+
+The final camera recording suite also passed **10/10** without selective reruns.
+Its compact GitHub preview is 1 minute 5 seconds; the full 3 minute 46 second 24 FPS presentation copy,
+selection manifest, per-seed JSON, and CSV are retained under `docs/evidence`.
 
 ## Container
 

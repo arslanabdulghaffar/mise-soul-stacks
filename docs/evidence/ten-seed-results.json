@@ -1,0 +1,118 @@
+{
+  "schema_version": "mise.ten-seed-results.v1",
+  "command": "Set the table.",
+  "successes": 10,
+  "total": 10,
+  "runs": [
+    {
+      "seed": 1001,
+      "run_id": "119f0c7b9331",
+      "preset": "nominal",
+      "full_task_success": true,
+      "assisted": false,
+      "collision_count": 0,
+      "recovery_attempts": 1,
+      "simulation_seconds": 138.79999999993464,
+      "wall_seconds": 162.77294654399157
+    },
+    {
+      "seed": 1002,
+      "run_id": "39b28dac9f15",
+      "preset": "nominal",
+      "full_task_success": true,
+      "assisted": false,
+      "collision_count": 0,
+      "recovery_attempts": 1,
+      "simulation_seconds": 138.79999999993464,
+      "wall_seconds": 233.8463582112454
+    },
+    {
+      "seed": 1003,
+      "run_id": "0b8bec89faec",
+      "preset": "nominal",
+      "full_task_success": true,
+      "assisted": false,
+      "collision_count": 0,
+      "recovery_attempts": 1,
+      "simulation_seconds": 138.79999999993464,
+      "wall_seconds": 229.24566991487518
+    },
+    {
+      "seed": 1004,
+      "run_id": "f79721cbe972",
+      "preset": "nominal",
+      "full_task_success": true,
+      "assisted": false,
+      "collision_count": 0,
+      "recovery_attempts": 1,
+      "simulation_seconds": 138.79999999993464,
+      "wall_seconds": 233.06980180507526
+    },
+    {
+      "seed": 1005,
+      "run_id": "3aac031436d5",
+      "preset": "nominal",
+      "full_task_success": true,
+      "assisted": false,
+      "collision_count": 0,
+      "recovery_attempts": 0,
+      "simulation_seconds": 125.29999999988938,
+      "wall_seconds": 222.5941178840585
+    },
+    {
+      "seed": 1006,
+      "run_id": "bbc1ef4f2083",
+      "preset": "nominal",
+      "full_task_success": true,
+      "assisted": false,
+      "collision_count": 0,
+      "recovery_attempts": 1,
+      "simulation_seconds": 138.79999999993464,
+      "wall_seconds": 245.58544010668993
+    },
+    {
+      "seed": 1007,
+      "run_id": "63e428c7f948",
+      "preset": "nominal",
+      "full_task_success": true,
+      "assisted": false,
+      "collision_count": 0,
+      "recovery_attempts": 1,
+      "simulation_seconds": 138.79999999993464,
+      "wall_seconds": 245.5857905028388
+    },
+    {
+      "seed": 1008,
+      "run_id": "de1aeec5cdea",
+      "preset": "nominal",
+      "full_task_success": true,
+      "assisted": false,
+      "collision_count": 0,
+      "recovery_attempts": 1,
+      "simulation_seconds": 138.79999999993464,
+      "wall_seconds": 222.64511528704315
+    },
+    {
+      "seed": 1009,
+      "run_id": "ed36c5e1c7f4",
+      "preset": "nominal",
+      "full_task_success": true,
+      "assisted": false,
+      "collision_count": 0,
+      "recovery_attempts": 0,
+      "simulation_seconds": 125.29999999988938,
+      "wall_seconds": 203.24420129926875
+    },
+    {
+      "seed": 1010,
+      "run_id": "5c4834f253b8",
+      "preset": "nominal",
+      "full_task_success": true,
+      "assisted": false,
+      "collision_count": 0,
+      "recovery_attempts": 1,
+      "simulation_seconds": 138.79999999993464,
+      "wall_seconds": 223.14859764184803
+    }
+  ]
+}

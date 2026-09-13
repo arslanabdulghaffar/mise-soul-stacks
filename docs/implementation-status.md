@@ -118,14 +118,14 @@ arm switch remains disallowed when it conflicts with the instruction.
 
 ## Remaining deployment milestones
 
-1. Collect successful full-task demonstrations and failure/correction data with
-   episode-level train/validation/test splits. Pin a working ACT and LeRobot stack.
-2. Train and export stronger ACT checkpoints. Validate preprocessing, action order,
-   normalization and closed-loop behavior on the actual Intel target before scaling.
-3. Run OpenVINO reference and optimized checkpoints on the Intel target and retain
-   paired latency and closed-loop quality evidence.
-4. Expand the current nominal suite only if time permits; keep new stress results
+1. Run the completed OpenVINO benchmark on the Intel target, then retain paired
+   reference/optimized closed-loop outcomes before claiming preserved quality.
+2. Expand the current nominal suite only if time permits; keep new stress results
    separate from the frozen hackathon evidence.
+
+The ten-seed camera suite is complete: all ten unassisted runs passed with zero
+forbidden collisions. The 24 FPS accelerated compilation, selection manifest, and
+per-seed results are retained under `docs/evidence`.
 
 Physical recovery, deterministic camera verification, and the validated drawer/mug
 parallel group are complete in the declared simulation envelope. Reliable learned
@@ -147,7 +147,7 @@ Stopping does not reset the simulator or relabel an attempt as a success.
 
 ## Contact milestone verification
 
-- Full suite: **61 tests passed**, including complete-task physics, adaptive-memory persistence, and actual physics under four seeded
+- Full suite: **66 tests passed**, including complete-task physics, adaptive-memory persistence, submission evidence tooling, and actual physics under four seeded
   start/friction conditions and an exclusive archive-writer check.
 - TypeScript and the Vite production build passed.
 - Production-worker run `d1ca00774909` passed all seven steps with the drawer/mug

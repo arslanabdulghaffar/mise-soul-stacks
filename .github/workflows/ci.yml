@@ -1,0 +1,49 @@
+name: Reproducibility checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install rendering libraries
+        run: sudo apt-get update && sudo apt-get install -y libgl1 libosmesa6
+      - name: Install Python package
+        run: python -m pip install -c constraints.txt -e '.[test]'
+      - name: Build MuJoCo scene
+        run: python scripts/build_scene.py
+      - name: Run Python regression suite
+        env:
+          MUJOCO_GL: osmesa
+        run: python -m unittest discover -s tests -v
+
+  frontend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install locked frontend dependencies
+        working-directory: web
+        run: npm ci
+      - name: Build production console
+        working-directory: web
+        run: npm run build

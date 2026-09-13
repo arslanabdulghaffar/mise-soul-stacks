@@ -6,6 +6,7 @@ artifacts/
 data/
 assets/generated/
 *.mp4
+!docs/evidence/*.mp4
 node_modules/
 web/dist/
 *.egg-info/

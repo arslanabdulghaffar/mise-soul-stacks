@@ -1,0 +1,117 @@
+{
+  "schema_version": "mise.ten-seed-video.v1",
+  "command": "Set the table.",
+  "required_seeds": [
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010
+  ],
+  "selection_policy": "latest successful unassisted full-task recording per predeclared seed",
+  "playback_speed": 6.0,
+  "output_fps": 24,
+  "attempt_counts": {
+    "1001": 1,
+    "1002": 1,
+    "1003": 1,
+    "1004": 1,
+    "1005": 1,
+    "1006": 1,
+    "1007": 1,
+    "1008": 1,
+    "1009": 1,
+    "1010": 1
+  },
+  "runs": [
+    {
+      "seed": 1001,
+      "run_id": "119f0c7b9331",
+      "preset": "nominal",
+      "source": "artifacts/submission-runs/seed-1001/119f0c7b9331/top.mp4",
+      "source_sha256": "c9635130de1653ec005be6b35873c2e95e7c0cb92f9a22247c5c2f66345aa3f5"
+    },
+    {
+      "seed": 1002,
+      "run_id": "39b28dac9f15",
+      "preset": "nominal",
+      "source": "artifacts/submission-runs/seed-1002/39b28dac9f15/top.mp4",
+      "source_sha256": "1011306f9e1e9511d809ab46109d20bf4747b389ad4f6c266c289ba1f6b3586e"
+    },
+    {
+      "seed": 1003,
+      "run_id": "0b8bec89faec",
+      "preset": "nominal",
+      "source": "artifacts/submission-runs/seed-1003/0b8bec89faec/top.mp4",
+      "source_sha256": "068badfa6e7bacf856c08b010a3ec2e7313f87b249ab9abc86123cdb52bb5e7a"
+    },
+    {
+      "seed": 1004,
+      "run_id": "f79721cbe972",
+      "preset": "nominal",
+      "source": "artifacts/submission-runs/seed-1004/f79721cbe972/top.mp4",
+      "source_sha256": "59f80ef8debc1a43edfeee56d776db8b32ac96f55854092f9f36779b2290944e"
+    },
+    {
+      "seed": 1005,
+      "run_id": "3aac031436d5",
+      "preset": "nominal",
+      "source": "artifacts/submission-runs/seed-1005/3aac031436d5/top.mp4",
+      "source_sha256": "eba1e8e0bfd77e23b570c208913e765b30b8851003d83f45f307dcfc593330a0"
+    },
+    {
+      "seed": 1006,
+      "run_id": "bbc1ef4f2083",
+      "preset": "nominal",
+      "source": "artifacts/submission-runs/seed-1006/bbc1ef4f2083/top.mp4",
+      "source_sha256": "40b1bfdcb04ba07aa6fe8e43ded14bb488e5219e45b902adbf11af6442131dc6"
+    },
+    {
+      "seed": 1007,
+      "run_id": "63e428c7f948",
+      "preset": "nominal",
+      "source": "artifacts/submission-runs/seed-1007/63e428c7f948/top.mp4",
+      "source_sha256": "e2e59a39c2fdf914239c07e3b7b4e0689f42080c5754adff3f24d959fb0934a2"
+    },
+    {
+      "seed": 1008,
+      "run_id": "de1aeec5cdea",
+      "preset": "nominal",
+      "source": "artifacts/submission-runs/seed-1008/de1aeec5cdea/top.mp4",
+      "source_sha256": "439ebd2d69781246cad6930e18236859b148427585022c8e6b6d972311a6eb09"
+    },
+    {
+      "seed": 1009,
+      "run_id": "ed36c5e1c7f4",
+      "preset": "nominal",
+      "source": "artifacts/submission-runs/seed-1009/ed36c5e1c7f4/top.mp4",
+      "source_sha256": "c78903d4e5f0df56f910b73d894da79241bee22f514fb6f7b22586b3f94bc280"
+    },
+    {
+      "seed": 1010,
+      "run_id": "5c4834f253b8",
+      "preset": "nominal",
+      "source": "artifacts/submission-runs/seed-1010/5c4834f253b8/top.mp4",
+      "source_sha256": "a5037c9407f95216487977c27fedd11c2ffea8296c6aec5495e362716054db66"
+    }
+  ],
+  "video": "docs/evidence/ten-seed-demo.mp4",
+  "video_sha256": "f3423d54653e13bf77ae5ddc4640bdb08afa172d70ae11250fcb4e5b5a3b2be2",
+  "video_bytes": 130752,
+  "repository_encoding": {
+    "codec": "H.264",
+    "resolution": [
+      160,
+      160
+    ],
+    "fps": 18,
+    "playback_speed": 21.0,
+    "duration_seconds": 64.61,
+    "purpose": "Compact GitHub preview; full 256x256 6x copy retained in artifacts/submission"
+  }
+}
