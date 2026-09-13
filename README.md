@@ -182,6 +182,9 @@ machine-readable JSON and CSV under `artifacts/benchmarks`; the console reads th
 files on refresh. It only marks Intel Core Ultra verification when host identity and
 an explicit Series 2/3 declaration agree.
 
+To continue from another Codex or ChatGPT account, start with the authoritative
+[project handoff](docs/HANDOFF.md); account-level chat history is not required.
+
 ## Verified complete run
 
 The production worker integration run `d47ac0311efe` completed the full seven-step
