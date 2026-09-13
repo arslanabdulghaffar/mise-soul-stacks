@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mise-robotics"
+version = "0.2.0"
+description = "MISE bimanual robotics console, runtime contracts and evidence"
+requires-python = ">=3.10"
+dependencies = [
+  "mujoco>=3.2.0",
+  "numpy>=1.26",
+  "PyYAML>=6.0",
+  "imageio>=2.34",
+  "imageio-ffmpeg>=0.5",
+  "fastapi==0.136.1",
+  "uvicorn[standard]==0.46.0",
+  "Pillow==12.2.0",
+]
+
+[project.optional-dependencies]
+test = ["httpx==0.28.1"]
+
+[project.scripts]
+mise = "mise.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,20 @@
+# Scene-specific simulation predicates. These validate the simplified MuJoCo
+# contact geometry; they are not a real-robot calibration claim.
+drawer_open_fraction: 0.80
+drawer_hold_s: 0.5
+placement_hold_s: 1.0
+stability_speed_m_s: 0.02
+stability_angular_speed_rad_s: 0.10
+mug_max_tilt_degrees: 15.0
+utensil_max_axis_error_degrees: 20.0
+handoff_hold_s: 1.0
+episode_timeout_s: 180.0
+object_loss_height_m: 0.50
+max_sample_gap_s: 0.10
+gripper_contacts_validated: true
+collision_geometry_validated: true
+goal_regions:
+  plate: {name: plate_center, center_xy: [0.05, 0.0], radius_m: 0.02, height_range_m: [0.780, 0.790]}
+  fork: {name: fork_left, center_xy: [-0.15, 0.0], radius_m: 0.02, height_range_m: [0.780, 0.792]}
+  spoon: {name: spoon_right, center_xy: [0.25, 0.0], radius_m: 0.02, height_range_m: [0.780, 0.792]}
+  mug: {name: mug_upper_right, center_xy: [0.25, 0.20], radius_m: 0.02, height_range_m: [0.810, 0.820]}

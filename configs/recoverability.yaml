@@ -1,0 +1,6 @@
+# A state is viable when the privileged teacher finishes at least this fraction
+# of simulator forks. The numbers are intentionally explicit and reportable.
+forks_per_arm: 24
+success_threshold: 0.60
+control_horizon: 150
+

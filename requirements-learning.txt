@@ -1,0 +1,5 @@
+# Install torch/torchvision from https://download.pytorch.org/whl/cu128 for CUDA.
+# Kept separate from the lightweight simulation/API runtime dependencies.
+torch==2.8.0
+torchvision==0.23.0
+openvino==2026.0.0

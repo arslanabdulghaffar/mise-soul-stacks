@@ -1,0 +1,3 @@
+[submodule "vendor/SO-ARM100"]
+	path = vendor/SO-ARM100
+	url = https://github.com/TheRobotStudio/SO-ARM100.git

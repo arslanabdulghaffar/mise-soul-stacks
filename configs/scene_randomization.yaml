@@ -1,0 +1,29 @@
+# Training and evaluation randomization. The held-out texture names are reserved
+# for the renderer/material pipeline; flat-color randomization is active today.
+position_jitter_m: 0.05
+yaw_jitter_degrees: 30
+drawer_open_probability: 0.20
+suite: nominal
+mass_scale: [0.7, 1.3]
+friction_scale: [0.7, 1.3]
+size_scale: [0.90, 1.10]
+light_angle_degrees: 40
+light_intensity_scale: [0.7, 1.3]
+object_colors:
+  plate: [[0.88, 0.88, 0.83, 1.0], [0.96, 0.72, 0.35, 1.0], [0.76, 0.84, 0.92, 1.0]]
+  mug: [[0.18, 0.42, 0.82, 1.0], [0.82, 0.28, 0.25, 1.0], [0.26, 0.68, 0.42, 1.0]]
+  bottle: [[0.18, 0.70, 0.42, 1.0], [0.75, 0.55, 0.18, 1.0], [0.52, 0.32, 0.76, 1.0]]
+  spoon: [[0.72, 0.77, 0.80, 1.0], [0.84, 0.73, 0.49, 1.0]]
+  fork: [[0.72, 0.77, 0.80, 1.0], [0.84, 0.73, 0.49, 1.0]]
+table_colors:
+  - [0.40, 0.23, 0.12, 1.0]
+  - [0.24, 0.34, 0.27, 1.0]
+  - [0.30, 0.30, 0.34, 1.0]
+held_out:
+  object_textures: [speckle, stripes]
+  table_textures: [marble, denim]
+  lighting: [side_warm, low_cool]
+# Separate stress-suite configuration; these values are not nominal defaults.
+stress:
+  mass_scale: [0.5, 1.5]
+  friction_scale: [0.5, 1.5]

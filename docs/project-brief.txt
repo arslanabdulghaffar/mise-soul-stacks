@@ -1,0 +1,381 @@
+MISE Hackathon Projectand Website Plan
+Bimanual table setting with verified recovery
+Multi-modal Instruction to Skill ExecutionTeam MISE  |  Online build 10 to 16 September 2026
+The revised project
+We will build two simulated SO-101 arms that set a dinner table from a natural-language instruction, check whether each manipulation actually worked, and recover from a failed grasp when a valid corrective action remains. A browser dashboard will show the cameras, task plan, recovery decisions, randomized runs and Intel performance measurements.
+The primary workflow includes a drawer, plate, mug, spoon and fork, with a real object hand-off between the arms. A small vision-language planner selects registered learned skills. A temporal monitor checks progress, and a constrained supervisor decides when to continue, retry, replan or stop. MuJoCo and inference run locally on the Intel demonstration machine.
+Assessment and decision
+Keep MISE, but change the execution strategy. The concept matches the challenge well. Its main weakness is delivery risk: the original plan simultaneously commits to reinforcement learning, large-scale simulation, two distillation pipelines, quantization-aware training and several policy backends. Those commitments compete with the work that earns most of the score: a complete task, meaningful reasoning and measured Intel deployment.
+The revised plan makes imitation learning and early Intel export the default. We retain recovery as the distinguishing feature, add a visible website, and make advanced training conditional on a working baseline. A stronger proposal alone does not establish a winning probability. The evidence from the completed system will determine whether the submission is competitive.
+Submission priorities
+• A complete randomized table-setting task with genuine coordination between both arms.
+• A measurable recovery benefit over a fair retry baseline, without hidden resets.
+• A convincing website that exposes recorded evidence and identifies live versus replay mode.
+• A reproducible Intel execution package with supported, measured OpenVINO optimization.
+Planning status: Performance values in this document are proposed engineering targets, not measured results. The published submission deadline is 16 September 2026 at 18:30 UTC; our internal submission target is 12:00 UTC that day. [1-3]
+1 Assessment against the judging criteria
+The attached brief assigns 70 points to task completion, multi-modal reasoning and Intel optimization. Website presentation can make that evidence easier to judge, but the rubric gives no separate website score. The plan below allocates effort accordingly. [2, p. 5]
+Pts
+Criterion
+Current weakness
+Revision and evidence
+30
+Task completion and bimanual manipulation
+Several ambitious skills, but no demonstrated complete workflow or explicit terminal predicates.
+Prioritize the full place setting and one real hand-off. Publish all 10 fixed randomized runs, per-step outcomes and collision counts.
+20
+VLA and multi-modal reasoning
+Valid JSON does not establish correct visual grounding or instruction compliance.
+Validate object, arm and ordering constraints. Show paired cases where changed language or images require different plans.
+15
+Robustness and generalization
+Some ranges may create impossible grasps; recovery labels are logically incomplete.
+Define feasible randomization and held-out conditions. Compare no retry, bounded retry and monitored recovery on identical seeds.
+20
+OpenVINO and Intel optimization
+NPU compatibility, zero accuracy loss and latency benefits are assumed.
+Compile on the actual machine early. Measure supported placements, full-loop timing and paired success before choosing precision.
+10
+Technical quality and reproducibility
+Training scale and the release package could prevent a reproducible final build.
+Pin dependencies and asset versions. Include evaluator, model manifests, logs, checksums and a clean-machine reproduction run.
+5
+Innovation and demonstration
+Claims of uniqueness are unsupported and the project has no judge-facing interface.
+Demonstrate constraint-preserving recovery and its measured value through an interactive evidence dashboard.
+Where the original proposal overclaims
+Existing robotics work already studies feedback-driven planning and failure correction. We should credit that prior work and describe MISE as a focused integration for bimanual manipulation on Intel hardware. The potential distinction is the measured combination of valid recovery, bounded action execution and transparent evidence. Claims that no other team will build recovery should be removed. [10, 11]
+Judging strategy: show a complete task first, expose one informative failure and recovery second, and then prove the execution and optimization claims. Additional models earn no credit merely by appearing in the architecture.
+2 Task scope and success definitions
+The main demonstration
+The default command opens the drawer with arm A, places the plate in the center, retrieves the spoon with A, passes it to B, and finishes the spoon, fork and mug placements in designated table regions. Preserve every explicit arm assignment and temporal constraint. The brief requests a table-setting task and recommends at least one hand-off or complementary dual-arm action. [2, pp. 1, 4]
+Stage
+Required behavior
+Evaluator condition
+Drawer
+Arm A opens the top drawer.
+Opening reaches 80% of its configured travel and remains there for 0.5 s.
+Plate and utensils
+Plate at center; fork left; spoon right. Retrieve both utensils from the drawer.
+Each object is inside its own configured goal region, released and stable for 1 s.
+Hand-off
+A transfers the spoon directly to B at a reachable shared pose.
+A initially holds it; B acquires it; A releases; B retains it for 1 s without table support.
+Mug
+Place the mug upright in the upper-right goal region.
+Mug lies within its goal region, tilt is at most 15 degrees, and it remains stable for 1 s.
+Full episode
+All requested steps and constraints are satisfied.
+No reset, object loss, invalid arm assignment, forbidden collision or timeout.
+These are team-defined predicates, not official judge thresholds. Store dimensions and tolerances in the evaluator configuration before testing. Use, initially, 20 mm center error, 15 degrees relevant orientation error and 0.02 m/s stability tolerance; confirm they are physically sensible for the chosen objects.
+Physical feasibility before model scale
+The official SO-101 notes flag removed base collision meshes and a gripper mapping mismatch. Validate base collision geometry and explicit gripper conversion before scoring collisions or grasps. Test drawer clearance, plate-rim grasp, utensil thickness, wrist orientation and the shared hand-off region with an expert. Log object simplifications, and do not attach objects to grippers to manufacture successful grasps. [4]
+Pouring and optional scope
+Pouring is an extension after the core task passes. Tilting a bottle above a mug proves a motion, not liquid transfer. Confirm the required pouring criterion with organizers. If a simplified particle-transfer task is accepted, score transfer and spill explicitly and label the simulation approximation. Until implemented, commands requiring pouring are unsupported and must be reported as such. Parallel reaching and a second policy backend are also optional.
+3 Runtime architecture and instruction contracts
+We use a vision-language planner with learned ACT motor skills. This is a hierarchical system. The brief permits ACT and related imitation policies, so one end-to-end VLA is not required. [2, p. 2]
+Figure 1. Proposed runtime. The website receives execution evidence; the evaluator cannot supply hidden object state to the controller.
+Observation and action contracts
+At deployment, models receive RGB, robot joints, command fields and action history. Reserve true object poses and contact labels for training and an isolated evaluator. Log the observation schema and prevent evaluator-to-controller leakage. The brief allows simulator state; this stricter boundary makes visual grounding testable.
+Start with three 256 by 256 policy cameras: overhead and both wrists. Use the VLM checkpoint's native image processor. Include both arms' joints for single-arm skills, and verify action order, units and gripper conversion against the robot manifest.
+Planner and skill binding
+Start by testing the documented InternVL2_5-1B family in OpenVINO. Use constrained outputs and a fixed skill vocabulary. Verify scene understanding and export compatibility before committing; defer planner distillation. [5]
+Each step records skill, object, goal, arm, preconditions, dependencies and timeout. A registry selects the trained checkpoint and normalization metadata. JSON fields alone do not condition ACT: use task-specific checkpoints first, and add shared conditioning only after training and export verification. [6]
+Preserve required arms and sequence words. Skip satisfied goals only when permitted by the instruction. Reject invalid or cyclic plans. After one repair attempt, use a disclosed parser only for the supported grammar; otherwise report an unsupported request.
+4 Coordination and valid recovery
+Coordination rules
+Execute sequentially by default. Shared-zone labels are a scheduling aid, not collision checking. Reserve arms and manipulated objects, hold the inactive arm at a validated pose, and check joint limits, velocity limits and robot geometry using joint-based forward kinematics. Hand-off reserves both arms until receiver retention is confirmed. Keep deliberate gripper contact distinct from forbidden arm or object collisions.
+Cancel queued actions whenever a skill changes, recovery starts or a newer observation invalidates the chunk. Attach sequence numbers and timestamps to actions. Replan at stable states; continue any required holding controller while the planner runs. Stop or enter a controlled hold if observations or actions exceed their tested freshness limit.
+The monitor and supervisor
+Use a small visual encoder with temporal history, joint changes, active skill and action progress. Target 10 Hz monitoring and measure detection plus cancellation delay under load. A single RGB frame cannot establish slip velocity or distinguish every occluded grasp. Train visual predicates such as object-held, object-in-goal and progress-stalled. The supervisor maps these observations to explicit states:
+State
+Condition
+Controller response
+DONE
+Terminal visual predicates remain satisfied.
+Finish the step and unlock its dependents.
+CONTINUE
+Progress is plausible and no intervention is indicated.
+Execute the next short validated action segment.
+RETRY
+The object remains reachable and a tested reset-of-grasp action is feasible.
+Withdraw or reposition from the current state, then attempt again.
+REPLAN
+A different registered action satisfies the remaining task and instruction constraints.
+Update the unfinished plan; keep completed goals and required arms.
+STOP
+Recovery is infeasible, evidence stays ambiguous, or a limit is exceeded.
+Enter a controlled stop and record failure or assistance required.
+Allow at most two recovery attempts per skill and a 180 s episode budget initially. Validate these limits before the final run. A simulator reset always starts a new episode and never counts as autonomous recovery.
+Correcting the original recoverability labels
+If every tested continuation fails, the original draft labels the state as retryable. That is not justified. Evaluate actual candidate actions from the same saved state, including regrasp and feasible arm transfer. Prefer student-policy rollouts; teacher-only labels can overestimate what the deployed policy can recover. Report estimated recoverability under the tested candidates, never global proof that a task is impossible.
+5 Training and integration strategy
+Use the stated training resources to remove observed bottlenecks. More GPUs do not resolve reward design, gripper geometry, camera rendering, dataset errors or Intel export failures. A successful expert trajectory and a working learned export are more useful on the first day than thousands of unstable training environments.
+Default training route
+• Build scripted IK or teleoperation experts for the declared primitives. Record real contacts, images, joint targets, skill boundaries and outcomes in a pinned LeRobot-compatible format.
+• Start with roughly 100 to 300 successful demonstrations per task-specific skill, plus failure and recovery trajectories. These are starting data budgets, not sufficient-data claims. Add data where validation fails.
+• Train ACT baselines with identical train and deployment preprocessing. Separate checkpoints by primitive, target and goal when necessary. Train both-arm outputs for the hand-off, including grasp acquisition and release timing.
+• Run students in the environment early. Collect correction data at missed grasps, contact transitions and unfamiliar starts. Where the expert is valid, use DAgger-style corrections on student-visited states.
+• Export a real checkpoint to OpenVINO before scaling training. Validate action order, output range, normalization and closed-loop behavior against its source model.
+Monitor data and calibration
+Use simulator predicates offline to label short sequences, then retain only observable inputs for the monitor. Include successful trajectories, delayed motion, empty grasps, recoverable drops, occlusion and terminal failures. Keep all clips and forked continuations from one parent episode in the same data split; adjacent frames are not independent samples.
+Start with a progress detector and deterministic, feasible retry rules. Add candidate-conditioned recoverability estimates only after the complete loop works. For each saved failure state, simulate bounded candidate continuations and estimate their success fractions. Freeze monitor thresholds on validation episodes and report false intervention rate, missed failures and time-to-detection.
+Advanced training is conditional
+Privileged RL teachers, MJX acceleration, planner distillation and quantization-aware training are optional upgrades. Add one only when a measured failure justifies it and integration time remains. MJX has backend-specific contact, feature and rendering constraints, so porting the scene is a separate engineering task. CPU MuJoCo with parallel data-collection processes is the first fallback. [7]
+Keep the first deployed policy backend fixed. Replacing ACT with SmolVLA late in the build changes training, preprocessing, export and latency simultaneously. A second backend is useful only if it solves a demonstrated limitation and passes the same evaluation.
+6 Evaluation that supports the claims
+Freeze the scenario definitions, seeds, policy hashes and thresholds before the final evaluation. Record every attempt. The required video suite uses 10 predeclared randomized seeds; do not search for 10 successful seeds and report them as the test suite. The brief asks for successful execution across 10 seeds, so 10 out of 10 is the demonstration target, not a permission to conceal failures. [2, pp. 4-5]
+Perturbation
+Training and validation range
+Held-out evaluation
+Placement
+Up to +/-5 cm and +/-30 degrees within predefined feasible spawn regions.
+Unseen samples and combinations within the declared workspace.
+Dynamics
+Mass and friction initially 0.7 to 1.3 times nominal.
+Separate 0.5 to 1.5 stress suite, only where the task remains feasible.
+Shape
+Object geometry families and dimensions that retain plausible grasps.
+At least one unseen mesh or handle shape per evaluated category; report categories separately.
+Appearance
+Several object and background materials; light intensity 0.7 to 1.3 times nominal.
+Disjoint textures, backgrounds and lighting presets.
+Language and state
+Supported paraphrases, arm constraints and partially completed goals.
+Unseen paraphrases and paired scene changes; track hard constraint violations.
+Define feasibility filtering before running policies. Report rejected configurations and never reject a seed because the policy failed. Report in-distribution, held-out and stress outcomes separately. Scaling the same mesh is size variation; it is not sufficient evidence of unseen-shape generalization.
+Small evaluation set with useful comparisons
+Plan 50 nominal episodes including the required 10, 20 held-out episodes, and a separate 20-case recovery suite. On the recovery suite compare: no retries; bounded retry with the same visual verifier; and the proposed monitored recovery. Keep policies, seeds, timeouts and retry budgets fixed. For Intel precision preservation, compare reference and optimized models on the same 50 nominal seeds.
+This is approximately 180 episode runs across configurations. At a 180 s timeout and real-time factor 1, simulation alone can take 9 hours. Reserve that time after code freeze and add reset, compilation and recording overhead. If throughput is lower, preserve the required 10 and the most informative paired comparisons first.
+Metrics and interpretation
+Report full-task success, completed-step fraction, hand-off success, collisions, constraint violations, recovery attempts, recovery success and wall-clock completion time. Give numerators, denominators and 95% Wilson intervals. Even 10 successes out of 10 have a Wilson lower bound of about 72%, so ten runs cannot establish near-perfect generalization.
+Test reasoning with the same command in changed scenes and changed commands in the same scene. Measure correct next actions and constraint compliance. Parse validity alone measures formatting. Predeclare at least 20 such cases and retain the camera evidence and accepted plan for each.
+7 Intel deployment and optimization
+Confirm access to the final Intel Core Ultra Series 2 or 3 machine immediately. The brief allows broader Intel development hardware but explicitly requires the final simulation and inference demonstration on Series 2 or 3. A cloud website or offline NVIDIA training run does not satisfy that requirement. [2, p. 3]
+Component
+Initial deployment choice
+Promotion condition
+MuJoCo and scheduler
+CPU physics and control; verify the actual renderer and graphics driver.
+Benchmark with camera rendering, inference, telemetry and video capture together.
+ACT skills
+OpenVINO reference precision on CPU or iGPU, chosen by measurement.
+Use INT8 or mixed precision only after representative calibration and paired closed-loop validation.
+Visual monitor
+Small OpenVINO model on CPU initially; trial NPU or iGPU.
+Move it only if compilation works and total intervention delay or loop contention improves.
+VLM planner
+OpenVINO GenAI on a verified CPU or iGPU path.
+Use supported weight compression after plan-quality tests. Treat NPU support as an exact-model experiment.
+Website server
+Small local API process serving the UI, frames and events.
+Reduce display frame rate before allowing it to delay the control loop.
+The current Physical AI Studio documentation provides ACT training and export, while the Physical AI runtime loads exported policies. Pin a working combination and avoid mixing examples from incompatible releases. A framework listing CPU, GPU and NPU backends does not prove that every policy and precision runs on every device. [8]
+Optimization sequence
+Establish source-framework reference behavior, then verify an OpenVINO reference model. Try post-training quantization using training/validation contact and recovery states; never calibrate on final test data. Keep sensitive output layers at higher precision if needed. NNCF supports accuracy-controlled quantization, but manipulation quality still requires closed-loop validation. QAT is a fallback when calibration and mixed precision cannot meet the target. [9]
+Use a provisional control target of 30 Hz, with ACT re-inference initially every three control steps. This creates a 100 ms refill budget, not a claim of 30 Hz neural inference. Measure end-to-end p95 latency, action age and deadline misses. Asynchronous inference must discard stale chunks and preserve time alignment; interpolation alone does not demonstrate fast inference.
+What the benchmark must record
+Record hardware SKU, RAM, OS, power mode, runtime and driver versions, model hashes, actual devices and precision. Separate compilation and warm-up from steady-state timing. Report per-model p50/p95 latency, throughput and memory, plus full-loop control rate, real-time factor, observation-to-action age and CPU/iGPU/NPU utilization where measurable.
+Use paired task-success results to justify the chosen precision. A provisional engineering target is no more than a 5 percentage-point drop, with raw paired outcomes and uncertainty disclosed. Report unsupported placements explicitly. Keep a slower placement only when full-system measurements show a benefit, and never claim zero quantization loss or free monitoring without evidence.
+8 Website visual design
+Build one polished MISE Robotics Console. The first screen should explain the task within seconds and make the robot execution the visual focus. Judges should be able to move directly from an observed action to its plan step, recovery event and recorded result.
+Figure 2. Website design concept with a schematic scene. The final viewport uses actual MuJoCo camera frames; metrics remain empty until a recorded run supplies them.
+Visual direction
+Use a graphite background, restrained cyan accents for arm A and violet for arm B, clear white text and subtle panel borders. Keep color assignments consistent in the viewport, timeline and replay. Use large camera views, concise labels, a visible command bar and a compact task panel. Avoid decorative 3D backgrounds that compete with the actual robot.
+Proposed design tokens: background #0A101A, panel #142135, primary text #E6EDF5, secondary text #91A7BF, arm A #73D4E4 and arm B #A293EF. Use a locally bundled sans-serif font, 8 px spacing increments, 12 px corner radii and 150 to 200 ms state transitions. Status must have text or icons as well as color.
+Desktop layout uses a narrow navigation rail, a large camera area and an adjacent plan panel. Below 900 px, stack the camera and plan and replace the rail with compact navigation. At 390 px, every essential control remains reachable without horizontal scrolling. Keyboard focus, reduced-motion support and readable text are part of the design.
+9 Website screens and judge interactions
+View
+What the judge sees
+Interaction and evidence
+Overview
+A short project explanation, real demonstration clip, method summary and entry points.
+Watch the primary run, open the live console, inspect results or open the repository.
+Live run
+Command, seed, synchronized camera views, current step, arm assignment and monitor state.
+Start a supported task, switch cameras, pause at a safe boundary, or stop. Display run identity and actual host.
+Evidence
+The fixed 10-seed grid and larger evaluation tables with explicit denominators.
+Select a seed to replay its full run, inspect failure reasons and download its trace.
+Recovery replay
+A timeline marking detection, cancellation, corrective action and final outcome.
+Compare matched baseline and monitored runs from the same seed and perturbation configuration.
+Benchmarks
+Measured precision and device comparisons with hardware and model identity.
+Filter by component or configuration; open raw CSV and the associated task-success results.
+Method
+Architecture, observation boundary, supported commands, limitations and reproduction steps.
+Inspect what is learned, what is deterministic and what data is available to the controller.
+The strongest interactive demonstration
+Offer a clearly labeled challenge mode with a few reproducible perturbation presets: a displaced object, a reduced-friction grasp, or a partially completed table. The same preset and seed must be replayable for baseline and recovery configurations. Online physics perturbations, if offered, are validated, bounded and logged as a separate stress test; they do not silently enter the main benchmark.
+When recovery triggers, the interface highlights the exact event, displays its evidence and shows the chosen corrective action. Use short status messages such as "Object not retained after lift" and "Regrasp attempt 1 of 2". Display a measured confidence only if it is calibrated. Do not label free-form VLM text as a verified explanation.
+Behavior when the system is unavailable
+Show LIVE, RECORDED REPLAY or DISCONNECTED prominently. On disconnection, disable commands and show the last observation timestamp. When replay is selected, expose the original run ID, seed, model version and Intel hardware record. An unknown metric is displayed as unavailable, not zero.
+Manual reset, operator intervention and changed instructions create explicit events. A run needing assistance must not count as autonomous success. A paused evaluation run is either excluded from timing with a disclosed reason or reported in a separate assisted category.
+What to leave out
+Do not spend hackathon time on accounts, payment systems, social feeds, voice control or a second browser physics engine. The useful website is the working robot interface and its evidence. Public visitors can inspect recorded runs without requiring the Intel machine to remain online.
+10 Website implementation and data flow
+Use a React and TypeScript frontend built with Vite, with utility CSS or a small token stylesheet. Serve the compiled frontend and API from FastAPI on the Intel machine for a single-origin local demo. FastAPI supports WebSockets for live event delivery. Keep simulation in a separate worker process so slow browsers cannot block control. [12]
+Data flow
+The simulation worker produces timestamped observations and action outcomes. A bounded queue sends telemetry and display frames to the API. The browser receives structured events over WebSocket and camera frames through a separate stream. Start with JPEG/MJPEG at 10 to 15 display frames per second; upgrade transport only if measured latency or bandwidth requires it. Control and inference rates remain independent of display rate.
+Planned interface
+Purpose
+POST /api/runs
+Validate command, seed, preset and controller configuration; create a run ID.
+GET /api/runs/{id}
+Return status, configuration, hardware identity and artifact links.
+WS /api/runs/{id}/events
+Stream sequenced plan, step, monitor, intervention and timing events.
+GET /api/runs/{id}/camera/{name}
+Serve timestamped display frames for overhead and wrist views.
+POST /api/runs/{id}/control
+Accept bounded pause, resume or stop actions from the demo operator.
+GET /api/evaluations and /api/benchmarks
+Read recorded results, trace references and downloadable measurements.
+Each event records run ID, sequence number, monotonic timestamp, simulation time, event type, active skill, arm state, monitor output and configuration hash. On reconnection, send a current snapshot and the last sequence number. Keep a frame timestamp with each displayed image so the plan and camera can be aligned.
+Operating modes and access
+The local mode runs fully on the Intel machine, including the website assets, with no network inference dependency. A public static deployment can show the project and play exported Intel recordings. If public live control is added later, use an authenticated relay and bounded command queue; never expose an unrestricted simulation or shell endpoint.
+For the hackathon, allow one active run and one operator. Validate command length, supported objects and preset IDs. Save results as JSONL, summary JSON/CSV, MP4 and a manifest. Render user and model text as text rather than HTML. Public evidence views are read-only.
+Website acceptance checks
+Verify camera switching, starting and stopping, reconnecting, stale-data display, replay labels and downloadable evidence. Test at desktop and phone widths. Benchmark with the dashboard and recorder on and off. A suggested display target is p95 event lag below 300 ms, provided control deadlines remain satisfied; publish the measured result.
+11 Build schedule through the deadline
+This schedule starts on 11 September and assumes five available contributors. It is a delivery plan, not a claim that any listed milestone is already complete. Every day ends with an integrated run using the actual observation and action interfaces.
+Date in UTC
+Core robotics and Intel milestone
+Website and evidence milestone
+11 September
+Confirm Series 2/3 machine. Validate grasp geometry and one expert skill. Export a small real checkpoint and run an Intel smoke test.
+Agree event schema and visual tokens. Build the responsive shell and replay a clearly labeled sample trace.
+12 September
+Collect task-specific demonstrations. Train initial skills. Integrate command validation and the scheduler. Run the entire sequence with expert stand-ins.
+Connect API to actual worker events and cameras. Show plan state, run ID, device and timestamps.
+13 September
+Replace stand-ins with learned skills. Achieve a learned end-to-end run and add basic visual verification plus bounded retry.
+Deliver working live console, safe stop, run archive and recorded replay. Remove sample data from live mode.
+14 September
+Integrate candidate recovery if it improves validation. Tune supported OpenVINO precision and placement. Freeze scenes, metrics and seeds by evening.
+Finish recovery replay and benchmark/evidence views. Measure UI and recording overhead.
+15 September
+Run frozen 10-seed suite, additional evaluations and paired comparisons. Fix only reproducibility or task-blocking defects, then rerun affected suites.
+Record the final demo and assemble downloadable evidence. Test local offline mode and public replay.
+16 September
+Clean-machine reproduction, final review and upload. Internal target 12:00 UTC; published close 18:30 UTC. [3]
+Verify links, video playback and artifact access from another machine. Keep a local recording and reproduction package ready.
+Decisions that protect the deadline
+If the Intel smoke test is not working on 11 September, the deployment owner focuses on that before additional training. If a learned complete task is not working on 13 September, stop adding recovery-model complexity, planner distillation and new policy backends. Improve the failing primitives and their data.
+If pouring remains unimplemented or its scoring is unclear, use the hand-off-centered task and state the supported command set accurately. If the custom recoverability model fails to beat bounded retry, ship the reliable baseline and report that result. If the public live connection is unreliable, present the local live system and the labeled public replay site.
+Do not cut the final Intel demonstration, fixed 10-seed accounting, genuine dual-arm behavior, camera-grounded reasoning or reproducible evidence to preserve a decorative website feature.
+12 Team ownership and release decisions
+Owner
+Primary responsibility
+Daily integration deliverable
+Member 1
+Simulation, assets, expert demonstrations and evaluator.
+Working scene, stable observation schema and a recorded primitive or failure case.
+Member 2
+ACT skill training, student rollouts and correction data.
+A versioned checkpoint with its validation results and normalization metadata.
+Member 3
+VLM planning, command constraints, monitor and recovery supervisor.
+A validated plan and a replayable task or recovery trace.
+Member 4
+Intel export, runtime integration, profiling and reproducibility.
+A working Intel run and updated compatibility/performance records.
+Member 5
+Website, telemetry integration, replay, video and presentation.
+A browser view connected to recorded or live system evidence.
+Assign the people to these roles immediately. Members 1 and 4 co-own the runtime interface; Members 3 and 5 co-own the event schema. Training and website work can proceed concurrently only after these contracts are agreed. One designated integrator accepts changes into the demonstration build.
+Release targets
+Area
+Proposed target
+Decision if unmet
+Primary task
+10 out of 10 fixed demo seeds, with every attempt retained.
+Fix the recurring skill failure; report the actual outcome if time expires.
+Reasoning
+All 20 frozen contract cases obey required arms, objects and order.
+Narrow the declared command grammar and expose unsupported requests.
+Recovery
+Improves paired recovery-suite success over bounded retry without increasing collisions.
+Use bounded retry and state that the extra monitor has not yet shown benefit.
+Optimization
+Closed-loop degradation at most 5 percentage points on the paired nominal suite.
+Retain reference or mixed precision; disclose uncertainty and measured latency.
+Website
+Real telemetry, correct mode labels, functional replay and readable mobile layout.
+Remove optional views while preserving the live run and evidence archive.
+The targets above guide team decisions and are not additional official rules. A high single-skill success rate is not enough: under a simple independent-step illustration, eight skills each at 97% success yield only about 78% full-task success. Fix the steps that dominate episode failures before adding more features.
+Cut in this order: cosmetic effects; public live relay; simultaneous reaching; pouring extension; second policy backend; planner distillation; privileged RL/MJX expansion; custom recoverability estimation that lacks measured value. Preserve a functional verifier and transparent failure reporting.
+13 Demonstration and presentation plan
+Prepare an approximately four-minute video unless the submission form specifies another limit. The following is a proposed sequence, not an official duration requirement. Show at least one uninterrupted run and provide complete recordings for all required seeds.
+Time
+What appears
+Claim it supports
+0:00 to 0:25
+A command, the initial camera views, seed and Intel host identity.
+The task and execution conditions are concrete.
+0:25 to 1:30
+The task plan, drawer and object manipulation, and direct hand-off.
+A complete sequence uses both arms and follows the instruction.
+1:30 to 2:20
+A labeled perturbation case and matched baseline/recovery replay.
+The system detects a real problem and a valid intervention changes the outcome.
+2:20 to 2:55
+A changed scene or arm constraint with its resulting plan.
+Planning depends on visual evidence and the instruction.
+2:55 to 3:30
+The full 10-seed grid, raw counts and additional test results.
+Success is evaluated across declared variation.
+3:30 to 4:00
+Intel benchmark, preserved task quality and reproduction entry point.
+Optimization and reproducibility are supported by measured artifacts.
+Presentation narrative
+MISE turns a natural-language table-setting request into coordinated actions for two simulated arms. Each skill is checked against an observable outcome. When a grasp fails, the system can attempt a bounded correction or revise the remaining plan while preserving the original instruction. Its dashboard lets the viewer inspect what happened, which action was selected and whether the task ultimately succeeded.
+The demonstration runs simulation and inference on Intel Core Ultra hardware. We compare controller variants on the same randomized conditions and measure the precision and device choices we actually deploy. The useful claim is improved completion under those tested conditions, supported by downloadable run evidence.
+Questions to be ready to answer
+• What does the policy learn, and which parts are deterministic? Show the skill registry and observation schema.
+• Does the planner use images? Show paired scene interventions and their plans.
+• Is recovery better than simply retrying? Show the matched baseline and the same time budget.
+• Is the website actually controlling the robot? Show its live mode, Intel worker and event timestamps.
+• Did the optimization preserve behavior? Show paired outcomes and full-system measurements, including failures.
+If a result is not yet measured, say so. Do not use invented FPS, perfect success percentages, anonymous benchmark graphs or a selectively edited recovery to fill a presentation gap.
+14 Reproducible submission package
+The repository should let a judge reproduce a recorded result with released inference weights. Re-training remains possible, but it must not be required just to run the demonstration. The following files and commands are implementation requirements for the team to create. [2, p. 4]
+Package element
+Required content
+Scene and task definitions
+Dual SO-101 MJCF, assets, physical parameters, cameras, goal regions, success predicates and randomization configuration.
+Training and checkpoints
+Data generation or collection code, dataset manifest, training/fine-tuning scripts, deployed checkpoints and preprocessing metadata.
+Controller and evaluation
+Plan schema, skill registry, observation boundary, inference code, seeds, evaluator, timeouts and baseline configurations.
+Intel package
+OpenVINO artifacts, export/calibration recipe, exact model and dependency revisions, host/driver details and compatibility results.
+Website package
+Frontend and API source, build instructions, local demo mode, exported replay data and public evidence assets.
+Results and media
+Per-run trace, success and failure reasons, reference/optimized paired outcomes, benchmark CSV, full videos and final presentation clip.
+Expected entry points
+Provide documented equivalents of make setup, make data, make train, make export, make demo, make eval, make bench and make replay. Freeze the actual commands after they succeed. Include a download command and checksums for larger assets, and explain Intel driver and container device access where needed.
+Result records
+Each result row contains run ID, seed, command or command hash, scene configuration, controller variant, checkpoint hash, device, precision, full-task outcome, completed steps, collision count, recovery attempts, wall-clock duration and video/trace paths. The benchmark additionally identifies cold versus warm timing, p95 latency, loop rate and real-time factor.
+Store full-episode success and step success separately. Ground-truth evaluator results are written to the evidence stream after their evaluation role is isolated from the controller. File hashes bind the website displays to the actual model, configuration and results.
+Final release checks
+• Run the demo from a clean environment on the Intel target using the exact published instructions.
+• Verify all 10 required seed records and disclose failures, resets and operator actions.
+• Open the website and downloadable evidence from another machine; confirm replay and live labels.
+• Credit public methods, models and assets. Release only code, data and figures the team can publish. Renaming an unpublished research method does not make its underlying material safe to release.
+15 Sources and technical references
+Numbered references support the challenge interpretation and technical choices. Online sources were checked on 11 September 2026. Model and software versions still need to be pinned to the versions tested by the team.
+[1] Team MISE project description. User-supplied MISE_project_description.docx. Source concept, stated five-person team, compute resources and original schedule.
+[2] Intel Physical AI Online Challenge. User-supplied Online_Physical_AI_Challenge_Online (1).pdf. Scenario pp. 1-2; deployment p. 3; deliverables p. 4; 100-point rubric p. 5.
+[3] AI Infra Summit Hackathon live dashboard. Online event and published submission deadline.https://lablab.ai/ai-hackathons/ai-infra-summit-hackathon/live
+[4] The Robot Studio SO101 simulation description. Official URDF/MJCF and joint conventions.https://github.com/TheRobotStudio/SO-ARM100/blob/main/Simulation/SO101/README.md
+[5] OpenVINO GenAI supported models. Lists InternVL2_5-1B family support; exact-device suitability still requires testing.https://openvinotoolkit.github.io/openvino.genai/docs/supported-models/
+[6] LeRobot ACT implementation. Policy inputs, action chunking and architecture.https://github.com/huggingface/lerobot/blob/main/src/lerobot/policies/act/modeling_act.py
+[7] MuJoCo XLA documentation. Backend capabilities, feature support and performance considerations.https://mujoco.readthedocs.io/en/stable/mjx.html
+[8] Physical AI Studio library and deployment runtime. Training and export. Runtime: github.com/openvinotoolkit/physicalai.https://github.com/open-edge-platform/physical-ai-studio/blob/main/library/README.md
+[9] NNCF accuracy-controlled quantization. Optimization methods and validation.https://docs.openvino.ai/2026/openvino-workflow/model-optimization-guide/quantizing-models-post-training/quantizing-with-accuracy-control.html
+[10] Inner Monologue. Embodied Reasoning through Planning with Language Models, 2022. Prior work on environment feedback and planning.https://arxiv.org/abs/2207.05608
+[11] REFLECT. Summarizing Robot Experiences for Failure Explanation and Correction, CoRL 2023.https://proceedings.mlr.press/v229/liu23g.html
+[12] FastAPI WebSocket documentation. Reference for browser event transport.https://fastapi.tiangolo.com/advanced/websockets/

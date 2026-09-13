@@ -1,0 +1,7 @@
+# First ten fixed seeds are the set shown in the challenge video.
+required: [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010]
+extended_count: 200
+held_out:
+  textures: [marble, denim]
+  lighting: [side_warm, low_cool]
+

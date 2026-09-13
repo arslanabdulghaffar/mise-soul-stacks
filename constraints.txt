@@ -1,0 +1,35 @@
+# Tested Python 3.12 / Linux dependency constraints for this fixture build.
+# Install: python3 -m pip install -c constraints.txt -e '.[test]'
+absl-py==2.5.0
+annotated-doc==0.0.4
+annotated-types==0.7.0
+anyio==4.13.0
+certifi==2026.4.22
+click==8.3.3
+etils==1.14.0
+fastapi==0.136.1
+fsspec==2026.7.0
+glfw==2.10.2
+h11==0.16.0
+httpcore==1.0.9
+httptools==0.7.1
+httpx==0.28.1
+idna==3.13
+imageio==2.37.4
+imageio-ffmpeg==0.6.0
+mujoco==3.13.0
+numpy==2.4.4
+pillow==12.2.0
+pydantic==2.13.3
+pydantic-core==2.46.3
+pyopengl==3.1.10
+python-dotenv==1.2.2
+pyyaml==6.0.3
+starlette==1.0.0
+typing-extensions==4.15.0
+typing-inspection==0.4.2
+uvicorn==0.46.0
+uvloop==0.22.1
+watchfiles==1.1.1
+websockets==16.0
+zipp==4.1.0
