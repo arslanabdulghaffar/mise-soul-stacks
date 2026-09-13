@@ -1,7 +1,5 @@
 # MISE · Robotics Console
 
-[![Reproducibility checks](https://github.com/arslanabdulghaffar/mise-soul-stacks/actions/workflows/ci.yml/badge.svg)](https://github.com/arslanabdulghaffar/mise-soul-stacks/actions/workflows/ci.yml)
-
 **Multi-modal Instruction to Skill Execution** — two simulated SO-101 arms,
 verified table-setting outcomes, bounded recovery, and inspectable run evidence.
 The updated requirements are in `MISE_project_description.docx`.
