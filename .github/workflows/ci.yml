@@ -66,12 +66,14 @@ jobs:
         run: |
           mkdir -p .smoke-artifacts
           docker logs mise-ci > .smoke-artifacts/container.log 2>&1 || true
+          cat .smoke-artifacts/container.log
           docker cp mise-ci:/app/artifacts/runs .smoke-artifacts/runs || true
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: docker-smoke-evidence
           path: .smoke-artifacts
+          include-hidden-files: true
           retention-days: 7
       - name: Stop container
         if: always()

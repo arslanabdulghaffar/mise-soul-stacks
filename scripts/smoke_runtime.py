@@ -16,6 +16,18 @@ from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 
 
+def wait_for_health(get_json, timeout: float):
+    """Allow the published container port to reset connections during startup."""
+    deadline = time.monotonic() + timeout
+    while True:
+        try:
+            return get_json('/api/health')
+        except (URLError, TimeoutError, ConnectionError):
+            if time.monotonic() >= deadline:
+                raise RuntimeError('Runtime did not become healthy before timeout') from None
+            time.sleep(1)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--url", default="http://127.0.0.1:8000")
@@ -38,15 +50,7 @@ def main() -> None:
     def get_json(path: str, payload: dict | None = None):
         return json.loads(request(path, payload)[0])
 
-    deadline = time.monotonic() + args.timeout
-    while True:
-        try:
-            health = get_json("/api/health")
-            break
-        except (URLError, TimeoutError):
-            if time.monotonic() >= deadline:
-                raise RuntimeError("Runtime did not become healthy before timeout") from None
-            time.sleep(1)
+    health = wait_for_health(get_json, args.timeout)
     assert health["status"] == "ok" and health["capabilities"]["live_control"], health
 
     body, content_type = request("/")
