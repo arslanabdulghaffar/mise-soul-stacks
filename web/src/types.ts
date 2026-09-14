@@ -1,13 +1,15 @@
 export type RunStatus = 'queued' | 'running' | 'paused' | 'completed' | 'stopped' | 'failed'
 export type Controller = 'contact_expert' | 'scripted_drawer'
 export type RecoveryMode = 'none' | 'blind_retry' | 'adaptive'
-export type Camera = 'top' | 'wrist_a' | 'wrist_b'
+export type Camera = 'top' | 'wrist_a' | 'wrist_b' | 'side_a' | 'side_b'
 export type View = 'Overview' | 'Live run' | 'Evidence' | 'Recovery' | 'Benchmarks' | 'Method'
 export type Hardware = { hostname?: string; cpu?: string; platform?: string; device?: string; [key: string]: unknown }
 export type PlanStep = { id: number; skill: string; arm: string; object: string; target?: string; needs?: number[] }
 export type Run = {
   id: string; status: RunStatus; command: string; seed: number; preset: string; controller: string;
   recovery_mode?: RecoveryMode;
+  view_quality?: string;
+  camera_configuration?: { width: number; height: number; camera_capture_hz: Partial<Record<Camera, number>> };
   created_at: string; hardware: Hardware; scope?: string; plan?: { steps: PlanStep[] }; config_hash: string;
   summary?: { full_task_success: boolean | null; scope?: string; reason?: string; wall_seconds?: number;
     assisted?: boolean; autonomous_contact_skill_success?: boolean; completed_steps?: number[]; fixture_success?: boolean; contact_skill_success?: boolean; task_success?: boolean; contact_evidence?: Record<string, unknown>; [key: string]: unknown } | null;

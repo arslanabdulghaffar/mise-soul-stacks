@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
-CAMERAS = ("top", "wrist_a", "wrist_b")
+from .presentation import CAMERAS
 TERMINAL = {"completed", "failed", "stopped"}
 FIXTURE_NOTE = (
     "Scripted integration fixture: a separate actuator drives the drawer directly. "

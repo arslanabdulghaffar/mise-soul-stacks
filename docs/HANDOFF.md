@@ -48,7 +48,8 @@ The three team suggestions are implemented:
 
 Current retained evidence:
 
-- 81 Python tests pass, including actual MuJoCo contact and evaluator regressions;
+- 83 Python tests pass locally, including actual MuJoCo contact, camera isolation,
+  and evaluator regressions;
 - the React/TypeScript production build passes;
 - fixed headless full-task suite: 10/10 seeds pass;
 - recorded camera suite: 10/10 predeclared seeds pass, zero forbidden collisions,
@@ -106,9 +107,11 @@ execution. One Xeon paired smoke passed for seed 40000 with two and four CPU thr
 this is not a ten-seed or target-hardware quality claim.
 
 The team name is now **SeoulStack**. Existing recordings retain their original labels
-and provenance. The repository URL is unchanged. Higher display resolution and
-additional side cameras were discussed as possible presentation improvements; they
-have not been implemented, and controller-camera calibration must stay isolated.
+and provenance. The repository URL is unchanged. Higher display resolution and two fixed side cameras are now implemented. The
+browser defaults to Balanced (384×384, overhead 6 FPS); Detail offers 720×720
+with lower capture rates. All five cameras are recorded. A separate display
+renderer keeps calibrated controller images unchanged. Camera FPS refers to
+simulation time; live wall speed depends on rendering hardware.
 
 Do not expand into pouring, accounts, voice control, another policy backend, or
 unvalidated parallel arm combinations before the required Intel evidence is secure.
@@ -183,5 +186,21 @@ passed all three jobs: 81 Python tests, frontend production build, and actual Do
 image build plus a live physical mug smoke run. The container run `bb10ee996c98`
 completed autonomously in 66.38 wall seconds and verified seven artifact checksums.
 The tested GitHub code revision is `701170de23a7226273cb3a2b6a7b02c5ce0c1426`
-(local equivalent `2d267d7`); subsequent handoff edits are documentation only.
+(local equivalent `2d267d7`). The newer camera presentation changes have separate
+local regression and browser checks; see the camera validation record below.
 Docker packaging validation is complete.
+
+## Camera presentation validation
+
+The presentation update passes 83 Python tests and the production frontend build.
+Browser checks passed for desktop/mobile layout, all five live MJPEG streams,
+archived-camera availability, and preserving the replay playhead when switching views.
+The original ten-seed archive still verifies all 70 artifact checksums.
+
+Balanced recording `20ab2f249d42` (seed 1001) completed all seven steps without
+assistance, with one spoon recovery and zero forbidden collisions. It retained five
+384×384 videos and nine verified artifact hashes. The original 138.3 simulation-second
+trajectory took 395.93 wall seconds to render on this development host.
+This is a single presentation regression, not a replacement ten-seed or Intel result.
+See `docs/evidence/camera-validation.json`. Detail-mode rendering at 720×720 also
+passes the camera/physics isolation test; no full Detail-mode episode is claimed.

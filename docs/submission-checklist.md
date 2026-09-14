@@ -30,6 +30,15 @@ fields must remain empty until the final Intel Core Ultra Series 2/3 run.
 | Technical quality and reproducibility (10) | Locked dependencies, Dockerfile, submodule, CI, tests, checksums, immutable run archives | Hosted image build and autonomous mug smoke passed; seven artifact hashes verified |
 | Innovation and demonstration (5) | Cost-selected bounded recovery, persistent failure memory, dependency graph, resource locks, safe parallel drawer/mug execution | Show the seed-1001 recovery timeline and matched 9/10 vs 10/10 comparison |
 
+## Camera presentation update
+
+New console runs offer Economy (256×256), Balanced (384×384), and Detail
+(720×720), with overhead, two wrist, and two fixed arm-side views. These are
+presentation settings; the calibrated controller observations stay unchanged.
+Capture rates and dimensions are retained in each run. Higher display quality is
+not evidence of improved task success or Intel performance. Historical recordings
+are preserved at their original resolution.
+
 ## Final Intel commands
 
 Use [the complete Intel validation procedure](intel-validation.md) for matching

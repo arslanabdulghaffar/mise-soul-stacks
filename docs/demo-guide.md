@@ -9,7 +9,10 @@ runtime and retained evidence; do not improvise a new controller during recordin
 2. Start the console with `make console`, or use `make replay` when presenting the
    retained evidence on a machine that cannot run MuJoCo smoothly.
 3. Record at 1080p with the browser near 1440 × 900. Keep the overhead camera visible
-   for the full task and use wrist-camera clips only as short supporting views.
+   for the full task and use arm-side/wrist clips as short supporting views. Select
+   Balanced for smoother recorded motion or Detail for 720×720 images. These settings
+   apply only to new runs; recording the browser at 1080p does not increase the
+   underlying camera resolution. Changing the replay angle keeps the playhead time.
 4. Select **Contact expert**, **Nominal scene**, **Monitored · cost selected**, seed
    **1001**, and enter `Set the table.`
 5. Do not pause or manually intervene in the primary run because the evidence will
@@ -43,7 +46,7 @@ A-to-B handoff.
 
 **1:35–2:05 — Recovery.** Use seed 1001 and show the failure and correction timeline.
 
-> When the spoon misses its goal, the visual verifier detects the failure immediately.
+> When the spoon misses its goal, the visual verifier detects the failure after the arm clears its view.
 > The supervisor ranks registered corrections by measured success and estimated cost,
 > continues from the current state, and records the outcome in persistent memory. The
 > arm clears the camera, regrips the spoon directly, verifies the correction, and parks

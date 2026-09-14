@@ -14,12 +14,7 @@ from typing import Any
 
 from .telemetry import CAMERAS, CONTACT_NOTE, FIXTURE_NOTE, FULL_NOTE, RunRecorder, utc_now
 from .types import Plan, SkillStep
-
-CAPTURE_HZ = 3
-FULL_CAPTURE_HZ = {"top": 2.0, "wrist_a": 0.25, "wrist_b": 0.25}
-# The task contract uses 180 seconds of simulator time. Software rendering may
-# run below real time, so this separate guard only catches a stalled worker.
-WORKER_WALL_GUARD_SECONDS = 300
+from .presentation import PresentationRenderer, capture_settings
 
 
 def _saved_plan(run: dict[str, Any]) -> Plan:
@@ -65,8 +60,10 @@ def run_worker(directory_string: str, display_queue: Any, controls: Any) -> None
     latest_images: dict[str, bytes] = {}
     latest_camera_timestamps: dict[str, str] = {}
     index = 0
-    capture_hz = {camera: float(CAPTURE_HZ) for camera in CAMERAS}
     plan = None
+    presentation = None
+    settings = capture_settings(recorder.run.get("view_quality", "economy"))
+    capture_hz = settings["camera_capture_hz"]
     try:
         plan = _saved_plan(recorder.run)
         if contact_run:
@@ -74,7 +71,8 @@ def run_worker(directory_string: str, display_queue: Any, controls: Any) -> None
             full_run = is_full_plan(plan)
             if full_run:
                 scope, disclosure = "full_task", FULL_NOTE
-        capture_hz = dict(FULL_CAPTURE_HZ) if full_run else {camera: float(CAPTURE_HZ) for camera in CAMERAS}
+        capture_hz = settings["camera_capture_hz"]
+        recorder.run["camera_configuration"] = settings
         recorder.run.update(status="running", phase="initializing")
         recorder.event("run_started", disclosure=disclosure)
         if contact_run:
@@ -117,6 +115,7 @@ def run_worker(directory_string: str, display_queue: Any, controls: Any) -> None
         else:
             expert = DrawerExpert(env)
             fixture_steps = round(expert.duration_seconds * env.control_hz)
+        presentation = PresentationRenderer(env, settings["width"])
         evaluator = TaskEvaluator(env.model)
         for camera in CAMERAS:
             writers[camera] = iio.get_writer(str(directory / f"{camera}.mp4"), fps=capture_hz[camera],
@@ -157,7 +156,7 @@ def run_worker(directory_string: str, display_queue: Any, controls: Any) -> None
             recorder.run["last_observation_at"] = captured_at
             recorder.run.setdefault("camera_observed_at", {})
             for camera in cameras:
-                frame = env.render(camera)
+                frame = presentation.render(camera)
                 writers[camera].append_data(frame)
                 encoded = io.BytesIO()
                 Image.fromarray(frame).save(encoded, format="JPEG", quality=85)
@@ -186,8 +185,8 @@ def run_worker(directory_string: str, display_queue: Any, controls: Any) -> None
         update_context()
         capture()
         while True:
-            if time.monotonic() - started > WORKER_WALL_GUARD_SECONDS:
-                status, reason = "failed", f"{WORKER_WALL_GUARD_SECONDS} second worker wall-clock guard exceeded."
+            if time.monotonic() - started > settings["wall_guard_s"]:
+                status, reason = "failed", f"{settings['wall_guard_s']} second worker wall-clock guard exceeded."
                 recorder.event("episode_timeout", float(env.data.time), reason=reason)
                 break
             if controller is not None:
@@ -287,7 +286,11 @@ def run_worker(directory_string: str, display_queue: Any, controls: Any) -> None
             recorder.run["artifacts"]["video"] = recorder.run["artifacts"].get("video_top")
         if env is not None:
             try:
-                env.close()
+                try:
+                    if presentation is not None:
+                        presentation.close()
+                finally:
+                    env.close()
             except Exception as exc:
                 status, reason = "failed", f"Environment cleanup failed ({type(exc).__name__}: {exc})."
                 recorder.event("worker_error", recorder.run.get("simulation_time", 0), reason=reason)
@@ -300,6 +303,8 @@ def run_worker(directory_string: str, display_queue: Any, controls: Any) -> None
                   "policy_latency_ms": None, "capture_hz": capture_hz["top"],
                   "frames_per_camera": frame_count["top"],
                   "camera_capture_hz": capture_hz, "camera_frame_counts": frame_count,
+                  "camera_width": settings["width"], "camera_height": settings["height"],
+                  "view_quality": settings["profile"],
                   "scope": f"{scope}_with_cameras_and_recording"}
         with (directory / "timing.csv").open("w", newline="") as stream:
             writer = csv.DictWriter(stream, fieldnames=list(timing))

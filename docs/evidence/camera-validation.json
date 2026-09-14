@@ -1,0 +1,126 @@
+{
+  "scope": "camera_presentation_regression",
+  "run_id": "20ab2f249d42",
+  "seed": 1001,
+  "command": "Set the table.",
+  "status": "completed",
+  "created_at": "2026-09-14T19:03:19.658479+00:00",
+  "finished_at": "2026-09-14T19:09:56.779490+00:00",
+  "hardware": {
+    "cpu": "Intel(R) Xeon(R) Platinum 8480+",
+    "device": "CPU",
+    "hostname": "hf139b77ae3e24a34f021c7a91eb25cfa-6007",
+    "inference_device": null,
+    "intel_target_verified": false,
+    "platform": "Linux-6.8.0-71-generic-x86_64-with-glibc2.39",
+    "precision": null,
+    "python": "3.12.3",
+    "versions": {
+      "fastapi": "0.136.1",
+      "mujoco": "3.13.0",
+      "numpy": "2.4.4",
+      "openvino": "2026.0.0"
+    }
+  },
+  "configuration": {
+    "camera_capture_hz": {
+      "side_a": 3.0,
+      "side_b": 3.0,
+      "top": 6.0,
+      "wrist_a": 2.0,
+      "wrist_b": 2.0
+    },
+    "capture_every": {
+      "side_a": 10,
+      "side_b": 10,
+      "top": 5,
+      "wrist_a": 15,
+      "wrist_b": 15
+    },
+    "controller_camera_size": 256,
+    "height": 384,
+    "interpolated": false,
+    "profile": "balanced",
+    "timebase": "simulation_seconds",
+    "wall_guard_s": 900,
+    "width": 384
+  },
+  "full_task_success": true,
+  "autonomous_full_task_success": true,
+  "collision_count": 0,
+  "recovery_attempts": 1,
+  "simulation_seconds": 138.29999999993225,
+  "wall_seconds": 395.932733962778,
+  "verified_artifact_count": 9,
+  "videos": {
+    "side_a": {
+      "width": 384,
+      "height": 384,
+      "fps": 3.0,
+      "duration_seconds": 138.32999999999998,
+      "sha256": "af966ccbe5bb68c7acfcf5b5d1ee564c1d75edd53fddfe61e677f889b49a6960"
+    },
+    "side_b": {
+      "width": 384,
+      "height": 384,
+      "fps": 3.0,
+      "duration_seconds": 138.32999999999998,
+      "sha256": "b18efb35debe9b7a8ee3ec5e9ca8f97a25fa78cf17d8fd48a61f6c563b15f4c9"
+    },
+    "top": {
+      "width": 384,
+      "height": 384,
+      "fps": 6.0,
+      "duration_seconds": 138.0,
+      "sha256": "d041c8f5fa90c109277c7c53e197f6c1d5372193119444d52c2ad6dccfef456f"
+    },
+    "wrist_a": {
+      "width": 384,
+      "height": 384,
+      "fps": 2.0,
+      "duration_seconds": 138.5,
+      "sha256": "49a66ca955a279f646173aeaf3267bea164673f2dfd7d860ed7eb18d75f63860"
+    },
+    "wrist_b": {
+      "width": 384,
+      "height": 384,
+      "fps": 2.0,
+      "duration_seconds": 138.5,
+      "sha256": "bd08bd675628aa762bdd00cdd5288cd29a4b5c86d4f8d50714b5de006d784324"
+    }
+  },
+  "sources_sha256": {
+    "assets/generated/mise_bimanual.xml": "7120e37bdbd5798dd37b83e4a7c9f99d2cb73b32f328f1ff106f19fef403e720",
+    "assets/generated/mise_contact.xml": "80e2d065123559cc9a6ca7b3711618431c36e1035d4c45ad45840272595be324",
+    "assets/generated/mise_drawer_contact.xml": "d3800639b3f394d6581e44d7f7c16fd8b07e85efd7913442b6220e08e10418c4",
+    "assets/generated/mise_full_task.xml": "311bc6e15851ac025edbf17e6ff4cb38923126ba95449822acb743fe38622a91",
+    "configs/evaluator.yaml": "07ba360af7d7241ea31311bdf5e08a880f07aa273ed373b100e08bf03cb4da95",
+    "configs/full_evaluator.yaml": "1e285348fed15448a7a198da37e3b2690f0b21e2592325a57c91fe6f081de628",
+    "configs/scene_randomization.yaml": "1b45c60c41af24a3919129ef5d71ae14c363f6f76b09dbb36900bb31c499d327",
+    "scripts/build_contact_scene.py": "6b95b15d51cc8e42ca45a97d8d877421558553f35ae516efc45f1ea1099b982b",
+    "scripts/build_drawer_scene.py": "a46283f522be04b6f3bafabb439d76d5aa14e8193f40567d1b17c8a64ec111fe",
+    "scripts/build_full_scene.py": "16bad244f5d39c6783419e95e5d22eeec2dd8c3070e3115b46e75c99bf25d75c",
+    "scripts/build_scene.py": "a1f7aa60b29ce3717f4f6956cd7f0d2b83798ce29ca19220c588be43a1ab813d",
+    "src/mise/contact_evaluation.py": "349b598263e270c3152a5f9e8c4780fcd4d8e2e9126b071000c2827a9416f86c",
+    "src/mise/contact_vision.py": "2a0b39e3a070ea22c3482531d31aeba02894ee88676f0f838ee331a3aad93c04",
+    "src/mise/drawer_evaluation.py": "b90770b9e349dc3b8e83ed6f8b38b004be2c72956b2a737182e04495b37c8442",
+    "src/mise/drawer_skill.py": "808c5179456854366d7c93cfb3f977461be0c7c4f9c63cd29312c041de35ed40",
+    "src/mise/evaluation.py": "58bce5f644d24eaedf93ea3753410d3439c8ada47c6b5c00088abe39a7bd1d4b",
+    "src/mise/full_task.py": "afab14f1c05d411a8ea022595cf35500563710c16d0aaca068106c29716dca98",
+    "src/mise/full_vision.py": "487ba9010e29e5eb5945c4cacaea51765866b761cde7f0de35b0f8c7453631b7",
+    "src/mise/kinematics.py": "92a3836d035061ccf2820f1c502d9cda84c19e00a477d1d8fbee22721f3d7945",
+    "src/mise/manipulation.py": "263b9ab1067d448c1a83e77ec926f713abaad8f5c3a7cc27b198ee4f9c09f3e1",
+    "src/mise/planner.py": "dc667ad21d525ec19ac00355e7f594f50d48b2110547b1279102fe16567584f2",
+    "src/mise/presentation.py": "77d29647b91575602374838bdfe0f4dc2945b70df720343843234a98f7ec1c93",
+    "src/mise/randomization.py": "f23bc463779887f7fa064bb8cb72fad3c0b41d69c3626f1aae77f724bd704985",
+    "src/mise/recovery_memory.py": "7a9f47ca8457c26aeee75a9b589071feea23a01cbf96287bf2a938de3641f25b",
+    "src/mise/scene_io.py": "1a723be2edc42613e8bc7f81c6c10c287fd1b9dade9fd9e45e8325acf21bd082",
+    "src/mise/scripted.py": "ef4b2008921dd0bf509e38dddc92044a3c96a24c615011fbb0410c53ae445d11",
+    "src/mise/sim.py": "c0a3fcfade98f0081811207104d6db3ed636a6244a8e761d409640aab07486d3",
+    "src/mise/skills.py": "ff4372a1d1048eb6d6d9e971b0150c158c8a3ab862d6dac88cd400278c73d90e",
+    "src/mise/supervisor.py": "65705131c47380ac7f80885c6fcc99b674e6990171bcc5e94b3906c189913d34",
+    "src/mise/worker.py": "839b8736bf0e2100385222076497acb2c742ef77933b3685b77e17840e9e3ae4",
+    "vendor/SO-ARM100/Simulation/SO101/so101_new_calib.xml": "d75253eb568e8a7214db9c631ab7bed4217f608a26f7276ebe9a7636cac82580"
+  },
+  "note": "One presentation regression on development hardware; not a new ten-seed suite or Intel target validation. Original run files retained locally under artifacts/camera-validation/20ab2f249d42."
+}

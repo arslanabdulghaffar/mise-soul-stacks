@@ -32,6 +32,7 @@ class RunRequest(BaseModel):
     seed: int = Field(default=1001, ge=0, le=2**31 - 1, strict=True)
     preset: Literal["nominal", "low_friction", "displaced_objects"] = "nominal"
     controller: Literal["contact_expert", "scripted_drawer"] = "contact_expert"
+    view_quality: Literal["economy", "balanced", "detail"] = "economy"
     recovery_mode: Literal["none", "blind_retry", "adaptive"] = "adaptive"
 
 
@@ -168,7 +169,7 @@ class RunManager:
             sources = {str(path.relative_to(ROOT)): file_hash(path)
                        for path in [ROOT / "configs/scene_randomization.yaml", ROOT / "configs/evaluator.yaml",
                                     ROOT / "assets/generated/mise_bimanual.xml", ROOT / "src/mise/scripted.py",
-                                    ROOT / "src/mise/worker.py", ROOT / "src/mise/evaluation.py",
+                                    ROOT / "src/mise/worker.py", ROOT / "src/mise/presentation.py", ROOT / "src/mise/evaluation.py",
                                     ROOT / "src/mise/randomization.py", ROOT / "src/mise/sim.py",
                                     ROOT / "src/mise/manipulation.py", ROOT / "src/mise/planner.py",
                                     ROOT / "src/mise/kinematics.py", ROOT / "src/mise/contact_vision.py",
@@ -362,7 +363,9 @@ def create_app(*, runs_dir: Path | None = None, read_only: bool = False,
                 camera_timestamp = item.get("camera_timestamps", {}).get(camera, item["timestamp"]) if item else None
                 if item and camera_timestamp != last:
                     last = camera_timestamp
-                    jpeg = item["images"][camera]
+                    jpeg = item["images"].get(camera)
+                    if jpeg is None:
+                        return
                     header = (f"--frame\r\nContent-Type: image/jpeg\r\nContent-Length: {len(jpeg)}\r\n"
                               f"X-Timestamp: {last}\r\nX-Simulation-Time: {item['simulation_time']}\r\n\r\n")
                     yield header.encode() + jpeg + b"\r\n"

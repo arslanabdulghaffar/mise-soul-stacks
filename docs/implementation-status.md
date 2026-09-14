@@ -225,3 +225,16 @@ Docker image smoke test in run `34852939210`. Container episode `bb10ee996c98`
 completed an autonomous physical mug placement in 66.38 wall seconds with seven valid
 artifact checksums. Docker packaging is verified; final target-hardware testing
 remains separate.
+
+## Camera presentation update — 2026-09-14
+
+SeoulStack's console now records five display views: overhead, both wrists, and two
+fixed side cameras. The selectable 256/384/720 square-pixel presets retain actual
+capture rates in the run metadata. Display rendering leaves controller images and
+physics unchanged; all 83 tests pass. Production UI build and browser live/replay
+checks pass. The new Balanced seed-1001 full run passes all seven steps with one
+recovery, no assistance, and zero collisions (138.3 simulation seconds, 395.93 wall
+seconds). All nine evidence files verify; details are in
+`docs/evidence/camera-validation.json`. Original ten-seed evidence remains unchanged.
+Target Intel validation, narrated final capture, reliable learned full-task execution,
+and broader shape/lighting/background generalization remain unproven.

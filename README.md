@@ -47,10 +47,20 @@ then forward port **8000** in the IDE’s **Ports** panel and open its forwarded
 The workspace’s `127.0.0.1` address is local to that workspace, not your laptop.
 
 Open **http://127.0.0.1:8000**. Start `Set the table.` with a selected
-seed. Switch overhead/wrist cameras, pause/resume at simulation step boundaries,
+seed. Switch overhead, wrist, and arm-side cameras, pause/resume at simulation step boundaries,
 or stop the attempt. Completed and failed runs are retained under `artifacts/runs`.
 Pauses mark a run assisted. Operator actions appear in the trace. `constraints.txt`
 pins the tested Python environment; `web/package-lock.json` pins frontend dependencies.
+
+Camera quality applies to the next run: **Balanced** (the browser default) captures
+384×384 with overhead at 6 FPS, each wrist at 2 FPS, and each side at 3 FPS.
+**Detail** captures 720×720 at 3 FPS overhead and 1 FPS on the other views;
+**Economy** reduces rendering load with 256×256 frames. These are real captured
+frames per simulation second, not promised live wall-clock frame rates. Software
+rendering can take longer than the simulated episode. All five views are recorded
+and checksummed; switching replay cameras retains the playback position. Older
+recordings keep their original resolution and expose only their recorded views.
+Display rendering is separate from the unchanged 256×256 controller observations.
 
 For frontend development, run `python3 -m mise.cli serve` and, in another terminal,
 `cd web && npm run dev`; Vite proxies the API and WebSocket to port 8000. Rebuild

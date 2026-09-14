@@ -131,6 +131,12 @@ class ServerTests(unittest.TestCase):
         self.assertEqual(events[0]["config_hash"], run["config_hash"])
         self.assertEqual(events[0]["monitor"]["confidence"], None)
 
+    def test_camera_quality_is_validated_and_bound_to_run(self):
+        self.assertEqual(self.client.post("/api/runs", json={"view_quality": "unbounded"}).status_code, 422)
+        run = self.create(view_quality="detail")
+        self.assertEqual(run["view_quality"], "detail")
+        self.assertIn("src/mise/presentation.py", run["sources_sha256"])
+
     def test_controls_unknown_runs_and_artifacts(self):
         run = self.create()
         base = f"/api/runs/{run['id']}"
@@ -254,7 +260,9 @@ class ServerTests(unittest.TestCase):
                 patch("mise.manipulation.ManipulationController", return_value=controller), \
                 patch("mise.contact_evaluation.ContactSkillEvaluator") as contact_verifier, \
                 patch("mise.evaluation.TaskEvaluator") as evaluator, \
+                patch("mise.worker.PresentationRenderer") as display_renderer, \
                 patch("imageio.v2.get_writer") as videos, patch("mise.worker.time.sleep"):
+            display_renderer.return_value.render.side_effect = env.render
             evaluator.return_value.update.return_value = snapshot
             contact_verifier.return_value.success = physics_success
             contact_verifier.return_value.evidence = {"grasp_observed": physics_success, "lift_observed": physics_success}
@@ -262,7 +270,7 @@ class ServerTests(unittest.TestCase):
         env.set_drawer.assert_not_called()
         self.assertEqual(env.step.call_count, 1, "No stale action may execute after the controller finishes")
         np.testing.assert_array_equal(env.step.call_args.args[0], targets)
-        self.assertEqual(videos.call_count, 3)
+        self.assertEqual(videos.call_count, 5)
         recorded = self.client.get(f"/api/runs/{run['id']}").json()
         contact_verifier.return_value.update.assert_called_once_with(env.data)
         actions = [event for event in read_trace(self.root / run["id"]) if event["type"] == "action"]
