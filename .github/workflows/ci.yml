@@ -47,3 +47,32 @@ jobs:
       - name: Build production console
         working-directory: web
         run: npm run build
+
+  docker:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Build image from clean checkout
+        run: docker build --tag mise:ci .
+      - name: Start packaged console and simulation worker
+        run: docker run --detach --init --name mise-ci --publish 127.0.0.1:8000:8000 --shm-size 512m mise:ci
+      - name: Verify frontend, live API, physical contact and recorded artifacts
+        run: python3 scripts/smoke_runtime.py --url http://127.0.0.1:8000 --timeout 600
+      - name: Retain container logs and run evidence
+        if: always()
+        run: |
+          mkdir -p .smoke-artifacts
+          docker logs mise-ci > .smoke-artifacts/container.log 2>&1 || true
+          docker cp mise-ci:/app/artifacts/runs .smoke-artifacts/runs || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: docker-smoke-evidence
+          path: .smoke-artifacts
+          retention-days: 7
+      - name: Stop container
+        if: always()
+        run: docker rm --force mise-ci || true

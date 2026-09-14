@@ -27,10 +27,11 @@ COPY configs ./configs
 COPY eval ./eval
 COPY tests ./tests
 COPY Makefile ./
-RUN python -m pip install --no-cache-dir --upgrade pip && python -m pip install --no-cache-dir -c constraints.txt '.[test]'
+# Runtime assets and evidence hashes use the source tree relative to __file__.
+# Keep imports anchored to /app/src instead of copying the package to site-packages.
+RUN python -m pip install --no-cache-dir --upgrade pip && python -m pip install --no-cache-dir -c constraints.txt -e '.[test]'
 
-# The SO-101 model is a submodule, so clone with --recurse-submodules or bind
-# mount vendor/SO-ARM100 before running this image.
+# The SO-101 model is required at build time: clone with --recurse-submodules.
 COPY vendor/SO-ARM100 ./vendor/SO-ARM100
 RUN python scripts/build_scene.py
 COPY --from=frontend /web/dist ./web/dist

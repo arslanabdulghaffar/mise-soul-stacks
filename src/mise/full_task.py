@@ -56,6 +56,23 @@ def validate_full_plan(plan) -> None:
     validate_plan_graph(plan)
     if not is_full_plan(plan):
         raise ValueError("The complete-task controller requires the registered seven-step table-setting plan.")
+    # This specialized controller follows the signature order, with one
+    # registered exception: an independent mug runs alongside the drawer.
+    # A valid DAG can still request a different order that it cannot execute.
+    parallel_mug = plan.steps[-1] if not plan.steps[-1].needs else None
+    completed: set[int] = set()
+    for step in plan.steps:
+        if step.id in completed:
+            continue
+        unmet = set(step.needs) - completed
+        if unmet:
+            raise ValueError(
+                f"The complete-task controller cannot honor step {step.id} dependencies "
+                f"{sorted(unmet)} in its registered execution order."
+            )
+        completed.add(step.id)
+        if step.skill == "open_drawer" and parallel_mug is not None:
+            completed.add(parallel_mug.id)
 
 
 def create_full_env(seed: int = 0) -> BimanualTableEnv:
@@ -468,7 +485,8 @@ class FullTaskController:
         recoveries = self.evidence.get("recoveries", [])
         if recoveries:
             recoveries[-1].update(outcome=outcome, duration_s=duration)
-        self.events.append({"type": f"recovery_{'succeeded' if outcome == 'success' else 'failed'}",
+        event_outcome = {"success": "succeeded", "failure": "failed", "unknown": "unverified"}[outcome]
+        self.events.append({"type": f"recovery_{event_outcome}",
                             "candidate": candidate.name, "attempt": self.recovery_attempts,
                             "duration_s": duration, "memory_updated": bool(self.recovery_memory and self.memory_write)})
         self._pending_recovery = None
@@ -609,6 +627,10 @@ class FullTaskController:
                 self._tick = 0
             return self._motion.action.copy()
         except ValueError as exc:
+            # A timeout or unavailable visual verification does not establish
+            # whether the recovery placed the spoon. Retain the interrupted
+            # attempt without teaching the cost selector an unobserved outcome.
+            self._finish_pending_recovery("unknown")
             self.failed_reason, self.phase = str(exc), "failed"
             self.events.append({"type": "skill_failed", "reason": str(exc)})
             return self._motion.action.copy()

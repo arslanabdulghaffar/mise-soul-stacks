@@ -27,14 +27,20 @@ class TorchContactPolicy:
 
 
 class OpenVINOContactPolicy:
-    def __init__(self, directory: str | Path, *, device: str = 'CPU'):
+    def __init__(self, directory: str | Path, *, device: str = 'CPU',
+                 precision: str = 'f32', threads: int = 2):
         import openvino as ov
+        from .openvino_config import bind_inputs, compile_config, resolved_properties
         directory = Path(directory)
         self.metadata = json.loads((directory / 'model_manifest.json').read_text())
         self.statistics = self.metadata['statistics']
         core = ov.Core()
-        self.compiled = core.compile_model(str(directory / 'contact_act.xml'), device,
-                                           {'INFERENCE_PRECISION_HINT': 'f32', 'INFERENCE_NUM_THREADS': 2})
+        model = core.read_model(str(directory / 'contact_act.xml'))
+        bind_inputs(model, self.metadata)
+        config = compile_config(device, precision, threads)
+        self.compiled = core.compile_model(model, device, config)
+        self.runtime_config = dict(device=device, precision=precision, compile_config=config,
+                                   resolved_properties=resolved_properties(self.compiled))
         self.output = self.compiled.output(0)
 
     def predict_chunk(self, observation):

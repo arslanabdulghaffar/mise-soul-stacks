@@ -2,8 +2,8 @@
 
 The script deliberately separates a measured OpenVINO result from Intel Core Ultra
 verification. Passing ``--intel-core-ultra-series`` records the declared target
-series, but verification is true only when the host CPU also identifies itself as
-an Intel Core Ultra processor.
+series, but verification is true only when the host's Intel Core Ultra SKU also
+identifies that same Series 2/3 generation.
 """
 
 from __future__ import annotations
@@ -19,6 +19,10 @@ import time
 from typing import Any
 
 import numpy as np
+
+from mise.learning.openvino_config import (
+    bind_inputs, compile_config, detected_core_ultra_series, resolved_properties,
+)
 
 
 def file_sha256(path: Path) -> str:
@@ -71,6 +75,7 @@ def benchmark(
     iterations: int,
     seed: int,
     declared_series: int | None,
+    threads: int = 2,
 ) -> dict[str, Any]:
     try:
         import openvino as ov
@@ -95,22 +100,12 @@ def benchmark(
     manifest_path = model_path.with_name("model_manifest.json")
     try:
         model_manifest = json.loads(manifest_path.read_text())
-        image_size = int(model_manifest["config"]["image_size"])
+        bind_inputs(model, model_manifest)
     except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
         raise ValueError(
             f"A valid {manifest_path.name} with config.image_size is required to bind the exported model inputs."
         ) from exc
-    expected_shapes = {
-        "images": [1, 3, 3, image_size, image_size],
-        "state": [1, 12],
-    }
-    unknown_inputs = [port.any_name for port in model.inputs if port.any_name not in expected_shapes]
-    if unknown_inputs:
-        raise ValueError(f"Unsupported model inputs: {unknown_inputs}; expected images and state")
-    model.reshape({port.any_name: expected_shapes[port.any_name] for port in model.inputs})
-    config: dict[str, Any] = {"PERFORMANCE_HINT": "LATENCY"}
-    if precision != "auto":
-        config["INFERENCE_PRECISION_HINT"] = precision
+    config = compile_config(device, precision, threads)
     compile_started = time.perf_counter()
     compiled = core.compile_model(model, device, config)
     compile_ms = (time.perf_counter() - compile_started) * 1000
@@ -137,9 +132,8 @@ def benchmark(
     measured_seconds = time.perf_counter() - measured_started
 
     hardware = inventory()
-    cpu = hardware["cpu"].lower()
-    host_matches_target = "intel" in cpu and "core" in cpu and "ultra" in cpu
-    target_verified = bool(declared_series in (2, 3) and host_matches_target)
+    detected_series = detected_core_ultra_series(hardware['cpu'])
+    target_verified = bool(declared_series in (2, 3) and detected_series == declared_series)
     bin_path = model_path.with_suffix(".bin")
     try:
         device_name = str(core.get_property(device, "FULL_DEVICE_NAME"))
@@ -152,11 +146,15 @@ def benchmark(
         "measured_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "hardware": hardware,
         "declared_intel_core_ultra_series": declared_series,
+        "detected_intel_core_ultra_series": detected_series,
         "intel_core_ultra_series_2_or_3_verified": target_verified,
         "device": device,
         "device_name": device_name,
         "available_devices": available,
         "precision": precision,
+        "compile_config": config,
+        "resolved_properties": resolved_properties(compiled),
+        "input_seed": seed,
         "openvino_version": ov.__version__,
         "model_path": str(model_path),
         "model_hash": file_sha256(model_path),
@@ -215,7 +213,8 @@ def parse_args() -> argparse.Namespace:
         default=Path("artifacts/models/contact_act_final/openvino/contact_act.xml"),
     )
     parser.add_argument("--device", default="CPU", help="OpenVINO device, for example CPU, GPU, or NPU")
-    parser.add_argument("--precision", choices=["auto", "f32", "f16"], default="f32")
+    parser.add_argument("--precision", choices=["auto", "f32", "f16", "bf16"], default="f32")
+    parser.add_argument("--threads", type=int, default=2, help="CPU inference threads; ignored by other devices")
     parser.add_argument("--warmup", type=int, default=10)
     parser.add_argument("--iterations", type=int, default=100)
     parser.add_argument("--seed", type=int, default=1701)
@@ -223,8 +222,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--json-output", type=Path, default=Path("artifacts/benchmarks/latest.json"))
     parser.add_argument("--csv-output", type=Path, default=Path("artifacts/benchmarks/latest.csv"))
     args = parser.parse_args()
-    if args.warmup < 0 or args.iterations < 1:
-        parser.error("warmup must be nonnegative and iterations must be positive")
+    if args.warmup < 0 or args.iterations < 1 or args.threads < 1:
+        parser.error("warmup must be nonnegative; iterations and threads must be positive")
     return args
 
 
@@ -239,6 +238,7 @@ def main() -> None:
             iterations=args.iterations,
             seed=args.seed,
             declared_series=args.intel_core_ultra_series,
+            threads=args.threads,
         )
     except (FileNotFoundError, RuntimeError, ValueError) as exc:
         raise SystemExit(str(exc)) from exc

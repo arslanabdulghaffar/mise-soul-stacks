@@ -1,5 +1,7 @@
 # MISE · Robotics Console
 
+Built by **SeoulStack**. The existing repository URL remains `mise-soul-stacks`.
+
 **Multi-modal Instruction to Skill Execution** — two simulated SO-101 arms,
 verified table-setting outcomes, bounded recovery, and inspectable run evidence.
 The updated requirements are in `MISE_project_description.docx`.
@@ -174,7 +176,8 @@ The current ACT experiment is retained as research evidence but is not promoted 
 full-task controller because it did not pass closed-loop validation.
 
 The team's recovery-cost, adaptive-memory and dependency-graph suggestions are
-integrated. Physical concurrency is enabled only for the validated drawer/mug pair;
+integrated. Physical concurrency covers the validated drawer/mug pair and Arm B's
+post-verification parking during Arm A's fork step;
 other combinations remain resource-locked. See the
 [implementation status](docs/implementation-status.md).
 
@@ -183,6 +186,8 @@ The required deliverables and final Intel commands are tracked in the
 machine-readable JSON and CSV under `artifacts/benchmarks`; the console reads those
 files on refresh. It only marks Intel Core Ultra verification when host identity and
 an explicit Series 2/3 declaration agree.
+The [Intel validation guide](docs/intel-validation.md) provides matching benchmark
+and closed-loop commands plus a checker for retained reference/candidate evidence.
 
 To continue from another Codex or ChatGPT account, start with the authoritative
 [project handoff](docs/HANDOFF.md); account-level chat history is not required.
@@ -209,12 +214,13 @@ simulation time with zero forbidden collisions, one persisted recovery outcome,
 `artifacts/evaluations/full_task_fixed_seeds.json` and the adjacent CSV. This small
 suite validates the declared envelope; it does not establish broad generalization.
 
-A matched comparison now runs the same ten seeds, scene, task, time budget, and
+A retained earlier matched comparison ran the same ten seeds, scene, task, time budget, and
 visual verifier in three modes. No recovery passed **9/10**; a blind repeat also
 passed **9/10**; monitored cost-selected recovery passed **10/10** with one physical
 regrasp and no reset. The raw JSON and CSV are
-`artifacts/evaluations/recovery_matched_seeds.*`. Run `make eval-recovery` to
-reproduce the comparison.
+`artifacts/evaluations/recovery_matched_seeds.*`. These counts belong to that recorded
+controller revision; the current optimized ten-seed suite uses eight recoveries and
+passes 10/10. Run `make eval-recovery` to measure the current revision separately.
 
 The final camera recording suite also passed **10/10** without selective reruns.
 Its compact GitHub preview is 1 minute 5 seconds; the full 3 minute 46 second 24 FPS presentation copy,

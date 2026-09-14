@@ -1,4 +1,4 @@
-# Soul Stacks final demonstration guide
+# SeoulStack final demonstration guide
 
 This is the recording plan for the MISE hackathon submission. Use the validated
 runtime and retained evidence; do not improvise a new controller during recording.
@@ -21,7 +21,7 @@ runtime and retained evidence; do not improvise a new controller during recordin
 
 **0:00–0:20 — Problem and instruction.** Show the Live run page and command box.
 
-> We are Soul Stacks. MISE converts a natural-language goal into safe, observable
+> We are SeoulStack. MISE converts a natural-language goal into safe, observable
 > bimanual manipulation. Here the user asks two simulated SO-101 arms to set the
 > table in one shared MuJoCo scene.
 

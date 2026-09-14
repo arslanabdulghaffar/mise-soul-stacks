@@ -1,4 +1,4 @@
-# Soul Stacks project handoff
+# SeoulStack project handoff
 
 Use this document when continuing the project in a new Codex or ChatGPT account.
 The repository is the durable source of context; chat history and account memory are
@@ -6,7 +6,7 @@ not expected to transfer.
 
 ## Project identity
 
-- Team: **Soul Stacks**
+- Team: **SeoulStack**
 - Project: **MISE — Multi-modal Instruction to Skill Execution**
 - Repository: <https://github.com/arslanabdulghaffar/mise-soul-stacks>
 - Challenge: Intel Physical AI Online Challenge, dinner-table option
@@ -48,7 +48,7 @@ The three team suggestions are implemented:
 
 Current retained evidence:
 
-- 66 Python tests pass, including actual MuJoCo contact and evaluator regressions;
+- 79 Python tests pass, including actual MuJoCo contact and evaluator regressions;
 - the React/TypeScript production build passes;
 - fixed headless full-task suite: 10/10 seeds pass;
 - recorded camera suite: 10/10 predeclared seeds pass, zero forbidden collisions,
@@ -85,12 +85,32 @@ Intel category and has not yet been performed.
    correct `--intel-core-ultra-series` value.
 2. Run reference and proposed optimized configurations on identical frozen seeds.
    Only mark quality preservation verified after reviewing paired task outcomes.
-3. Verify the Docker image on a clean machine with submodules initialized.
+3. Check the hosted Docker build/smoke CI result for the published revision. It exercises the
+   compiled frontend, actual MuJoCo contact task, and seven artifact hashes.
 4. Record the narrated pitch using `docs/demo-guide.md`; its script and shot list are
    prepared, but the Intel segment must wait for measured target results.
 5. A public interactive runtime is optional. GitHub Pages cannot host FastAPI or
    MuJoCo; any public site must be a labeled read-only replay unless backed by a
    suitable server.
+
+The user now has a Core Ultra 7 **155H**, which Intel identifies as **Series 1**.
+It is useful for development measurements, but the PDF's final demonstration
+requirement specifies Series 2/3. Do not label this laptop as compliant without an
+organizer-approved exception. Hardware work is deferred until the local work is
+finished, as requested. Use `docs/intel-validation.md` for the paired procedure.
+
+Latest code audit fixes: full-task validation rejects unsupported dependency orders;
+aborted/occluded recoveries retain unknown outcomes without influencing memory;
+video `--check-only` verifies all original worker artifact hashes without overwriting
+the compilation manifest; and the Docker image preserves source-relative runtime
+assets. Shared OpenVINO compile settings now connect benchmark and actual learned
+execution. One Xeon paired smoke passed for seed 40000 with two and four CPU threads;
+this is not a ten-seed or target-hardware quality claim.
+
+The team name is now **SeoulStack**. Existing recordings retain their original labels
+and provenance. The repository URL is unchanged. Higher display resolution and
+additional side cameras were discussed as possible presentation improvements; they
+have not been implemented, and controller-camera calibration must stay isolated.
 
 Do not expand into pouring, accounts, voice control, another policy backend, or
 unvalidated parallel arm combinations before the required Intel evidence is secure.
@@ -144,7 +164,7 @@ The central implementation paths are:
 
 ## Copy/paste prompt for a new Codex account
 
-> Continue the Soul Stacks MISE project from the repository
+> Continue the SeoulStack MISE project from the repository
 > https://github.com/arslanabdulghaffar/mise-soul-stacks. First clone/open the
 > repository with submodules and read README.md, docs/HANDOFF.md,
 > docs/implementation-status.md, docs/submission-checklist.md, and the challenge PDF.

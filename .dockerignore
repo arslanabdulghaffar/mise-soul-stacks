@@ -8,3 +8,4 @@ data
 **/*.egg-info
 *.docx
 .venv
+.smoke-artifacts

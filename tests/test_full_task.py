@@ -1,15 +1,85 @@
 import unittest
 import tempfile
+from dataclasses import replace
 from pathlib import Path
+from unittest.mock import patch
 
 import numpy as np
 
-from mise.full_task import FullTaskController, FullTaskEvaluator, create_full_env
-from mise.planner import RuleBasedPlanner
+from mise.full_task import FullTaskController, FullTaskEvaluator, create_full_env, validate_full_plan
+from mise.planner import DEFAULT_COMMAND, RuleBasedPlanner, validate_plan_graph
 from mise.recovery_memory import RecoveryMemory
 
 
 class FullTaskTests(unittest.TestCase):
+    def test_full_plan_accepts_registered_parallel_and_sequential_dependencies(self):
+        for command in ("Set the table.", DEFAULT_COMMAND):
+            with self.subTest(command=command):
+                validate_full_plan(RuleBasedPlanner().plan(command))
+
+        plan = RuleBasedPlanner().plan("Set the table.")
+        # A later listed mug is already completed in the first parallel group.
+        plan.steps[1] = replace(plan.steps[1], needs=(plan.steps[-1].id,))
+        # VLM plans may use different positive IDs.
+        plan.steps = [replace(step, id=step.id + 20,
+                              needs=tuple(dependency + 20 for dependency in step.needs))
+                      for step in plan.steps]
+        validate_full_plan(plan)
+
+    def test_full_plan_rejects_acyclic_dependencies_the_executor_would_ignore(self):
+        for dependent in ("drawer", "plate", "fork"):
+            with self.subTest(dependent=dependent):
+                plan = RuleBasedPlanner().plan("Set the table.")
+                mug = plan.steps[-1]
+                if dependent != "drawer":
+                    # A dependent mug is no longer part of the initial group;
+                    # the specialized executor would leave it until last.
+                    plan.steps[-1] = replace(mug, needs=(plan.steps[0].id,))
+                index = next(index for index, step in enumerate(plan.steps)
+                             if step.object == dependent)
+                plan.steps[index] = replace(plan.steps[index], needs=(mug.id,))
+                validate_plan_graph(plan)
+                with self.assertRaisesRegex(ValueError, "cannot honor.*dependencies"):
+                    validate_full_plan(plan)
+
+    def test_interrupted_recovery_is_retained_without_scoring_an_unobserved_outcome(self):
+        env = create_full_env(seed=1001)
+        try:
+            with tempfile.TemporaryDirectory() as directory:
+                for interruption in ("timeout", "occluded"):
+                    with self.subTest(interruption=interruption):
+                        memory = RecoveryMemory(Path(directory) / f"{interruption}.sqlite3")
+                        controller = FullTaskController(
+                            env, RuleBasedPlanner().plan("Set the table."),
+                            recovery_memory=memory, episode_id=interruption,
+                        )
+                        controller.active_step = controller.plan.steps[4]
+                        controller._handle_spoon_failure(np.asarray([.3, 0]))
+                        candidate, _, context = controller._pending_recovery
+                        initial_estimate = memory.estimate(context, candidate)
+
+                        if interruption == "timeout":
+                            controller._step_started = float(env.data.time) - 31
+                            controller.advance()
+                        else:
+                            controller._segment_index = len(controller._segments)
+                            with patch.object(env, "render", side_effect=ValueError("Spoon is occluded")):
+                                controller.advance()
+
+                        self.assertIsNotNone(controller.failed_reason)
+                        self.assertIsNone(controller._pending_recovery)
+                        self.assertEqual(controller.evidence["recoveries"][-1]["outcome"], "unknown")
+                        self.assertEqual(memory.summary()["unknown"], 1)
+                        self.assertEqual(memory.estimate(context, candidate), initial_estimate)
+                        self.assertEqual(
+                            [event["type"] for event in controller.events if "recovery" in event["type"]],
+                            ["recovery_selected", "recovery_unverified"],
+                        )
+                        controller.advance()
+                        self.assertEqual(memory.summary()["total_outcomes"], 1)
+        finally:
+            env.close()
+
     def test_camera_grounded_physical_sequence_satisfies_every_predicate(self):
         env = create_full_env(seed=1001)
         temporary = tempfile.TemporaryDirectory()

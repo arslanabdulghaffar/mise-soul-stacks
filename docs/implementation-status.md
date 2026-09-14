@@ -200,3 +200,22 @@ Stopping does not reset the simulator or relabel an attempt as a success.
 
 Implementation reference: [FastAPI WebSockets](https://fastapi.tiangolo.com/advanced/websockets/)
 and [lifespan management](https://fastapi.tiangolo.com/advanced/events/).
+
+## Final audit — 2026-09-14
+
+Current branding is **SeoulStack**; original recordings retain historical labels.
+The final local submission gate passes **79 tests**, the production frontend build,
+and all 70 original worker artifact checksums. The evidence-check command is now
+read-only, and new compilation selection requires one attempt per declared seed.
+The optimized 10/10 numerical report is published under
+`docs/evidence/optimized-full-task-results.json`; its source hash identifies the
+recorded motion revision. New validation and bookkeeping changes preserve that
+trajectory.
+
+The Docker image now uses a source-relative editable install, and hosted CI builds
+and smoke-tests the actual image. Local Docker execution remains restricted.
+Shared OpenVINO compilation settings and a strict paired-evidence checker are
+implemented; see `docs/intel-validation.md`. A one-seed Xeon development pair passed
+with two and four CPU inference threads. This does not establish ten-seed quality
+preservation or Intel target compliance. The available Core Ultra 7 155H is Series 1;
+Series 2/3 or organizer acceptance remains necessary for the declared final target.

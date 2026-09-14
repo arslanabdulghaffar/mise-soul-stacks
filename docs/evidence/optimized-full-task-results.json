@@ -1,0 +1,1247 @@
+{
+  "command": "Set the table.",
+  "created_at": "2026-09-13T22:45:10.024043+00:00",
+  "note": "No videos are captured here; use `mise full` or the console for camera artifacts.",
+  "recovery_mode": "adaptive",
+  "results": [
+    {
+      "completed_steps": [
+        1,
+        7,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "direct_object_write": false,
+      "evaluation": {
+        "drawer_open": true,
+        "elapsed_s": 137.66799999993225,
+        "evidence": {
+          "certification_limit": null,
+          "collision_geometry_validated": true,
+          "drawer_arm_A_contact_observed": true,
+          "drawer_open_fraction": 0.9996964258734181,
+          "geometry_validated": true,
+          "gripper_contacts_validated": true,
+          "handoff_phase": "B_retains",
+          "objects": {
+            "fork": {
+              "angular_speed_rad_s": 3.941913288041439e-10,
+              "axis_error_degrees": 0.1873446062347,
+              "center_error_m": 0.013697574226945723,
+              "height_m": 0.785823059552362,
+              "held_by": [],
+              "linear_speed_m_s": 1.7760114823640257e-11,
+              "region": "fork_left",
+              "released": true,
+              "stable_duration_s": 3.3340000000159193,
+              "table_supported": true,
+              "tilt_degrees": 0.07148989330139877
+            },
+            "mug": {
+              "angular_speed_rad_s": 0.007685769874939741,
+              "axis_error_degrees": null,
+              "center_error_m": 0.0046076134777445436,
+              "height_m": 0.8147768715401733,
+              "held_by": [],
+              "linear_speed_m_s": 0.0002474040510165612,
+              "region": "mug_upper_right",
+              "released": true,
+              "stable_duration_s": 120.89999999993103,
+              "table_supported": true,
+              "tilt_degrees": 0.08482220537412813
+            },
+            "plate": {
+              "angular_speed_rad_s": 0.0024163097703400697,
+              "axis_error_degrees": null,
+              "center_error_m": 0.007229978732132875,
+              "height_m": 0.7838174075625703,
+              "held_by": [],
+              "linear_speed_m_s": 3.143314342049744e-05,
+              "region": "plate_center",
+              "released": true,
+              "stable_duration_s": 103.09999999993519,
+              "table_supported": true,
+              "tilt_degrees": 0.010713172004855522
+            },
+            "spoon": {
+              "angular_speed_rad_s": 2.141475524470542e-09,
+              "axis_error_degrees": 0.025656704550753032,
+              "center_error_m": 0.006268786030433515,
+              "height_m": 0.7858223876812489,
+              "held_by": [],
+              "linear_speed_m_s": 1.2030761409432002e-10,
+              "region": "spoon_right",
+              "released": true,
+              "stable_duration_s": 32.367999999997735,
+              "table_supported": true,
+              "tilt_degrees": 0.06447276002752411
+            }
+          },
+          "role": "privileged_evaluator",
+          "utensils_retrieved_from_drawer": [
+            "fork",
+            "spoon"
+          ]
+        },
+        "forbidden_collision_count": 0,
+        "full_task_success": true,
+        "handoff_complete": true,
+        "objects_in_goal": {
+          "fork": true,
+          "mug": true,
+          "plate": true,
+          "spoon": true
+        },
+        "violations": []
+      },
+      "failure": null,
+      "randomization": {
+        "friction_scale": 0.9680245007412709,
+        "mass_scale": 0.979132264270618,
+        "object_offsets_m": {
+          "fork": [
+            0.0007806059962384006,
+            -0.002408627198874154
+          ],
+          "mug": [
+            -0.003747725077416844,
+            0.004294680774493499
+          ],
+          "plate": [
+            0.0013511391428394108,
+            -0.005811594386156022
+          ],
+          "spoon": [
+            -0.0025428081943931146,
+            -0.0017934585333274553
+          ]
+        }
+      },
+      "recovery_attempts": 1,
+      "recovery_mode": "adaptive",
+      "seed": 1001,
+      "simulation_seconds": 138.29999999993225,
+      "success": true,
+      "wall_seconds": 13.066465329378843
+    },
+    {
+      "completed_steps": [
+        1,
+        7,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "direct_object_write": false,
+      "evaluation": {
+        "drawer_open": true,
+        "elapsed_s": 137.66799999993225,
+        "evidence": {
+          "certification_limit": null,
+          "collision_geometry_validated": true,
+          "drawer_arm_A_contact_observed": true,
+          "drawer_open_fraction": 0.9998797733259677,
+          "geometry_validated": true,
+          "gripper_contacts_validated": true,
+          "handoff_phase": "B_retains",
+          "objects": {
+            "fork": {
+              "angular_speed_rad_s": 1.158750292797935e-09,
+              "axis_error_degrees": 0.19557450390601785,
+              "center_error_m": 0.015140421172468487,
+              "height_m": 0.7858164389644028,
+              "held_by": [],
+              "linear_speed_m_s": 2.5273596844845783e-11,
+              "region": "fork_left",
+              "released": true,
+              "stable_duration_s": 3.3340000000159193,
+              "table_supported": true,
+              "tilt_degrees": 0.07381154738296136
+            },
+            "mug": {
+              "angular_speed_rad_s": 0.008277029411183037,
+              "axis_error_degrees": null,
+              "center_error_m": 0.004699157136754273,
+              "height_m": 0.814752683164678,
+              "held_by": [],
+              "linear_speed_m_s": 0.00028652907358719287,
+              "region": "mug_upper_right",
+              "released": true,
+              "stable_duration_s": 120.89999999993103,
+              "table_supported": true,
+              "tilt_degrees": 0.07733939815413517
+            },
+            "plate": {
+              "angular_speed_rad_s": 0.0012147322409210898,
+              "axis_error_degrees": null,
+              "center_error_m": 0.00723806829684854,
+              "height_m": 0.7838108604803887,
+              "held_by": [],
+              "linear_speed_m_s": 1.6259963544189503e-05,
+              "region": "plate_center",
+              "released": true,
+              "stable_duration_s": 103.09999999993519,
+              "table_supported": true,
+              "tilt_degrees": 0.010943356256150142
+            },
+            "spoon": {
+              "angular_speed_rad_s": 6.820926911661129e-09,
+              "axis_error_degrees": 0.30277212761967326,
+              "center_error_m": 0.009320683514766222,
+              "height_m": 0.7858156963876739,
+              "held_by": [],
+              "linear_speed_m_s": 1.1018467397867038e-10,
+              "region": "spoon_right",
+              "released": true,
+              "stable_duration_s": 32.367999999997735,
+              "table_supported": true,
+              "tilt_degrees": 0.06656632870660333
+            }
+          },
+          "role": "privileged_evaluator",
+          "utensils_retrieved_from_drawer": [
+            "fork",
+            "spoon"
+          ]
+        },
+        "forbidden_collision_count": 0,
+        "full_task_success": true,
+        "handoff_complete": true,
+        "objects_in_goal": {
+          "fork": true,
+          "mug": true,
+          "plate": true,
+          "spoon": true
+        },
+        "violations": []
+      },
+      "failure": null,
+      "randomization": {
+        "friction_scale": 0.9902700057465303,
+        "mass_scale": 1.0204209894751,
+        "object_offsets_m": {
+          "fork": [
+            -0.0018766895900125152,
+            -0.0022820857257787285
+          ],
+          "mug": [
+            0.002971347804818293,
+            -0.0013260969707410619
+          ],
+          "plate": [
+            -0.0014301460862026095,
+            -0.0017137279479486362
+          ],
+          "spoon": [
+            -0.00097721287920278,
+            0.0003293671771777444
+          ]
+        }
+      },
+      "recovery_attempts": 1,
+      "recovery_mode": "adaptive",
+      "seed": 1002,
+      "simulation_seconds": 138.29999999993225,
+      "success": true,
+      "wall_seconds": 11.729024692904204
+    },
+    {
+      "completed_steps": [
+        1,
+        7,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "direct_object_write": false,
+      "evaluation": {
+        "drawer_open": true,
+        "elapsed_s": 137.66799999993225,
+        "evidence": {
+          "certification_limit": null,
+          "collision_geometry_validated": true,
+          "drawer_arm_A_contact_observed": true,
+          "drawer_open_fraction": 1.0000000000117961,
+          "geometry_validated": true,
+          "gripper_contacts_validated": true,
+          "handoff_phase": "B_retains",
+          "objects": {
+            "fork": {
+              "angular_speed_rad_s": 1.59732540616317e-09,
+              "axis_error_degrees": 0.08765309112532368,
+              "center_error_m": 0.01377981980900052,
+              "height_m": 0.7858151953842374,
+              "held_by": [],
+              "linear_speed_m_s": 3.499915606426023e-11,
+              "region": "fork_left",
+              "released": true,
+              "stable_duration_s": 3.3340000000159193,
+              "table_supported": true,
+              "tilt_degrees": 0.07424345292312129
+            },
+            "mug": {
+              "angular_speed_rad_s": 0.0020071724059734656,
+              "axis_error_degrees": null,
+              "center_error_m": 0.005851393546209651,
+              "height_m": 0.8147294506848153,
+              "held_by": [],
+              "linear_speed_m_s": 7.135418676148323e-05,
+              "region": "mug_upper_right",
+              "released": true,
+              "stable_duration_s": 120.933999999931,
+              "table_supported": true,
+              "tilt_degrees": 0.06343725139458406
+            },
+            "plate": {
+              "angular_speed_rad_s": 0.0005754789395777977,
+              "axis_error_degrees": null,
+              "center_error_m": 0.0071365959221206384,
+              "height_m": 0.7838088396384852,
+              "held_by": [],
+              "linear_speed_m_s": 1.4813720939291991e-05,
+              "region": "plate_center",
+              "released": true,
+              "stable_duration_s": 103.09999999993519,
+              "table_supported": true,
+              "tilt_degrees": 0.014434782106481856
+            },
+            "spoon": {
+              "angular_speed_rad_s": 8.571315939256006e-09,
+              "axis_error_degrees": 0.101642680570691,
+              "center_error_m": 0.009034016475370934,
+              "height_m": 0.7858144390827749,
+              "held_by": [],
+              "linear_speed_m_s": 1.0459612904864996e-10,
+              "region": "spoon_right",
+              "released": true,
+              "stable_duration_s": 32.333999999997815,
+              "table_supported": true,
+              "tilt_degrees": 0.06695574962271861
+            }
+          },
+          "role": "privileged_evaluator",
+          "utensils_retrieved_from_drawer": [
+            "fork",
+            "spoon"
+          ]
+        },
+        "forbidden_collision_count": 0,
+        "full_task_success": true,
+        "handoff_complete": true,
+        "objects_in_goal": {
+          "fork": true,
+          "mug": true,
+          "plate": true,
+          "spoon": true
+        },
+        "violations": []
+      },
+      "failure": null,
+      "randomization": {
+        "friction_scale": 1.020670414046671,
+        "mass_scale": 1.0282346267507243,
+        "object_offsets_m": {
+          "fork": [
+            -0.0009573768029755192,
+            0.0005852435309889369
+          ],
+          "mug": [
+            -6.384807373378387e-05,
+            0.0019294986898102228
+          ],
+          "plate": [
+            -0.003746911580776399,
+            -0.002919530277374135
+          ],
+          "spoon": [
+            0.0015126771700564607,
+            0.001338587208838061
+          ]
+        }
+      },
+      "recovery_attempts": 1,
+      "recovery_mode": "adaptive",
+      "seed": 1003,
+      "simulation_seconds": 138.29999999993225,
+      "success": true,
+      "wall_seconds": 12.100422878284007
+    },
+    {
+      "completed_steps": [
+        1,
+        7,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "direct_object_write": false,
+      "evaluation": {
+        "drawer_open": true,
+        "elapsed_s": 137.66799999993225,
+        "evidence": {
+          "certification_limit": null,
+          "collision_geometry_validated": true,
+          "drawer_arm_A_contact_observed": true,
+          "drawer_open_fraction": 0.9999999999203815,
+          "geometry_validated": true,
+          "gripper_contacts_validated": true,
+          "handoff_phase": "B_retains",
+          "objects": {
+            "fork": {
+              "angular_speed_rad_s": 7.899317070987304e-10,
+              "axis_error_degrees": 0.1394097994570825,
+              "center_error_m": 0.014416046357522085,
+              "height_m": 0.7858218793286339,
+              "held_by": [],
+              "linear_speed_m_s": 2.204482926277883e-11,
+              "region": "fork_left",
+              "released": true,
+              "stable_duration_s": 3.3340000000159193,
+              "table_supported": true,
+              "tilt_degrees": 0.07190648221883227
+            },
+            "mug": {
+              "angular_speed_rad_s": 0.006497717860916297,
+              "axis_error_degrees": null,
+              "center_error_m": 0.004733339088370678,
+              "height_m": 0.8147294895990662,
+              "held_by": [],
+              "linear_speed_m_s": 0.0002236994611579199,
+              "region": "mug_upper_right",
+              "released": true,
+              "stable_duration_s": 120.933999999931,
+              "table_supported": true,
+              "tilt_degrees": 0.0795926842769961
+            },
+            "plate": {
+              "angular_speed_rad_s": 0.001555374674386092,
+              "axis_error_degrees": null,
+              "center_error_m": 0.007241085366755953,
+              "height_m": 0.7838165804457702,
+              "held_by": [],
+              "linear_speed_m_s": 1.7842523048969164e-05,
+              "region": "plate_center",
+              "released": true,
+              "stable_duration_s": 103.09999999993519,
+              "table_supported": true,
+              "tilt_degrees": 0.012283805488642928
+            },
+            "spoon": {
+              "angular_speed_rad_s": 7.079611188621286e-09,
+              "axis_error_degrees": 0.3267987761826164,
+              "center_error_m": 0.009281870029269872,
+              "height_m": 0.785821195144652,
+              "held_by": [],
+              "linear_speed_m_s": 1.4351155714605165e-10,
+              "region": "spoon_right",
+              "released": true,
+              "stable_duration_s": 32.333999999997815,
+              "table_supported": true,
+              "tilt_degrees": 0.06484845510711718
+            }
+          },
+          "role": "privileged_evaluator",
+          "utensils_retrieved_from_drawer": [
+            "fork",
+            "spoon"
+          ]
+        },
+        "forbidden_collision_count": 0,
+        "full_task_success": true,
+        "handoff_complete": true,
+        "objects_in_goal": {
+          "fork": true,
+          "mug": true,
+          "plate": true,
+          "spoon": true
+        },
+        "violations": []
+      },
+      "failure": null,
+      "randomization": {
+        "friction_scale": 1.0324986994830396,
+        "mass_scale": 0.9864549744965684,
+        "object_offsets_m": {
+          "fork": [
+            -0.002247045959642561,
+            0.00036286000463065307
+          ],
+          "mug": [
+            -0.004338271616416904,
+            -0.0014321443566331507
+          ],
+          "plate": [
+            -0.0059894345671114195,
+            -0.004438184254468423
+          ],
+          "spoon": [
+            0.0007240428291479259,
+            0.0020225566074959104
+          ]
+        }
+      },
+      "recovery_attempts": 1,
+      "recovery_mode": "adaptive",
+      "seed": 1004,
+      "simulation_seconds": 138.29999999993225,
+      "success": true,
+      "wall_seconds": 11.568644088692963
+    },
+    {
+      "completed_steps": [
+        1,
+        7,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "direct_object_write": false,
+      "evaluation": {
+        "drawer_open": true,
+        "elapsed_s": 123.6679999998917,
+        "evidence": {
+          "certification_limit": null,
+          "collision_geometry_validated": true,
+          "drawer_arm_A_contact_observed": true,
+          "drawer_open_fraction": 0.9996056186518422,
+          "geometry_validated": true,
+          "gripper_contacts_validated": true,
+          "handoff_phase": "B_retains",
+          "objects": {
+            "fork": {
+              "angular_speed_rad_s": 2.9359977703921526e-10,
+              "axis_error_degrees": 0.10107767016718357,
+              "center_error_m": 0.014473305976581563,
+              "height_m": 0.7858176212660283,
+              "held_by": [],
+              "linear_speed_m_s": 1.810877914635106e-11,
+              "region": "fork_left",
+              "released": true,
+              "stable_duration_s": 3.3679999999921506,
+              "table_supported": true,
+              "tilt_degrees": 0.0733996879848964
+            },
+            "mug": {
+              "angular_speed_rad_s": 0.017772737758156677,
+              "axis_error_degrees": null,
+              "center_error_m": 0.004724115484190262,
+              "height_m": 0.8147593017884461,
+              "held_by": [],
+              "linear_speed_m_s": 0.000602964601709489,
+              "region": "mug_upper_right",
+              "released": true,
+              "stable_duration_s": 106.89999999989047,
+              "table_supported": true,
+              "tilt_degrees": 0.07057037508887114
+            },
+            "plate": {
+              "angular_speed_rad_s": 0.003251526405460411,
+              "axis_error_degrees": null,
+              "center_error_m": 0.007270918696642553,
+              "height_m": 0.7838116631295609,
+              "held_by": [],
+              "linear_speed_m_s": 4.007495932828031e-05,
+              "region": "plate_center",
+              "released": true,
+              "stable_duration_s": 89.09999999989466,
+              "table_supported": true,
+              "tilt_degrees": 0.013244796326804531
+            },
+            "spoon": {
+              "angular_speed_rad_s": 6.790345542435107e-09,
+              "axis_error_degrees": 11.327862558233457,
+              "center_error_m": 0.015359175705874263,
+              "height_m": 0.785816891607186,
+              "held_by": [],
+              "linear_speed_m_s": 1.0791888403790358e-10,
+              "region": "spoon_right",
+              "released": true,
+              "stable_duration_s": 36.39999999991517,
+              "table_supported": true,
+              "tilt_degrees": 179.93380503484997
+            }
+          },
+          "role": "privileged_evaluator",
+          "utensils_retrieved_from_drawer": [
+            "fork",
+            "spoon"
+          ]
+        },
+        "forbidden_collision_count": 0,
+        "full_task_success": true,
+        "handoff_complete": true,
+        "objects_in_goal": {
+          "fork": true,
+          "mug": true,
+          "plate": true,
+          "spoon": true
+        },
+        "violations": []
+      },
+      "failure": null,
+      "randomization": {
+        "friction_scale": 0.9840003689899921,
+        "mass_scale": 1.0130096281000938,
+        "object_offsets_m": {
+          "fork": [
+            -0.0020265917754590523,
+            -1.9172071327730206e-05
+          ],
+          "mug": [
+            -0.0025525916595867545,
+            0.0016626965834459833
+          ],
+          "plate": [
+            -0.005013369923185275,
+            0.005166744508663244
+          ],
+          "spoon": [
+            0.002008756347264518,
+            0.0028603320207182415
+          ]
+        }
+      },
+      "recovery_attempts": 0,
+      "recovery_mode": "adaptive",
+      "seed": 1005,
+      "simulation_seconds": 124.29999999989171,
+      "success": true,
+      "wall_seconds": 11.532772345934063
+    },
+    {
+      "completed_steps": [
+        1,
+        7,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "direct_object_write": false,
+      "evaluation": {
+        "drawer_open": true,
+        "elapsed_s": 137.66799999993225,
+        "evidence": {
+          "certification_limit": null,
+          "collision_geometry_validated": true,
+          "drawer_arm_A_contact_observed": true,
+          "drawer_open_fraction": 0.9992353977566731,
+          "geometry_validated": true,
+          "gripper_contacts_validated": true,
+          "handoff_phase": "B_retains",
+          "objects": {
+            "fork": {
+              "angular_speed_rad_s": 1.1895731319658013e-09,
+              "axis_error_degrees": 0.07176548058459976,
+              "center_error_m": 0.014832378262839509,
+              "height_m": 0.7858180236216905,
+              "held_by": [],
+              "linear_speed_m_s": 2.8288394968326024e-11,
+              "region": "fork_left",
+              "released": true,
+              "stable_duration_s": 3.3340000000159193,
+              "table_supported": true,
+              "tilt_degrees": 0.0732592515921705
+            },
+            "mug": {
+              "angular_speed_rad_s": 0.023325578933628573,
+              "axis_error_degrees": null,
+              "center_error_m": 0.004704655026596025,
+              "height_m": 0.8147497477465314,
+              "held_by": [],
+              "linear_speed_m_s": 0.0007939390578799601,
+              "region": "mug_upper_right",
+              "released": true,
+              "stable_duration_s": 120.89999999993103,
+              "table_supported": true,
+              "tilt_degrees": 0.054271555242975465
+            },
+            "plate": {
+              "angular_speed_rad_s": 0.0011340653632728977,
+              "axis_error_degrees": null,
+              "center_error_m": 0.007226406511224011,
+              "height_m": 0.7838118405085638,
+              "held_by": [],
+              "linear_speed_m_s": 8.563551262516515e-06,
+              "region": "plate_center",
+              "released": true,
+              "stable_duration_s": 103.09999999993519,
+              "table_supported": true,
+              "tilt_degrees": 0.01570580861965359
+            },
+            "spoon": {
+              "angular_speed_rad_s": 8.495572209095127e-09,
+              "axis_error_degrees": 0.7701567128394342,
+              "center_error_m": 0.019540074356802526,
+              "height_m": 0.7858172983303842,
+              "held_by": [],
+              "linear_speed_m_s": 1.0527237186483339e-10,
+              "region": "spoon_right",
+              "released": true,
+              "stable_duration_s": 38.1339999999843,
+              "table_supported": true,
+              "tilt_degrees": 179.93393166627328
+            }
+          },
+          "role": "privileged_evaluator",
+          "utensils_retrieved_from_drawer": [
+            "fork",
+            "spoon"
+          ]
+        },
+        "forbidden_collision_count": 0,
+        "full_task_success": true,
+        "handoff_complete": true,
+        "objects_in_goal": {
+          "fork": true,
+          "mug": true,
+          "plate": true,
+          "spoon": true
+        },
+        "violations": []
+      },
+      "failure": null,
+      "randomization": {
+        "friction_scale": 0.9988945629211022,
+        "mass_scale": 1.010491236623289,
+        "object_offsets_m": {
+          "fork": [
+            -0.000565359664423083,
+            -0.000861385906974941
+          ],
+          "mug": [
+            -0.0024260244070898936,
+            -0.0031491306636531225
+          ],
+          "plate": [
+            -0.001956942797126107,
+            0.001210283325595858
+          ],
+          "spoon": [
+            0.0017986191369944362,
+            -0.0009897290688281077
+          ]
+        }
+      },
+      "recovery_attempts": 1,
+      "recovery_mode": "adaptive",
+      "seed": 1006,
+      "simulation_seconds": 138.29999999993225,
+      "success": true,
+      "wall_seconds": 11.628811690956354
+    },
+    {
+      "completed_steps": [
+        1,
+        7,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "direct_object_write": false,
+      "evaluation": {
+        "drawer_open": true,
+        "elapsed_s": 137.66799999993225,
+        "evidence": {
+          "certification_limit": null,
+          "collision_geometry_validated": true,
+          "drawer_arm_A_contact_observed": true,
+          "drawer_open_fraction": 0.9999427022706516,
+          "geometry_validated": true,
+          "gripper_contacts_validated": true,
+          "handoff_phase": "B_retains",
+          "objects": {
+            "fork": {
+              "angular_speed_rad_s": 1.0508481933827935e-09,
+              "axis_error_degrees": 0.08737908104510586,
+              "center_error_m": 0.01441286861681352,
+              "height_m": 0.7858210710275434,
+              "held_by": [],
+              "linear_speed_m_s": 2.3182332940692333e-11,
+              "region": "fork_left",
+              "released": true,
+              "stable_duration_s": 3.3680000000160817,
+              "table_supported": true,
+              "tilt_degrees": 0.07219111650581249
+            },
+            "mug": {
+              "angular_speed_rad_s": 0.006746240240144297,
+              "axis_error_degrees": null,
+              "center_error_m": 0.004637176181017856,
+              "height_m": 0.8147843869100944,
+              "held_by": [],
+              "linear_speed_m_s": 0.0002241184869519008,
+              "region": "mug_upper_right",
+              "released": true,
+              "stable_duration_s": 120.89999999993103,
+              "table_supported": true,
+              "tilt_degrees": 0.05696013450965818
+            },
+            "plate": {
+              "angular_speed_rad_s": 0.0014086986575607683,
+              "axis_error_degrees": null,
+              "center_error_m": 0.007270236305725532,
+              "height_m": 0.7838157918046607,
+              "held_by": [],
+              "linear_speed_m_s": 1.1110764673860324e-05,
+              "region": "plate_center",
+              "released": true,
+              "stable_duration_s": 103.09999999993519,
+              "table_supported": true,
+              "tilt_degrees": 0.010413121998408074
+            },
+            "spoon": {
+              "angular_speed_rad_s": 1.5211110046597202e-09,
+              "axis_error_degrees": 0.1721798071829743,
+              "center_error_m": 0.007929784444524055,
+              "height_m": 0.7858203783379262,
+              "held_by": [],
+              "linear_speed_m_s": 1.07405924143035e-10,
+              "region": "spoon_right",
+              "released": true,
+              "stable_duration_s": 32.333999999997815,
+              "table_supported": true,
+              "tilt_degrees": 0.06510514078842526
+            }
+          },
+          "role": "privileged_evaluator",
+          "utensils_retrieved_from_drawer": [
+            "fork",
+            "spoon"
+          ]
+        },
+        "forbidden_collision_count": 0,
+        "full_task_success": true,
+        "handoff_complete": true,
+        "objects_in_goal": {
+          "fork": true,
+          "mug": true,
+          "plate": true,
+          "spoon": true
+        },
+        "violations": []
+      },
+      "failure": null,
+      "randomization": {
+        "friction_scale": 0.9542958997932729,
+        "mass_scale": 0.9914794204517241,
+        "object_offsets_m": {
+          "fork": [
+            -0.0002929148419869112,
+            -0.001814288558400024
+          ],
+          "mug": [
+            0.0017151421550238872,
+            -0.0036408570620682186
+          ],
+          "plate": [
+            -0.005145300750469371,
+            0.0037917641421353187
+          ],
+          "spoon": [
+            0.0005329127611000198,
+            0.002372022909709959
+          ]
+        }
+      },
+      "recovery_attempts": 1,
+      "recovery_mode": "adaptive",
+      "seed": 1007,
+      "simulation_seconds": 138.29999999993225,
+      "success": true,
+      "wall_seconds": 11.426291090901941
+    },
+    {
+      "completed_steps": [
+        1,
+        7,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "direct_object_write": false,
+      "evaluation": {
+        "drawer_open": true,
+        "elapsed_s": 137.66799999993225,
+        "evidence": {
+          "certification_limit": null,
+          "collision_geometry_validated": true,
+          "drawer_arm_A_contact_observed": true,
+          "drawer_open_fraction": 0.999899674446021,
+          "geometry_validated": true,
+          "gripper_contacts_validated": true,
+          "handoff_phase": "B_retains",
+          "objects": {
+            "fork": {
+              "angular_speed_rad_s": 1.0650404155784714e-09,
+              "axis_error_degrees": 0.05661703811297963,
+              "center_error_m": 0.016979707713560666,
+              "height_m": 0.7858219260611559,
+              "held_by": [],
+              "linear_speed_m_s": 2.3429471826754086e-11,
+              "region": "fork_left",
+              "released": true,
+              "stable_duration_s": 3.3340000000159193,
+              "table_supported": true,
+              "tilt_degrees": 0.07189000877262827
+            },
+            "mug": {
+              "angular_speed_rad_s": 0.013247414786917593,
+              "axis_error_degrees": null,
+              "center_error_m": 0.004615043841822621,
+              "height_m": 0.8147620227110848,
+              "held_by": [],
+              "linear_speed_m_s": 0.0004561334958893624,
+              "region": "mug_upper_right",
+              "released": true,
+              "stable_duration_s": 120.89999999993103,
+              "table_supported": true,
+              "tilt_degrees": 0.07367772601085724
+            },
+            "plate": {
+              "angular_speed_rad_s": 0.003488139314295275,
+              "axis_error_degrees": null,
+              "center_error_m": 0.007248002734871327,
+              "height_m": 0.7838166082221866,
+              "held_by": [],
+              "linear_speed_m_s": 3.172227382946098e-05,
+              "region": "plate_center",
+              "released": true,
+              "stable_duration_s": 103.09999999993519,
+              "table_supported": true,
+              "tilt_degrees": 0.011750162209729189
+            },
+            "spoon": {
+              "angular_speed_rad_s": 2.394888221031141e-09,
+              "axis_error_degrees": 0.1145396991953545,
+              "center_error_m": 0.008513139261743356,
+              "height_m": 0.7858212423673265,
+              "held_by": [],
+              "linear_speed_m_s": 1.2588424749281693e-10,
+              "region": "spoon_right",
+              "released": true,
+              "stable_duration_s": 32.333999999997815,
+              "table_supported": true,
+              "tilt_degrees": 0.06483359918622278
+            }
+          },
+          "role": "privileged_evaluator",
+          "utensils_retrieved_from_drawer": [
+            "fork",
+            "spoon"
+          ]
+        },
+        "forbidden_collision_count": 0,
+        "full_task_success": true,
+        "handoff_complete": true,
+        "objects_in_goal": {
+          "fork": true,
+          "mug": true,
+          "plate": true,
+          "spoon": true
+        },
+        "violations": []
+      },
+      "failure": null,
+      "randomization": {
+        "friction_scale": 0.9872669134155428,
+        "mass_scale": 0.9861647137810045,
+        "object_offsets_m": {
+          "fork": [
+            -0.0006067583760918835,
+            -0.0028635802781908294
+          ],
+          "mug": [
+            -0.0033908060494290985,
+            0.005805233454586329
+          ],
+          "plate": [
+            -0.0039929670113445755,
+            0.0037566089727453494
+          ],
+          "spoon": [
+            0.0028991296448592436,
+            0.0020656541300095067
+          ]
+        }
+      },
+      "recovery_attempts": 1,
+      "recovery_mode": "adaptive",
+      "seed": 1008,
+      "simulation_seconds": 138.29999999993225,
+      "success": true,
+      "wall_seconds": 11.895712425932288
+    },
+    {
+      "completed_steps": [
+        1,
+        7,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "direct_object_write": false,
+      "evaluation": {
+        "drawer_open": true,
+        "elapsed_s": 123.6679999998917,
+        "evidence": {
+          "certification_limit": null,
+          "collision_geometry_validated": true,
+          "drawer_arm_A_contact_observed": true,
+          "drawer_open_fraction": 0.9998288386959105,
+          "geometry_validated": true,
+          "gripper_contacts_validated": true,
+          "handoff_phase": "B_retains",
+          "objects": {
+            "fork": {
+              "angular_speed_rad_s": 4.827554554932566e-10,
+              "axis_error_degrees": 0.2665706983779702,
+              "center_error_m": 0.013041256742861978,
+              "height_m": 0.7858242617845331,
+              "held_by": [],
+              "linear_speed_m_s": 1.7076733618257898e-11,
+              "region": "fork_left",
+              "released": true,
+              "stable_duration_s": 3.33399999999223,
+              "table_supported": true,
+              "tilt_degrees": 0.07106433849664727
+            },
+            "mug": {
+              "angular_speed_rad_s": 0.008849262849668752,
+              "axis_error_degrees": null,
+              "center_error_m": 0.004708816657518122,
+              "height_m": 0.8147807232426598,
+              "held_by": [],
+              "linear_speed_m_s": 0.00027538843957049936,
+              "region": "mug_upper_right",
+              "released": true,
+              "stable_duration_s": 106.89999999989047,
+              "table_supported": true,
+              "tilt_degrees": 0.060236264119239054
+            },
+            "plate": {
+              "angular_speed_rad_s": 0.0006605720852819907,
+              "axis_error_degrees": null,
+              "center_error_m": 0.0072591568244739745,
+              "height_m": 0.7838187278720642,
+              "held_by": [],
+              "linear_speed_m_s": 8.231084955040096e-06,
+              "region": "plate_center",
+              "released": true,
+              "stable_duration_s": 89.09999999989466,
+              "table_supported": true,
+              "tilt_degrees": 0.012783362494722676
+            },
+            "spoon": {
+              "angular_speed_rad_s": 8.241965625898106e-09,
+              "axis_error_degrees": 2.4083222437496965,
+              "center_error_m": 0.01792743601950228,
+              "height_m": 0.785823602326002,
+              "held_by": [],
+              "linear_speed_m_s": 1.085970205365974e-10,
+              "region": "spoon_right",
+              "released": true,
+              "stable_duration_s": 33.7679999999213,
+              "table_supported": true,
+              "tilt_degrees": 179.93591103432667
+            }
+          },
+          "role": "privileged_evaluator",
+          "utensils_retrieved_from_drawer": [
+            "fork",
+            "spoon"
+          ]
+        },
+        "forbidden_collision_count": 0,
+        "full_task_success": true,
+        "handoff_complete": true,
+        "objects_in_goal": {
+          "fork": true,
+          "mug": true,
+          "plate": true,
+          "spoon": true
+        },
+        "violations": []
+      },
+      "failure": null,
+      "randomization": {
+        "friction_scale": 0.9652262009898916,
+        "mass_scale": 0.9716895226247423,
+        "object_offsets_m": {
+          "fork": [
+            0.0003739427469910076,
+            -1.2202698426568102e-05
+          ],
+          "mug": [
+            -0.005401782455121621,
+            -0.0026240829788840908
+          ],
+          "plate": [
+            -0.005321994455358729,
+            -0.0020770129479256586
+          ],
+          "spoon": [
+            0.001955075234864514,
+            0.0006538648981747595
+          ]
+        }
+      },
+      "recovery_attempts": 0,
+      "recovery_mode": "adaptive",
+      "seed": 1009,
+      "simulation_seconds": 124.29999999989171,
+      "success": true,
+      "wall_seconds": 11.037322661373764
+    },
+    {
+      "completed_steps": [
+        1,
+        7,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "direct_object_write": false,
+      "evaluation": {
+        "drawer_open": true,
+        "elapsed_s": 137.66799999993225,
+        "evidence": {
+          "certification_limit": null,
+          "collision_geometry_validated": true,
+          "drawer_arm_A_contact_observed": true,
+          "drawer_open_fraction": 1.0000000000117732,
+          "geometry_validated": true,
+          "gripper_contacts_validated": true,
+          "handoff_phase": "B_retains",
+          "objects": {
+            "fork": {
+              "angular_speed_rad_s": 1.8712866776450154e-10,
+              "axis_error_degrees": 0.4502621354913999,
+              "center_error_m": 0.013332847444216216,
+              "height_m": 0.7858237211494042,
+              "held_by": [],
+              "linear_speed_m_s": 1.6286741149080347e-11,
+              "region": "fork_left",
+              "released": true,
+              "stable_duration_s": 3.300000000015757,
+              "table_supported": true,
+              "tilt_degrees": 0.07125585640133161
+            },
+            "mug": {
+              "angular_speed_rad_s": 0.0066382249352503475,
+              "axis_error_degrees": null,
+              "center_error_m": 0.007409941308246072,
+              "height_m": 0.8147449205531564,
+              "held_by": [],
+              "linear_speed_m_s": 0.0002546404668687054,
+              "region": "mug_upper_right",
+              "released": true,
+              "stable_duration_s": 120.89999999993103,
+              "table_supported": true,
+              "tilt_degrees": 0.07532655030304486
+            },
+            "plate": {
+              "angular_speed_rad_s": 0.002358490100121732,
+              "axis_error_degrees": null,
+              "center_error_m": 0.007237252501128205,
+              "height_m": 0.7838176972247008,
+              "held_by": [],
+              "linear_speed_m_s": 2.283402878388765e-05,
+              "region": "plate_center",
+              "released": true,
+              "stable_duration_s": 103.09999999993519,
+              "table_supported": true,
+              "tilt_degrees": 0.01684146618507026
+            },
+            "spoon": {
+              "angular_speed_rad_s": 4.184586325668717e-09,
+              "axis_error_degrees": 0.6187214786705721,
+              "center_error_m": 0.009591723219377457,
+              "height_m": 0.7858230561253168,
+              "held_by": [],
+              "linear_speed_m_s": 1.207973932990426e-10,
+              "region": "spoon_right",
+              "released": true,
+              "stable_duration_s": 32.333999999997815,
+              "table_supported": true,
+              "tilt_degrees": 179.93573830869656
+            }
+          },
+          "role": "privileged_evaluator",
+          "utensils_retrieved_from_drawer": [
+            "fork",
+            "spoon"
+          ]
+        },
+        "forbidden_collision_count": 0,
+        "full_task_success": true,
+        "handoff_complete": true,
+        "objects_in_goal": {
+          "fork": true,
+          "mug": true,
+          "plate": true,
+          "spoon": true
+        },
+        "violations": []
+      },
+      "failure": null,
+      "randomization": {
+        "friction_scale": 1.0146896492473527,
+        "mass_scale": 0.9750344144487091,
+        "object_offsets_m": {
+          "fork": [
+            -0.000543470109976258,
+            0.0003894895927200651
+          ],
+          "mug": [
+            0.005012120797361529,
+            0.005777590186665637
+          ],
+          "plate": [
+            -0.004860092604461133,
+            0.000429668774842123
+          ],
+          "spoon": [
+            0.0020929172348741676,
+            0.001476869135774374
+          ]
+        }
+      },
+      "recovery_attempts": 1,
+      "recovery_mode": "adaptive",
+      "seed": 1010,
+      "simulation_seconds": 138.29999999993225,
+      "success": true,
+      "wall_seconds": 11.910093299113214
+    }
+  ],
+  "schema_version": "mise.full-evaluation.v1",
+  "scope": "headless_fixed_seed_regression",
+  "source_sha256": "b7440c6490f6d8d6846c6f7e60fe00f7380b5261af9a294b06afd878aac5e897",
+  "successes": 10,
+  "total": 10,
+  "wilson95": [
+    0.7224672001371107,
+    0.9999999999999999
+  ]
+}

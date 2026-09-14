@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 import shutil
 import subprocess
@@ -75,6 +76,26 @@ def select_runs(root: Path, required_seeds: list[int]) -> tuple[list[dict[str, A
     return selected, attempt_counts
 
 
+def verify_run_files(run: dict[str, Any]) -> int:
+    """Check the worker's original evidence before using a recording in a demo."""
+    directory = Path(run['directory'])
+    manifest = json.loads((directory / 'manifest.json').read_text())
+    if manifest.get('run_id') != run.get('id') or manifest.get('scope') != 'full_task':
+        raise ValueError('Run manifest identity or scope does not match the recording.')
+    checksums = manifest.get('files_sha256', {})
+    required = {'run.json', 'summary.json', 'trace.jsonl', 'timing.csv',
+                'top.mp4', 'wrist_a.mp4', 'wrist_b.mp4'}
+    if not required.issubset(checksums):
+        raise ValueError('Run manifest is missing required evidence checksums.')
+    for name, expected in checksums.items():
+        path = directory / name
+        if path.resolve().parent != directory.resolve() or not path.is_file():
+            raise ValueError(f'Invalid or missing manifest file: {name}')
+        if sha256(path) != expected:
+            raise ValueError(f'Run checksum mismatch: {name}')
+    return len(checksums)
+
+
 def _ffmpeg() -> str:
     try:
         import imageio_ffmpeg
@@ -117,7 +138,7 @@ def build_video(selected: list[dict[str, Any]], output: Path, *, speed: float = 
             font_path = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
             font_size = max(10, round(width / 22))
             font = ImageFont.truetype(str(font_path), font_size) if font_path.is_file() else ImageFont.load_default()
-            painter.text((8, 5), "SOUL STACKS  |  SET THE TABLE", fill=(115, 212, 228, 255), font=font)
+            painter.text((8, 5), "SeoulStack  |  SET THE TABLE", fill=(115, 212, 228, 255), font=font)
             painter.text((8, badge_height // 2 + 2), label, fill=(230, 237, 245, 255), font=font)
             canvas.save(badge)
             overlay = (
@@ -152,22 +173,27 @@ def main() -> None:
     parser.add_argument("--fps", type=int, default=24, help="Interpolated output frame rate")
     parser.add_argument("--check-only", action="store_true")
     args = parser.parse_args()
-    if args.speed <= 0 or args.fps < 1:
+    if not math.isfinite(args.speed) or args.speed <= 0 or args.fps < 1:
         parser.error("speed and fps must be positive")
     required = [int(seed) for seed in yaml.safe_load(args.seeds.read_text())["required"]]
     if len(required) != 10 or len(set(required)) != 10:
         raise SystemExit("The submission suite must contain exactly ten distinct predeclared seeds.")
     try:
         selected, attempt_counts = select_runs(args.runs_root, required)
+        if any(count != 1 for count in attempt_counts.values()):
+            raise ValueError('Use a dedicated archive with exactly one declared attempt per seed; '
+                             'retain retries separately rather than selecting only successes.')
+        verified_files = sum(verify_run_files(run) for run in selected)
         if not args.check_only:
             build_video(selected, args.output, speed=args.speed, fps=args.fps)
-    except (RuntimeError, ValueError) as exc:
+    except (OSError, RuntimeError, ValueError) as exc:
         raise SystemExit(str(exc)) from exc
     payload = {
         "schema_version": "mise.ten-seed-video.v1",
         "command": "Set the table.",
         "required_seeds": required,
-        "selection_policy": "latest successful unassisted full-task recording per predeclared seed",
+        "selection_policy": "exactly one checksum-verified unassisted full-task attempt per predeclared seed",
+        "verified_artifact_files": verified_files,
         "playback_speed": args.speed,
         "output_fps": args.fps,
         "attempt_counts": attempt_counts,
@@ -181,8 +207,10 @@ def main() -> None:
         "video": None if args.check_only else str(args.output),
         "video_sha256": None if args.check_only else sha256(args.output),
     }
-    args.manifest.parent.mkdir(parents=True, exist_ok=True)
-    args.manifest.write_text(json.dumps(payload, indent=2) + "\n")
+    # A check must never replace the published video's binding with video=null.
+    if not args.check_only:
+        args.manifest.parent.mkdir(parents=True, exist_ok=True)
+        args.manifest.write_text(json.dumps(payload, indent=2) + "\n")
     print(json.dumps(payload, indent=2))
 
 
