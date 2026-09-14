@@ -48,7 +48,7 @@ The three team suggestions are implemented:
 
 Current retained evidence:
 
-- 79 Python tests pass, including actual MuJoCo contact and evaluator regressions;
+- 81 Python tests pass, including actual MuJoCo contact and evaluator regressions;
 - the React/TypeScript production build passes;
 - fixed headless full-task suite: 10/10 seeds pass;
 - recorded camera suite: 10/10 predeclared seeds pass, zero forbidden collisions,
@@ -85,11 +85,9 @@ Intel category and has not yet been performed.
    correct `--intel-core-ultra-series` value.
 2. Run reference and proposed optimized configurations on identical frozen seeds.
    Only mark quality preservation verified after reviewing paired task outcomes.
-3. Check the hosted Docker build/smoke CI result for the published revision. It exercises the
-   compiled frontend, actual MuJoCo contact task, and seven artifact hashes.
-4. Record the narrated pitch using `docs/demo-guide.md`; its script and shot list are
+3. Record the narrated pitch using `docs/demo-guide.md`; its script and shot list are
    prepared, but the Intel segment must wait for measured target results.
-5. A public interactive runtime is optional. GitHub Pages cannot host FastAPI or
+4. A public interactive runtime is optional. GitHub Pages cannot host FastAPI or
    MuJoCo; any public site must be a labeled read-only replay unless backed by a
    suitable server.
 
@@ -177,3 +175,13 @@ The central implementation paths are:
 > OpenVINO validation and paired quality measurements. Do not redesign completed
 > architecture or replace the validated full-task controller without better frozen
 > closed-loop evidence.
+
+## Hosted verification completed
+
+[GitHub Actions run 34852939210](https://github.com/arslanabdulghaffar/mise-soul-stacks/actions/runs/34852939210)
+passed all three jobs: 81 Python tests, frontend production build, and actual Docker
+image build plus a live physical mug smoke run. The container run `bb10ee996c98`
+completed autonomously in 66.38 wall seconds and verified seven artifact checksums.
+The tested GitHub code revision is `701170de23a7226273cb3a2b6a7b02c5ce0c1426`
+(local equivalent `2d267d7`); subsequent handoff edits are documentation only.
+Docker packaging validation is complete.

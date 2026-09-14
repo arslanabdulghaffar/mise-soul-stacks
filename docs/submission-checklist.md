@@ -27,7 +27,7 @@ fields must remain empty until the final Intel Core Ultra Series 2/3 run.
 | VLA / multi-modal reasoning (20) | Natural-language task graph, raw RGB object localization, robot-joint history, action context, learned ACT mug experiment, visual recovery trigger | The validated full-task controller is deterministic. Reliable learned full-task VLA execution is not demonstrated |
 | Robustness and generalization (15) | Predeclared seeds, randomized position/mass/friction, displaced and reduced-friction presets, matched recovery comparison, ten successful seed videos with no selective reruns | Present the results; unseen shape, lighting, and background variation remain unevaluated |
 | OpenVINO and Intel optimization (20) | Real ACT export with numerical parity and benchmark tooling | Run reference and chosen optimized precision on Intel Core Ultra Series 2/3; retain paired closed-loop outcomes |
-| Technical quality and reproducibility (10) | Locked dependencies, Dockerfile, submodule, CI, tests, checksums, immutable run archives | Verify the new Docker build and physical smoke job in hosted CI |
+| Technical quality and reproducibility (10) | Locked dependencies, Dockerfile, submodule, CI, tests, checksums, immutable run archives | Hosted image build and autonomous mug smoke passed; seven artifact hashes verified |
 | Innovation and demonstration (5) | Cost-selected bounded recovery, persistent failure memory, dependency graph, resource locks, safe parallel drawer/mug execution | Show the seed-1001 recovery timeline and matched 9/10 vs 10/10 comparison |
 
 ## Final Intel commands
@@ -74,3 +74,6 @@ presentation copy to 24 FPS; original recordings remain unchanged. The video
 manifest binds every segment to its run ID, seed, preset, playback speed, and SHA256.
 Present one uninterrupted full run in the main pitch and make the complete ten-seed
 compilation available with the repository or submission link.
+
+Hosted verification: [run 34852939210](https://github.com/arslanabdulghaffar/mise-soul-stacks/actions/runs/34852939210)
+passes 81 Python tests, the frontend build, and the actual Docker runtime smoke test.

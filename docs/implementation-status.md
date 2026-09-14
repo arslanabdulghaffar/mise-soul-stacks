@@ -219,3 +219,9 @@ implemented; see `docs/intel-validation.md`. A one-seed Xeon development pair pa
 with two and four CPU inference threads. This does not establish ten-seed quality
 preservation or Intel target compliance. The available Core Ultra 7 155H is Series 1;
 Series 2/3 or organizer acceptance remains necessary for the declared final target.
+
+Hosted CI subsequently passed all **81 tests**, the frontend build, and the actual
+Docker image smoke test in run `34852939210`. Container episode `bb10ee996c98`
+completed an autonomous physical mug placement in 66.38 wall seconds with seven valid
+artifact checksums. Docker packaging is verified; final target-hardware testing
+remains separate.
