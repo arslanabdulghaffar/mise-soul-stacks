@@ -13,6 +13,7 @@ contact provenance, the A-to-B handoff, stable released goals and collisions.
 **Submission evidence:** [watch the 10-seed demonstration](docs/evidence/ten-seed-demo.mp4)
 or inspect the [per-seed results](docs/evidence/ten-seed-results.csv). The fixed,
 predeclared suite passed **10/10** with zero forbidden collisions and no assisted runs.
+The final recording and narration procedure is in [the demonstration guide](docs/demo-guide.md).
 
 With **Contact expert** selected, `Open the drawer with arm A.` runs a second
 physical skill. Arm A localizes the yellow knob from RGB, grasps it, pulls the
@@ -64,6 +65,7 @@ make check-plan       # deterministic scheduling checks only
 make test             # planner, recovery, evaluator, API and simulation checks
 make bench            # measured OpenVINO latency/throughput and host identity
 make submission-video # concatenate ten verified full-task seed recordings
+make submission-check # tests, production UI build, and retained evidence validation
 make data EPISODES=20 # aligned drawer fixture data (not robot grasp demonstrations)
 make planner-data PLANNER_SAMPLES=100
 make labels LABEL_SAMPLES=12 # privileged fixture-label plumbing, not deployed recovery evidence

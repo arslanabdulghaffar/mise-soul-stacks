@@ -131,6 +131,17 @@ Physical recovery, deterministic camera verification, and the validated drawer/m
 parallel group are complete in the declared simulation envelope. Reliable learned
 full-task control, broader concurrent combinations, and an Intel target demonstration
 are not complete.
+
+The spoon correction was subsequently tightened so arm B verifies from a nearby
+camera-clear pose instead of parking and returning after a miss. After a verified
+placement, arm B parks concurrently with arm A's fork motion. The updated controller
+still passes seeds 1001–1010 (10/10); seed 1001 decreases from 138.8 to 138.3 simulated
+seconds. The retained camera compilation remains immutable evidence from the earlier
+validated controller revision, while the updated headless report is retained locally
+as `artifacts/evaluations/full_task_post_recovery_optimization.json`.
+Recorded run `102d95237489` verifies the updated path with cameras and evidence:
+autonomous full-task success, one recovery, zero forbidden collisions, 138.3 simulated
+seconds, and all seven manifest file hashes valid.
 No public live relay or deployment is configured. Public/replay use is read-only.
 
 ## Runtime limits to measure

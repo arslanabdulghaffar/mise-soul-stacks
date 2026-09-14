@@ -195,6 +195,7 @@ class FullTaskController:
         self._step_started = float(env.data.time)
         self._drawer_initial = None
         self._parallel_mug_step = None
+        self._park_b_with_next_step = False
         self.recovery_attempts = 0
         self._pending_recovery: tuple[RecoveryCandidate, float, RecoveryContext] | None = None
         self._attempted_recoveries: set[tuple[str, str]] = set()
@@ -247,7 +248,8 @@ class FullTaskController:
 
     @staticmethod
     def _parallel_segments(a_segments: list[tuple[str, np.ndarray]],
-                           b_segments: list[tuple[str, np.ndarray]]) -> list[tuple[str, np.ndarray]]:
+                           b_segments: list[tuple[str, np.ndarray]], *,
+                           phase: str = "parallel_drawer_and_mug") -> list[tuple[str, np.ndarray]]:
         """Merge precomputed disjoint-arm trajectories at the control cadence."""
 
         a = np.concatenate([trajectory for _, trajectory in a_segments])
@@ -257,7 +259,7 @@ class FullTaskController:
         for index in range(count):
             merged[index, :6] = a[min(index, len(a) - 1), :6]
             merged[index, 6:] = b[min(index, len(b) - 1), 6:]
-        return [("parallel_drawer_and_mug", merged)]
+        return [(phase, merged)]
 
     def _prepare_step(self) -> None:
         step = self.active_step
@@ -335,8 +337,13 @@ class FullTaskController:
             segments += [m.move("B", "carry_spoon_right", [.24, -.05, .93], grip=-.174, seconds=4, yaw=np.pi),
                          m.move("B", "lower_spoon_right", [.24, -.05, .82], grip=-.174, yaw=np.pi),
                          m.move("B", "release_spoon", grip=.22, seconds=1),
+                         # Retracting clears the overhead view enough to verify the
+                         # released spoon.  Parking happens only after verification,
+                         # so a miss can be recovered without a needless round trip.
                          m.move("B", "retract_from_spoon", [.24, -.05, .93], grip=.22, yaw=np.pi),
-                         m.home("B", "park_after_spoon")]
+                         m.move("B", "clear_spoon_camera", [.24, .16, .96], grip=.22,
+                                seconds=1, yaw=np.pi),
+                         m.move("B", "settle_spoon_before_verify", grip=.22, seconds=1, yaw=None)]
         elif step.object == "fork":
             xy = self._record_detection("fork", locate_utensil(top, "fork", in_drawer=True))
             # The vivid handle centroid is already about 1 cm behind the body's
@@ -361,6 +368,15 @@ class FullTaskController:
             segments += self._mug_segments(xy)
         else:
             raise ValueError(f"No registered trajectory for plan step {step.id}.")
+        if self._park_b_with_next_step:
+            segments = self._parallel_segments(
+                segments,
+                [m.home("B", "park_after_verified_spoon", seconds=1.5)],
+                phase="parallel_fork_and_arm_B_park",
+            )
+            self._park_b_with_next_step = False
+            self.events.append({"type": "parallel_cleanup_started", "arm": "B",
+                                "with_step": step.id, "reason": "verified_spoon"})
         self._segments = segments
         self._segment_index = self._tick = 0
 
@@ -400,7 +416,9 @@ class FullTaskController:
             m.move("B", "recovery_lower_spoon", [.25, .004, .82], grip=-.17, seconds=1.5, yaw=np.pi),
             m.move("B", "recovery_release_spoon", grip=.22, seconds=1),
             m.move("B", "recovery_retract_spoon", [.25, .004, hover], grip=.22, seconds=1, yaw=np.pi),
-            m.home("B", "recovery_park_arm_B", seconds=1.5),
+            m.move("B", "recovery_clear_spoon_camera", [.24, .16, .96], grip=.22,
+                   seconds=1, yaw=np.pi),
+            m.move("B", "recovery_settle_spoon_before_verify", grip=.22, seconds=1, yaw=None),
         ]
         self._segment_index = self._tick = 0
 
@@ -424,7 +442,9 @@ class FullTaskController:
             m.move("B", "retry_lower_spoon_right", [.30, .004, .82], grip=-.17, seconds=1.5, yaw=np.pi / 2),
             m.move("B", "retry_release_spoon", grip=.22, seconds=1),
             m.move("B", "retry_retract", [.30, .004, .93], grip=.22, seconds=1, yaw=np.pi / 2),
-            m.home("B", "retry_park_arm_B", seconds=1.5),
+            m.move("B", "retry_clear_spoon_camera", [.24, .16, .96], grip=.22,
+                   seconds=1, yaw=np.pi),
+            m.move("B", "retry_settle_spoon_before_verify", grip=.22, seconds=1, yaw=None),
         ]
         self._segment_index = self._tick = 0
 
@@ -557,6 +577,11 @@ class FullTaskController:
             if self._segment_index == len(self._segments):
                 if not self._verify_step():
                     return self.advance()
+                # Arm B is already in a nearby camera-clear pose.  Once the spoon
+                # is verified, park B concurrently with arm A's independent fork
+                # motion instead of adding another serial task segment.
+                if self.active_step.object == "spoon" and self.active_step.arm == "B":
+                    self._park_b_with_next_step = True
                 self.completed_steps.append(self.active_step.id)
                 if self._parallel_mug_step is not None and self.active_step.skill == "open_drawer":
                     self.completed_steps.append(self._parallel_mug_step.id)

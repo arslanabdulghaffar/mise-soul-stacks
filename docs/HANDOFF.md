@@ -59,6 +59,12 @@ Current retained evidence:
 - the full 3:46, 256×256, 24 FPS compilation is local at
   `artifacts/submission/ten-seed-demo.mp4`.
 
+After the final spoon-flow optimization, recorded seed-1001 run `102d95237489`
+completed autonomously in 138.3 simulation seconds with one direct recovery, zero
+forbidden collisions, and seven valid artifact checksums. It is retained locally at
+`artifacts/final-runs/102d95237489`; the arm verifies from a nearby camera-clear pose
+and parks concurrently with the fork motion instead of parking before recovery.
+
 ## Honest capability boundary
 
 The successful full-task controller is a deterministic camera-guided hierarchical
@@ -80,8 +86,8 @@ Intel category and has not yet been performed.
 2. Run reference and proposed optimized configurations on identical frozen seeds.
    Only mark quality preservation verified after reviewing paired task outcomes.
 3. Verify the Docker image on a clean machine with submodules initialized.
-4. Prepare the narrated pitch from the retained full run, ten-seed compilation,
-   recovery comparison, architecture, and measured Intel results.
+4. Record the narrated pitch using `docs/demo-guide.md`; its script and shot list are
+   prepared, but the Intel segment must wait for measured target results.
 5. A public interactive runtime is optional. GitHub Pages cannot host FastAPI or
    MuJoCo; any public site must be a labeled read-only replay unless backed by a
    suitable server.
@@ -122,6 +128,7 @@ The central implementation paths are:
   `scripts/export_contact.py`, `scripts/evaluate_contact_policy.py`;
 - Intel benchmark: `bench/intel_bench.py`;
 - demonstration builder: `scripts/build_submission_video.py`;
+- final recording script: `docs/demo-guide.md`;
 - frontend: `web/src/App.tsx` and `web/src/styles.css`.
 
 ## Safe continuation rules

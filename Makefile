@@ -6,7 +6,7 @@ LABEL_SAMPLES ?= 1000
 MODEL_DIR ?= artifacts/models/contact_act_local
 TRAIN_STEPS ?= 6000
 
-.PHONY: install setup scene demo contact full test eval eval-headless eval-recovery bench submission-video data train distill labels video clean web console replay export planner-data check-plan
+.PHONY: install setup scene demo contact full test eval eval-headless eval-recovery bench submission-video submission-check data train distill labels video clean web console replay export planner-data check-plan
 
 setup: install
 
@@ -51,6 +51,11 @@ bench:
 
 submission-video:
 	$(PYTHON) scripts/build_submission_video.py
+
+submission-check: test
+	cd web && npm run build
+	$(PYTHON) scripts/build_submission_video.py --check-only
+	@echo "Local software and retained evidence checks passed. Intel target and Docker-engine checks remain machine-specific."
 
 check-plan:
 	$(PYTHON) -m mise.cli check-plan

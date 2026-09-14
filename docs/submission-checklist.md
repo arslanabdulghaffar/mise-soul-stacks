@@ -16,6 +16,8 @@ fields must remain empty until the final Intel Core Ultra Series 2/3 run.
   seed 1001–1010; the 24 FPS compilation and result manifests are in `docs/evidence`.
 - [x] Technical README and architecture summary: see `README.md`,
   `docs/implementation-status.md`, and `docs/adaptive-recovery.md`.
+- [x] Narration and shot list prepared in `docs/demo-guide.md`; final capture awaits
+  the target-hardware measurement insert.
 
 ## Judging evidence
 

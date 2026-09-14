@@ -19,6 +19,7 @@ class FullTaskTests(unittest.TestCase):
             controller = FullTaskController(env, plan, recovery_memory=memory,
                                             episode_id="physical-seed-1001")
             evaluator = FullTaskEvaluator(env)
+            phases = []
             addresses = []
             for name in ("plate", "fork", "spoon", "mug"):
                 start = env.model.joint(f"{name}_free").qposadr[0]
@@ -27,6 +28,8 @@ class FullTaskTests(unittest.TestCase):
             for _ in range(7000):
                 before = env.data.qpos[addresses].copy()
                 targets = controller.advance()
+                if not phases or controller.phase != phases[-1]:
+                    phases.append(controller.phase)
                 np.testing.assert_array_equal(
                     before, env.data.qpos[addresses],
                     "The controller must never write free-object state.",
@@ -49,6 +52,10 @@ class FullTaskTests(unittest.TestCase):
             self.assertEqual(evaluator.snapshot.violations, ())
             self.assertEqual(evaluator.evidence["utensils_retrieved_from_drawer"], ["fork", "spoon"])
             self.assertEqual(controller.recovery_attempts, 1)
+            self.assertLess(phases.index("retract_from_spoon"), phases.index("recovery_approach_spoon"))
+            self.assertLess(phases.index("recovery_retract_spoon"), phases.index("parallel_fork_and_arm_B_park"))
+            self.assertNotIn("park_after_spoon", phases)
+            self.assertIn("parallel_cleanup_started", [event["type"] for event in controller.events])
             self.assertEqual(controller.evidence["recovery"]["mode"], "adaptive")
             self.assertEqual(len(controller.evidence["recovery"]["candidate_registry"]), 2)
             self.assertEqual(memory.summary()["successes"], 1)
