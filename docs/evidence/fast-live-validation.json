@@ -1,0 +1,50 @@
+{
+  "scope": "presentation_preset_comparison",
+  "run_id": "33147dc3081c",
+  "seed": 1001,
+  "preset": "economy",
+  "camera_configuration": {
+    "camera_capture_hz": {
+      "side_a": 0.5,
+      "side_b": 0.5,
+      "top": 2.0,
+      "wrist_a": 0.25,
+      "wrist_b": 0.25
+    },
+    "capture_every": {
+      "side_a": 60,
+      "side_b": 60,
+      "top": 15,
+      "wrist_a": 120,
+      "wrist_b": 120
+    },
+    "controller_camera_size": 256,
+    "height": 256,
+    "interpolated": false,
+    "profile": "economy",
+    "timebase": "simulation_seconds",
+    "wall_guard_s": 300,
+    "width": 256
+  },
+  "autonomous_full_task_success": true,
+  "collision_count": 0,
+  "recovery_attempts": 1,
+  "simulation_seconds": 138.29999999993225,
+  "wall_seconds": 110.77318609226495,
+  "baseline_run_id": "20ab2f249d42",
+  "baseline_preset": "balanced",
+  "baseline_wall_seconds": 395.932733962778,
+  "wall_time_reduction_percent": 72.02222079908178,
+  "verified_artifacts": {
+    "run.json": "24ce1601280a33a4460bb9188acb68cd4e7235fa5bdc3494aac33c9e922c4056",
+    "side_a.mp4": "bfa95e5f079f3a5d64d1b1292c8d801bc44096d9a055ecccdbf2ca656c6d60ae",
+    "side_b.mp4": "cec3cb634d02598918dbed4bc61d27eec8ca4d2416000285978e912a7ee37d00",
+    "summary.json": "88126942116fa29950dc9a95f3cb668089bf0141c9c3abce2b84e4762d85ba5f",
+    "timing.csv": "3233472f2ed4196dc308fec5395fdc373f0f3293e8357ae4bf96727f543150f3",
+    "top.mp4": "d25ed629c4e47a3b5bf45bd71490361fee8c89877c93b4f962c2aac4dc6abad5",
+    "trace.jsonl": "c4c1b70cff0106670ea95791725206f7e83c55aef3aa43953330336ea2b4b3ca",
+    "wrist_a.mp4": "b7fcd221433cc3494c367c03aff7aa9d11e01cac58757d9e4beaff148173a8b6",
+    "wrist_b.mp4": "7647fdca48ffe07f174b367d00f147d51ddd6ec9bfbee6f982ecb5f9c7221571"
+  },
+  "note": "Two individual development-host runs, not a controlled latency benchmark or Intel target measurement. Fast live uses fewer, smaller frames; physics and controller source remain unchanged."
+}

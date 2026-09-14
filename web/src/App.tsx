@@ -9,6 +9,7 @@ import {
   Terminal, Video, X,
 } from 'lucide-react'
 import { eventSocket, request } from './api'
+import { CAMERAS, CameraPreviews } from './CameraPreviews'
 import type { Benchmark, Camera, Controller, Evaluation, Health, PlanStep, RecoveryComparison, RecoveryMode, Run, RunEvent, View } from './types'
 
 const NAV: { name: View; icon: typeof Activity; detail: string }[] = [
@@ -18,13 +19,6 @@ const NAV: { name: View; icon: typeof Activity; detail: string }[] = [
   { name: 'Recovery', icon: GitBranch, detail: 'Understand each intervention' },
   { name: 'Benchmarks', icon: Gauge, detail: 'Measured on the actual machine' },
   { name: 'Method', icon: BookOpen, detail: 'Inside the execution loop' },
-]
-const CAMERAS: { id: Camera; label: string; short: string }[] = [
-  { id: 'top', label: 'Overhead', short: 'CAM 01' },
-  { id: 'wrist_a', label: 'Arm A · wrist', short: 'CAM 02' },
-  { id: 'wrist_b', label: 'Arm B · wrist', short: 'CAM 03' },
-  { id: 'side_a', label: 'Arm A · side', short: 'CAM 04' },
-  { id: 'side_b', label: 'Arm B · side', short: 'CAM 05' },
 ]
 const ACTIVE_STATUSES = new Set(['queued', 'running', 'paused'])
 const DEFAULT_COMMAND = 'Set the table.'
@@ -79,7 +73,7 @@ export default function App() {
   const [seed, setSeed] = useState('1001')
   const [preset, setPreset] = useState('nominal')
   const [recoveryMode, setRecoveryMode] = useState<RecoveryMode>('adaptive')
-  const [viewQuality, setViewQuality] = useState('balanced')
+  const [viewQuality, setViewQuality] = useState('economy')
   const [camera, setCamera] = useState<Camera>('top')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -92,8 +86,10 @@ export default function App() {
   const [traceLoading, setTraceLoading] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const cameraSeek = useRef(0)
+  const cameraPlayback = useRef({ playing: false, rate: 1 })
   const changeCamera = (next: Camera) => {
     cameraSeek.current = videoRef.current?.currentTime ?? 0
+    cameraPlayback.current = { playing: !!videoRef.current && !videoRef.current.paused, rate: videoRef.current?.playbackRate ?? 1 }
     setCamera(next)
   }
 
@@ -186,7 +182,7 @@ export default function App() {
   }, [expanded])
 
   const selectRun = async (selected: Run, nextView: View = 'Live run') => {
-    setError(''); setEvents([]); setRun(selected); setView(nextView); setCamera('top'); cameraSeek.current = 0
+    setError(''); setEvents([]); setRun(selected); setView(nextView); setCamera('top'); cameraSeek.current = 0; cameraPlayback.current = { playing: false, rate: 1 }
     setReplay(!ACTIVE_STATUSES.has(selected.status) || !operatorEnabled); setReplayTime(null); setTraceLoading(true)
     try {
       const [latest, trace] = await Promise.all([
@@ -201,7 +197,7 @@ export default function App() {
     setError(''); setBusy(true)
     try {
       const next = await request<Run>('/api/runs', { method: 'POST', body: JSON.stringify({ command, seed: Number(seed), preset, controller, recovery_mode: recoveryMode, view_quality: viewQuality }) })
-      setRun(next); setEvents([]); setReplay(false); setReplayTime(null); setCamera('top'); cameraSeek.current = 0; void refresh()
+      setRun(next); setEvents([]); setReplay(false); setReplayTime(null); setCamera('top'); cameraSeek.current = 0; cameraPlayback.current = { playing: false, rate: 1 }; void refresh()
     } catch (e) { setError(e instanceof Error ? e.message : 'Could not start the run.') }
     finally { setBusy(false) }
   }
@@ -262,13 +258,14 @@ export default function App() {
   const cameraStage = <div className={`camera-card ${expanded ? 'expanded' : ''}`}>
     <div className="camera-toolbar"><div className="camera-title"><Video size={15} /><span>Simulation view</span><span className="subtle">/ {CAMERAS.find(c => c.id === camera)?.short}</span></div><div className="camera-toolbar-right"><span className="render-label">MuJoCo</span><button className="icon-button" aria-label={expanded ? 'Close expanded camera' : 'Expand camera'} onClick={() => setExpanded(!expanded)}>{expanded ? <X size={17} /> : <Maximize2 size={16} />}</button></div></div>
     <div className="camera-viewport">
-      {run && replay && run.artifacts?.video ? <video ref={videoRef} key={`${run.id}-${camera}-video`} src={run.artifacts[`video_${camera}`] || run.artifacts.video} controls playsInline onLoadedMetadata={() => { if (videoRef.current) videoRef.current.currentTime = Math.min(cameraSeek.current, videoRef.current.duration) }} onTimeUpdate={() => setReplayTime(videoRef.current?.currentTime ?? null)} onSeeked={() => setReplayTime(videoRef.current?.currentTime ?? null)} aria-label={`Recorded ${camera} camera for run ${run.id}`} /> : run && !replay ? <img key={`${run.id}-${camera}`} src={active && connected ? `/api/runs/${run.id}/camera/${camera}` : `/api/runs/${run.id}/frame/${camera}`} alt={`${CAMERAS.find(c => c.id === camera)?.label} camera from run ${run.id}`} onError={event => { event.currentTarget.style.opacity = '0'; event.currentTarget.parentElement?.classList.add('camera-unavailable') }} onLoad={event => { event.currentTarget.style.opacity = '1'; event.currentTarget.parentElement?.classList.remove('camera-unavailable') }} /> : null}
+      {run && replay && run.artifacts?.video ? <video ref={videoRef} key={`${run.id}-${camera}-video`} src={run.artifacts[`video_${camera}`] || run.artifacts.video} controls playsInline onLoadedMetadata={() => { const video = videoRef.current; if (video) { video.currentTime = Math.min(cameraSeek.current, video.duration); video.playbackRate = cameraPlayback.current.rate; if (cameraPlayback.current.playing) void video.play().catch(() => {}) } }} onTimeUpdate={() => setReplayTime(videoRef.current?.currentTime ?? null)} onSeeked={() => setReplayTime(videoRef.current?.currentTime ?? null)} aria-label={`Recorded ${camera} camera for run ${run.id}`} /> : run && !replay ? <img key={`${run.id}-${camera}`} src={active && connected ? `/api/runs/${run.id}/camera/${camera}` : `/api/runs/${run.id}/frame/${camera}`} alt={`${CAMERAS.find(c => c.id === camera)?.label} camera from run ${run.id}`} onError={event => { event.currentTarget.style.opacity = '0'; event.currentTarget.parentElement?.classList.add('camera-unavailable') }} onLoad={event => { event.currentTarget.style.opacity = '1'; event.currentTarget.parentElement?.classList.remove('camera-unavailable') }} /> : null}
 
       <div className={`viewport-empty ${run && (!replay || run.artifacts?.video) ? 'hidden-unless-error' : ''} ${!run && connected ? 'preview-overlay' : ''}`}><div className="focus-frame"><ScanLine size={34} strokeWidth={1.1} /></div><h3>{run && replay ? 'Camera recording unavailable' : run ? 'Waiting for camera frames' : connected ? operatorEnabled ? 'No simulation running' : 'Recorded evidence is available' : 'Waiting for the local runtime'}</h3><p>{run && replay ? 'The recorded trace and run artifacts are available below.' : run ? 'Frames appear as the simulation worker renders them.' : connected ? operatorEnabled ? 'Run task starts a new simulation from your command and seed, with live camera frames.' : 'Select a run from Evidence to inspect its original cameras and trace.' : 'Connect the API to receive real camera frames and execution events.'}</p>{!run && <span className="viewport-label">{connected ? 'NO ACTIVE RUN · AWAITING FRAMES' : 'NO CAMERA SIGNAL'}</span>}</div>
       {run && !(replay && run.artifacts?.video) && <div className="viewport-badges"><Pill tone={replay ? 'violet' : active ? 'cyan' : 'neutral'} dot>{replay ? 'RECORDED FRAME' : active ? stale ? 'STALE FRAME' : 'CAMERA STREAM' : 'FINAL FRAME'}</Pill><span>{CAMERAS.find(c => c.id === camera)?.label}</span></div>}
       <div className="viewport-corners"><i /><i /><i /><i /></div>
       {!replay && <div className="viewport-footer"><span><span className="arm-dot cyan-dot" /> Arm A</span><span><span className="arm-dot violet-dot" /> Arm B</span><span className="viewport-time">{run ? `Observation ${time(observedAt)}` : 'SO-101 × 2 · Table-setting scene'}</span></div>}
     </div>
+    <CameraPreviews run={run} camera={camera} replay={replay} live={active && connected} master={videoRef} onSelect={changeCamera} />
     <div className="camera-bottom"><div className="camera-tabs" role="tablist" aria-label="Camera angle">{CAMERAS.map(cam => <button key={cam.id} role="tab" aria-selected={camera === cam.id} className={camera === cam.id ? 'selected' : ''} disabled={!!run && !active && cam.id !== 'top' && !run.artifacts?.[`video_${cam.id}`]} onClick={() => changeCamera(cam.id)}><span className={`camera-indicator ${cam.id === 'wrist_b' ? 'violet-dot' : ''}`} />{cam.label}</button>)}</div><span className="camera-size">{run?.camera_configuration ? `${run.camera_configuration.width}×${run.camera_configuration.height} · ${run.camera_configuration.camera_capture_hz[camera]} FPS (sim)` : replay ? 'Original recording' : 'RGB stream'}</span></div>
   </div>
 
@@ -298,7 +295,7 @@ export default function App() {
           {controller === 'contact_expert' && previewExecutable === false && previewError && <div className="command-support-note" role="status"><CircleDot size={14} /><span>{previewError}</span></div>}
           <div className="command-examples"><span>TRY A SUPPORTED COMMAND</span>{commandExamples.map(example => <button key={example} disabled={active || !operatorEnabled} className={command === example ? 'selected' : ''} onClick={() => { setCommand(example); setError('') }}>{example}<ArrowUpRight size={11} /></button>)}{!commandExamples.length && <span>Waiting for the runtime command registry</span>}</div>
           <div className="run-options"><div><span className="muted">Controller</span><label className="select-wrap controller-select"><Cpu size={13} /><select value={controller} disabled={active || !operatorEnabled} aria-label="Execution controller" onChange={event => { const value = event.target.value as Controller; setController(value); setCommand(value === 'scripted_drawer' ? FIXTURE_COMMAND : DEFAULT_COMMAND); setError('') }}><option value="contact_expert" disabled={!contactAvailable}>Contact expert{!contactAvailable ? ' · unavailable' : ''}</option><option value="scripted_drawer">Drawer fixture (legacy)</option></select><ChevronDown size={13} /></label><span className="options-separator" /><span className="muted">Scenario</span><label className="select-wrap"><Settings2 size={13} /><select value={preset} onChange={e => setPreset(e.target.value)} disabled={active || !operatorEnabled} aria-label="Reproducible perturbation preset"><option value="nominal">Nominal scene</option><option value="low_friction">Reduced friction · stress preset</option><option value="displaced_objects">Displaced objects · stress preset</option></select><ChevronDown size={13} /></label><span className="options-separator" /><span className="muted">Recovery</span><label className="select-wrap"><GitBranch size={13} /><select value={recoveryMode} onChange={e => setRecoveryMode(e.target.value as RecoveryMode)} disabled={active || !operatorEnabled || controller !== 'contact_expert'} aria-label="Recovery policy"><option value="adaptive">Monitored · cost selected</option><option value="blind_retry">Bounded blind retry</option><option value="none">No recovery</option></select><ChevronDown size={13} /></label></div><span className="run-id"><Fingerprint size={13} />{shortId(run?.id)}</span></div>
-          <div className="view-options"><label htmlFor="view-quality">Camera quality</label><select id="view-quality" value={viewQuality} onChange={e => setViewQuality(e.target.value)} disabled={active || !operatorEnabled}><option value="economy">Economy · 256×256</option><option value="balanced">Balanced · 384×384 · smoother motion</option><option value="detail">Detail · 720×720 · sharper, slower capture</option></select><span>Applies to the next run. Live speed depends on rendering hardware.</span></div>
+          <div className="view-options"><label htmlFor="view-quality">Camera quality</label><select id="view-quality" value={viewQuality} onChange={e => setViewQuality(e.target.value)} disabled={active || !operatorEnabled}><option value="economy">Fast live · 256×256</option><option value="balanced">Balanced · 384×384 · smoother motion</option><option value="detail">Detail · 720×720 · sharper, slower capture</option></select><span>Fast live reduces rendering time. Balanced and Detail take longer. Applies to the next run.</span></div>
           <div className="console-grid">{cameraStage}{planPanel}</div>
           <div className="execution-bar"><div><Pill dot tone={run?.status === 'completed' ? 'green' : active ? 'cyan' : 'neutral'}>{run ? readable(run.status).toUpperCase() : 'NO ACTIVE RUN'}</Pill><span>{run?.summary?.reason || (replay ? 'Viewing original recorded evidence' : active ? `${controllerName(run?.controller)} · ${phaseLabel(currentPhase)}` : 'Run a command to start a fresh simulation with live cameras.')}</span></div><div className="execution-controls">{active && !replay ? <><button className="secondary-button compact" disabled={!operatorEnabled || busy} onClick={() => void control(run?.status === 'paused' ? 'resume' : 'pause')}>{run?.status === 'paused' ? <Play size={14} /> : <Pause size={14} />}{run?.status === 'paused' ? 'Resume' : 'Pause'}</button><button className="stop-button" disabled={!operatorEnabled || busy} onClick={() => void control('stop')}><Square size={12} fill="currentColor" />Stop run</button></> : run && !replay ? <button className="secondary-button compact" onClick={() => void selectRun(run)}><RotateCcw size={14} />Open replay</button> : null}</div></div>
           {run?.summary?.scope === 'contact_skill' && <ContactEvidence run={run} />}

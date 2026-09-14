@@ -10,7 +10,9 @@ runtime and retained evidence; do not improvise a new controller during recordin
    retained evidence on a machine that cannot run MuJoCo smoothly.
 3. Record at 1080p with the browser near 1440 × 900. Keep the overhead camera visible
    for the full task and use arm-side/wrist clips as short supporting views. Select
-   Balanced for smoother recorded motion or Detail for 720×720 images. These settings
+   Fast live for shorter execution time, Balanced for smoother recorded motion, or
+   Detail for 720×720 images. The four small views stay visible alongside the main
+   camera; click one to enlarge it. These settings
    apply only to new runs; recording the browser at 1080p does not increase the
    underlying camera resolution. Changing the replay angle keeps the playhead time.
 4. Select **Contact expert**, **Nominal scene**, **Monitored · cost selected**, seed

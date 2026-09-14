@@ -238,3 +238,18 @@ seconds). All nine evidence files verify; details are in
 `docs/evidence/camera-validation.json`. Original ten-seed evidence remains unchanged.
 Target Intel validation, narrated final capture, reliable learned full-task execution,
 and broader shape/lighting/background generalization remain unproven.
+
+## Combined cameras and faster default
+
+The console displays one large view and four smaller, clickable views. Replay
+controls synchronize all recorded angles. The layout uses the existing captured
+frames, with no additional MuJoCo rendering. Fast live (`economy`, 256×256 with
+lower capture rates) replaces Balanced as the browser default. The production
+build and desktop/mobile live/replay browser checks pass.
+
+A full Fast-live seed-1001 run passed without assistance, with one recovery and
+zero collisions, in 110.77 wall seconds versus the earlier Balanced run's 395.93
+seconds; both trajectories lasted 138.3 simulation seconds. This is an illustrative
+comparison of two runs on the development host. Nine saved artifact hashes verify.
+Details: `docs/evidence/fast-live-validation.json`. Controller and physics source
+were unchanged by this UI update.

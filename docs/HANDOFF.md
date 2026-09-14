@@ -108,7 +108,8 @@ this is not a ten-seed or target-hardware quality claim.
 
 The team name is now **SeoulStack**. Existing recordings retain their original labels
 and provenance. The repository URL is unchanged. Higher display resolution and two fixed side cameras are now implemented. The
-browser defaults to Balanced (384×384, overhead 6 FPS); Detail offers 720×720
+browser defaults to Fast live (`economy`, 256×256) for shorter render times;
+Balanced offers 384×384 at overhead 6 FPS and Detail offers 720×720
 with lower capture rates. All five cameras are recorded. A separate display
 renderer keeps calibrated controller images unchanged. Camera FPS refers to
 simulation time; live wall speed depends on rendering hardware.
@@ -204,3 +205,20 @@ trajectory took 395.93 wall seconds to render on this development host.
 This is a single presentation regression, not a replacement ten-seed or Intel result.
 See `docs/evidence/camera-validation.json`. Detail-mode rendering at 720×720 also
 passes the camera/physics isolation test; no full Detail-mode episode is claimed.
+
+## Combined camera view
+
+The console now shows one large camera with the other four below it. Clicking a
+small view promotes it. Recorded views follow the main view's play/pause, seek, and
+playback rate; old archives show missing angles as unavailable. The layout reuses
+existing frames and does not add simulation render passes. Fast live (`economy`) is
+the new browser default because Balanced's five-camera capture took 395.93 seconds
+on this host. Higher quality remains selectable for the next run.
+
+Validation: production build and browser checks passed for five simultaneous live
+streams, synchronized replay play/pause/seek/rate, thumbnail promotion, and mobile
+layout. Fast-live seed-1001 run `33147dc3081c` completed the full task autonomously
+with one recovery and zero collisions in 110.77 wall seconds (138.3 simulation
+seconds), versus 395.93 wall seconds for prior Balanced run `20ab2f249d42`. All nine
+artifact hashes verify. This compares two individual development-host runs, not a
+controlled benchmark or Intel measurement. See `docs/evidence/fast-live-validation.json`.

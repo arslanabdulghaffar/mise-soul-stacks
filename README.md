@@ -52,10 +52,14 @@ or stop the attempt. Completed and failed runs are retained under `artifacts/run
 Pauses mark a run assisted. Operator actions appear in the trace. `constraints.txt`
 pins the tested Python environment; `web/package-lock.json` pins frontend dependencies.
 
-Camera quality applies to the next run: **Balanced** (the browser default) captures
+The console shows one large camera and four smaller views together. Click a small
+view to enlarge it; replay play/pause, seeking, and playback speed stay synchronized.
+The combined layout reuses the existing captured frames.
+
+Camera quality applies to the next run: **Fast live** (the browser default, API
+`economy`) captures 256×256 with fewer frames to reduce rendering time. **Balanced** captures
 384×384 with overhead at 6 FPS, each wrist at 2 FPS, and each side at 3 FPS.
-**Detail** captures 720×720 at 3 FPS overhead and 1 FPS on the other views;
-**Economy** reduces rendering load with 256×256 frames. These are real captured
+**Detail** captures 720×720 at 3 FPS overhead and 1 FPS on the other views. These are real captured
 frames per simulation second, not promised live wall-clock frame rates. Software
 rendering can take longer than the simulated episode. All five views are recorded
 and checksummed; switching replay cameras retains the playback position. Older
