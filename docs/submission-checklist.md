@@ -27,8 +27,8 @@ This is not a claim of maximum points or complete submission readiness. See
 | Category | Current evidence | Final action |
 | --- | --- | --- |
 | Task completion and bimanual manipulation (30) | Seven physical-contact steps, passive drawer, four placed objects, direct A-to-B spoon handoff, independent evaluator, 10/10 fixed-seed headless and recorded suites | Replay the primary uninterrupted run during judging |
-| VLA / multi-modal reasoning (20) | Natural-language task graph, raw RGB object localization, robot-joint history, action context, learned ACT mug experiment, visual recovery trigger | The validated full-task controller is deterministic. Reliable learned full-task VLA execution is not demonstrated |
-| Robustness and generalization (15) | Predeclared seeds, randomized position/mass/friction, displaced and reduced-friction presets, matched recovery comparison, ten successful seed videos with no selective reruns | Additional stress audits passed 18/50 initially and 24/50 with an intermediate perception change; altered shape and combined variants passed 0/10 each. See final-audit.md for final-source validation and retained failures |
+| VLA / multi-modal reasoning (20) | Natural-language task graph, raw RGB object localization, robot-joint/action history, action context, visual recovery trigger, plus a hash-bound OpenVINO ACT mug policy that passed 10/10 fresh held-out trials | The validated full-task controller is deterministic; the learned policy is mug-only, not learned full-table execution |
+| Robustness and generalization (15) | Predeclared seeds, randomized position/mass/friction, displaced and reduced-friction presets, matched recovery comparison, ten successful seed videos with no selective reruns | Current 50-case matrix: lighting 9/10, background 10/10, physical 10/10, shape 0/10, combined 0/10. Retained shape/handoff failures prevent a broad robustness claim |
 | OpenVINO and Intel optimization (20) | Real ACT export with numerical parity and benchmark tooling | Run reference and chosen optimized precision on Intel Core Ultra Series 2/3; retain paired closed-loop outcomes |
 | Technical quality and reproducibility (10) | Locked dependencies, Dockerfile, submodule, CI, tests, checksums, immutable run archives | Hosted image build and autonomous mug smoke passed; seven artifact hashes verified |
 | Innovation and demonstration (5) | Cost-selected bounded recovery, persistent failure memory, dependency graph, resource locks, safe parallel drawer/mug execution | Show the seed-1001 recovery timeline and matched 9/10 vs 10/10 comparison |
@@ -59,7 +59,7 @@ actual target, replace `2` with `3` only when the machine is Series 3.
 python3 -m pip install -r requirements-learning.txt
 python3 bench/intel_bench.py --device CPU --precision f32 --intel-core-ultra-series 2
 python3 scripts/evaluate_contact_policy.py \
-  --model artifacts/models/contact_act_final --backend openvino \
+  --model artifacts/models/contact_act_context --backend openvino \
   --output artifacts/learned_checks/intel-reference
 ```
 

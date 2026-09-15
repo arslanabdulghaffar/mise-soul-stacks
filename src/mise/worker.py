@@ -46,10 +46,14 @@ def run_worker(directory_string: str, display_queue: Any, controls: Any) -> None
 
     directory = Path(directory_string)
     recorder = RunRecorder(directory, json.loads((directory / "run.json").read_text()))
-    contact_run = recorder.run["controller"] == "contact_expert"
+    learned_run = recorder.run["controller"] == "learned_act"
+    contact_run = learned_run or recorder.run["controller"] == "contact_expert"
     full_run = False
     scope = "contact_skill" if contact_run else "drawer_fixture"
     disclosure = CONTACT_NOTE if contact_run else FIXTURE_NOTE
+    if learned_run:
+        from .learned_assets import LEARNED_NOTE
+        disclosure = LEARNED_NOTE
     env, controller, contact_evaluator, recovery_memory = None, None, None, None
     writers: dict[str, Any] = {}
     started = time.monotonic()
@@ -81,7 +85,17 @@ def run_worker(directory_string: str, display_queue: Any, controls: Any) -> None
         if contact_run:
             from .skills import create_skill_env, create_skill_controller, create_skill_evaluator, validate_contact_plan, is_drawer_plan
             validate_contact_plan(plan)
-            env = create_skill_env(plan, seed=recorder.run["seed"])
+            if learned_run:
+                from .learned_assets import accepted_policy
+                from .manipulation import create_contact_env, validate_contact_plan as validate_learned_plan
+                validate_learned_plan(plan)
+                saved = recorder.run["learned_policy"]
+                accepted = accepted_policy(Path(saved["model_directory"]))
+                if accepted != saved or recorder.run["preset"] != "nominal":
+                    raise ValueError("Accepted learned policy configuration changed before execution")
+                env = create_contact_env(seed=recorder.run["seed"], scene_path=Path(accepted["scene_path"]))
+            else:
+                env = create_skill_env(plan, seed=recorder.run["seed"])
         else:
             env = BimanualTableEnv(seed=recorder.run["seed"])
         # Presets are applied once to the episode's initial state and logged.
@@ -110,10 +124,23 @@ def run_worker(directory_string: str, display_queue: Any, controls: Any) -> None
             if full_run and recorder.run.get("recovery_mode") == "adaptive":
                 from .recovery_memory import RecoveryMemory
                 recovery_memory = RecoveryMemory(directory.parent / "recovery_memory.sqlite3")
-            controller = create_skill_controller(
-                env, plan, recovery_mode=recorder.run.get("recovery_mode", "adaptive"),
-                recovery_memory=recovery_memory, episode_id=recorder.run["id"], memory_write=True)
-            contact_evaluator = create_skill_evaluator(env, plan)
+            if learned_run:
+                from .learning.runtime import OpenVINOContactPolicy
+                from .learned_controller import LearnedContactController
+                from .contact_evaluation import ContactSkillEvaluator
+                runtime = accepted["runtime_config"]
+                policy = OpenVINOContactPolicy(Path(accepted["model_directory"]) / "openvino",
+                    device=runtime["device"], precision=runtime["precision"],
+                    threads=int(runtime["compile_config"]["INFERENCE_NUM_THREADS"]))
+                controller = LearnedContactController(env, plan, policy)
+                contact_evaluator = ContactSkillEvaluator(env.model)
+                recorder.event("learned_policy_loaded", float(env.data.time),
+                    checkpoint_sha256=accepted["checkpoint_sha256"], runtime_config=policy.runtime_config)
+            else:
+                controller = create_skill_controller(
+                    env, plan, recovery_mode=recorder.run.get("recovery_mode", "adaptive"),
+                    recovery_memory=recovery_memory, episode_id=recorder.run["id"], memory_write=True)
+                contact_evaluator = create_skill_evaluator(env, plan)
             expert, fixture_steps = None, None
         else:
             expert = DrawerExpert(env)
@@ -304,7 +331,7 @@ def run_worker(directory_string: str, display_queue: Any, controls: Any) -> None
                   "p95_loop_work_ms": float(np.percentile(timings, 95)) if timings else None,
                   "wall_seconds": wall, "simulation_seconds": simulated,
                   "real_time_factor": simulated / wall if wall else None,
-                  "policy_latency_ms": None, "capture_hz": capture_hz["top"],
+                  "policy_latency_ms": contact_evidence.get("inference_p50_ms"), "capture_hz": capture_hz["top"],
                   "frames_per_camera": frame_count["top"],
                   "camera_capture_hz": capture_hz, "camera_frame_counts": frame_count,
                   "camera_width": settings["width"], "camera_height": settings["height"],
@@ -321,7 +348,7 @@ def run_worker(directory_string: str, display_queue: Any, controls: Any) -> None
         summary = {"scope": scope, "full_task_success": skill_success if full_run else None,
                    "completed_steps": completed_steps, "collision_count": snapshot.forbidden_collision_count if full_run and snapshot else None, "recovery_attempts": 0,
                    "assisted": assisted, "reason": reason, "wall_seconds": wall,
-                   "timing": timing, "checkpoint_hash": None}
+                   "timing": timing, "checkpoint_hash": recorder.run.get("checkpoint_hash")}
         summary["recovery_attempts"] = recovery_attempts
         if full_run:
             summary.update(full_task_evidence=contact_evidence,

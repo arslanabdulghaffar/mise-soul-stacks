@@ -120,7 +120,7 @@ class RunRecorder:
         atomic_json(self.directory / "manifest.json", {
             "schema_version": "mise.manifest.v1", "run_id": self.run["id"],
             "config_hash": self.run["config_hash"], "files_sha256": files,
-            "hardware": self.run["hardware"], "checkpoint_hash": None,
+            "hardware": self.run["hardware"], "checkpoint_hash": self.run.get("checkpoint_hash"),
             "scope": self.run.get("scope", "drawer_fixture"),
             "disclosure": self.run.get("disclosure", FIXTURE_NOTE),
             "sources_sha256": self.run.get("sources_sha256", {})})

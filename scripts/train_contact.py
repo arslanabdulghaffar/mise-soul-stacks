@@ -53,6 +53,8 @@ def main():
     parser.add_argument('--device', default='cuda' if torch.cuda.is_available() else 'cpu')
     parser.add_argument('--train-backbone', action='store_true')
     parser.add_argument('--resume', type=Path)
+    parser.add_argument('--initialize-from', type=Path)
+    parser.add_argument('--action-context', action='store_true')
     args = parser.parse_args()
     if args.steps < 1 or args.batch_size < 1 or args.chunk_size < 1 or args.validation_every < 1:
         parser.error('steps, batch size, chunk size and validation interval must be positive')
@@ -64,16 +66,30 @@ def main():
         torch.cuda.manual_seed_all(args.seed)
     metadata, records, all_records = read_manifest(args.data)
     statistics = training_statistics(args.data, records)
-    config = PolicyConfig(image_size=args.image_size, chunk_size=args.chunk_size)
+    config = PolicyConfig(image_size=args.image_size, chunk_size=args.chunk_size, action_context=args.action_context)
     args.output.mkdir(parents=True, exist_ok=True)
-    training = ContactDataset(args.data, records, statistics, split='train', image_size=config.image_size, chunk_size=config.chunk_size)
-    validation = ContactDataset(args.data, records, statistics, split='validation', image_size=config.image_size, chunk_size=config.chunk_size)
-    model = ContactACT(config, pretrained_backbone=args.resume is None).to(args.device)
+    training = ContactDataset(args.data, records, statistics, split='train', image_size=config.image_size, chunk_size=config.chunk_size, action_context=config.action_context)
+    validation = ContactDataset(args.data, records, statistics, split='validation', image_size=config.image_size, chunk_size=config.chunk_size, action_context=config.action_context)
+    model = ContactACT(config, pretrained_backbone=args.resume is None and args.initialize_from is None).to(args.device)
     if args.resume:
         previous = torch.load(args.resume, map_location='cpu', weights_only=True)
-        if previous['config'] != config.to_dict() or previous['statistics'] != statistics:
+        if PolicyConfig(**previous['config']).to_dict() != config.to_dict() or previous['statistics'] != statistics:
             raise ValueError('Resume requires identical model configuration and train-only normalization')
         model.load_state_dict(previous['model'])
+    if args.initialize_from:
+        if args.resume:
+            raise ValueError('Choose resume or initialize-from, not both')
+        previous = torch.load(args.initialize_from, map_location='cpu', weights_only=True)
+        if previous['statistics'] != statistics:
+            raise ValueError('Initialization requires matching train-only normalization')
+        weights = model.state_dict()
+        for key, value in previous['model'].items():
+            if key in weights and weights[key].shape == value.shape:
+                weights[key] = value
+            elif key == 'state_projection.weight' and weights[key].shape[1] == 25 and value.shape[1] == 12:
+                weights[key].zero_()
+                weights[key][:, :12] = value
+        model.load_state_dict(weights)
     if not args.train_backbone:
         for parameter in model.backbone.parameters():
             parameter.requires_grad_(False)

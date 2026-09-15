@@ -1,18 +1,20 @@
 # Intel validation handoff
 
 The full-table controller is a deterministic camera-guided contact controller.
-The exported OpenVINO model is an experimental learned **mug-only** controller.
-Current learned checkpoints are unreliable in closed loop. Completing these
-commands does not guarantee 20 points, learned full-table control, or preserved
-quality. Failed attempts must stay in the evidence.
+The exported OpenVINO model is a validated learned **mug-only** controller. Its
+action-context policy passed ten fresh held-out development-host trials; the result
+does not establish learned full-table control or Intel quality preservation. Failed
+attempts must stay in the evidence.
 
 ## Files to transfer to the target
 
 Clone the repository with its submodule, install the pinned runtime and learning
-dependencies, and copy `artifacts/models/contact_act_final/` (checkpoint, OpenVINO
-XML/BIN, and manifest) plus `data/contact/frozen/scene.xml` from the development
-workspace. These large/generated artifacts are not tracked in Git. Keep the frozen
-scene at that same relative path so its mesh paths resolve into `vendor/`.
+dependencies, and create the verified transfer ZIP with
+`python3 -m scripts.package_contact_policy`. Extract it into the clone, preserving
+paths; it supplies `artifacts/models/contact_act_context/` (checkpoint, OpenVINO
+XML/BIN, registration, and manifest), the frozen scene, and the ten-seed evaluation.
+These large/generated artifacts are not tracked in Git. Keep the frozen scene at the
+same relative path so its mesh paths resolve into `vendor/`.
 
 The evaluation checks export/checkpoint hashes before running and records the scene,
 mesh, source, and per-attempt checksums. It rejects existing output directories.

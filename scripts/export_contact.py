@@ -31,8 +31,8 @@ def main():
     model.load_state_dict(payload['model'])
     model.eval()
     _, records, _ = read_manifest(args.data)
-    validation = ContactDataset(args.data, records, payload['statistics'], split='validation', image_size=config.image_size, chunk_size=config.chunk_size)
-    example = (torch.zeros(1, 3, 3, config.image_size, config.image_size), torch.zeros(1, 12))
+    validation = ContactDataset(args.data, records, payload['statistics'], split='validation', image_size=config.image_size, chunk_size=config.chunk_size, action_context=config.action_context)
+    example = (torch.zeros(1, 3, 3, config.image_size, config.image_size), torch.zeros(1, config.state_dim))
     began = time.monotonic()
     converted = ov.convert_model(model, example_input=example)
     converted.inputs[0].get_tensor().set_names({'images'})
@@ -66,7 +66,7 @@ def main():
               'config': config.to_dict(), 'statistics': payload['statistics'], 'joint_order': JOINT_ORDER,
               'joint_units': 'radians', 'camera_order': ['top', 'wrist_a', 'wrist_b'],
               'input_images': 'N,3,3,H,W float32 RGB, PIL bilinear resize, ImageNet normalization',
-              'input_state': 'N,12 float32 normalized with training-split statistics',
+              'input_state': f'N,{config.state_dim} float32; normalized joints' + (' + normalized previous targets + elapsed skill seconds / 30' if config.action_context else ''),
               'output': 'normalized absolute actuator-target chunks; denormalize with action statistics',
               'device': 'CPU', 'host': platform.node(), 'processor': platform.processor(), 'precision': 'FP32',
               'openvino_version': ov.__version__, 'torch_version': str(torch.__version__),

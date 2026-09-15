@@ -1,0 +1,17 @@
+{
+  "schema_version": "mise.full-task-stress-summary.v1",
+  "source": "artifacts/robustness/context-fork-final-7000",
+  "seeds": [7001, 7002, 7003, 7004, 7005, 7006, 7007, 7008, 7009, 7010],
+  "total": 50,
+  "successes": 29,
+  "by_family": {
+    "lighting": {"successes": 9, "total": 10},
+    "background": {"successes": 10, "total": 10},
+    "physical": {"successes": 10, "total": 10},
+    "shape": {"successes": 0, "total": 10},
+    "combined": {"successes": 0, "total": 10}
+  },
+  "complete": true,
+  "manifest_sha256": "e7583e400560d1a433684ffb87bf2239afd906c157053e7bb9ef845abb527950",
+  "interpretation": "The matrix includes every predeclared case. Shape and combined failures are retained and prevent a broad robustness claim."
+}

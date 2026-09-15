@@ -27,10 +27,11 @@ unchanged by these display settings.
 The camera regression checks every profile, image dimensions, actual rendered
 content, bitwise-identical controller observations, joints and physics state.
 Browser checks cover five visible streams, thumbnail promotion, synchronized
-replay play/pause/seek/rate, and mobile layout. All 89 Python tests pass (87 in the
-full regression plus two new robustness fixtures); the changed camera/server paths
-also pass a 23-test targeted rerun. The production frontend builds, and all 70
-original recorded-evidence checksums still verify.
+replay play/pause/seek/rate, and mobile layout. The current regression suite has
+**96 passing Python tests**, including policy-bundle integrity, ACT console contracts,
+full-component utensil measurement, actual MuJoCo contact, and evaluator checks. The
+production frontend builds, and all 70 original recorded-evidence checksums still
+verify.
 
 The complete synchronized recording `2f710b64aab8` passes all seven task steps,
 with one recovery, zero collisions, and nine verified artifact hashes. Each camera
@@ -57,10 +58,12 @@ calibrated plate envelope. This avoids shifting nominal grasp targets. The yello
 handle mask rejects brown tabletop pixels. The accepted controller passes **10/10 nominal seeds**, with zero forbidden
 collisions. Results are recorded separately from the intermediate experiments.
 
-A separate final-source pilot declared fresh seeds 6001 and 6002 for each of the
-five stress families. It passed **5/10**: lighting 2/2, background 1/2, physical
-properties 2/2, shape 0/2, combined 0/2. This small pilot confirms remaining gaps;
-it does not establish generalization or a ten-seed-per-family success claim.
+A fresh 50-case matrix (seeds 7001–7010, declared before execution) after the fork
+recovery and RGB fixes passed **29/50**: lighting 9/10, background 10/10, physical
+properties 10/10, shape 0/10, and combined 0/10. The earlier 5/10 pilot is retained;
+the newer complete matrix supersedes it for this source version. Shape and combined
+failures remain visible because the changed spoon bowl can lose the receiver's grasp
+during handoff. This is a real robustness boundary, not a relaxed evaluator.
 
 Changing the spoon bowl geometry can lose the receiver's grasp during handoff.
 Correct final object locations alone do not satisfy the physical-handoff evaluator.
@@ -70,18 +73,23 @@ when the controller finished its programmed sequence.
 
 ## Learned policy and Intel scope
 
-The existing ACT mug checkpoint passed **2/10** frozen test seeds. Training its
-visual backbone further improved prediction error but passed only **1/5** development
-validation seeds. A shorter-chunk temporal-ensemble pilot passed **0/5** validation
-seeds. None is promoted into the default expert or described as reliable full-task
-VLA control. Replanning options remain explicit experimental evaluation settings.
-Intel pair validation rejects comparisons that change those controller settings.
+Earlier ACT baselines passed 2/10 frozen test seeds, a refined checkpoint passed 1/5
+development seeds, and a temporal-ensemble pilot passed 0/5. Those retained failures
+are not overwritten. A new action-context candidate was initialized from the refined
+policy, trained using actual preceding commanded action plus elapsed time, exported to
+OpenVINO, and evaluated on ten fresh held-out seeds 50000–50009. It passed **10/10**
+with independent grasp, lift, upright release, and stable-placement checks. Its model,
+scene, runtime-source hashes, and evaluation hashes are registered before the console
+allows selection. A fresh recorded console run (seed 50010) also passed. The policy
+is limited to nominal arm-B mug pick/place and is not evidence of learned full-table
+control. Intel pair validation rejects comparisons that change validated settings.
 
 [The experiment summary](evidence/final-audit-experiments.json) retains all declared
 outcomes and hashes of local source manifests/results. Detailed traces, original
 and refined checkpoints, and frozen XML variants remain under `artifacts/` locally.
-Training and evaluation commands are versioned; these large local artifacts are
-not automatically uploaded to GitHub.
+`scripts/package_contact_policy.py` creates a verified transfer ZIP from the
+registered policy and its ten-seed evaluation; large weights are not committed to
+GitHub.
 
 The Intel target demonstration is deferred at the user's request. Use
 [intel-validation.md](intel-validation.md) after confirming the actual target SKU.
@@ -90,11 +98,9 @@ preserved closed-loop task quality.
 
 ## Next work
 
-1. Preserve the passing nominal expert while improving handoff retention and recovery
-   under altered shapes/physical properties. Validate on fresh, predeclared seeds.
-2. Improve the learned policy using development data, then evaluate a frozen
-   candidate on fresh held-out seeds. Do not tune on the reported test outcomes.
-3. Run paired OpenVINO measurements and closed-loop evaluation on the required Intel
+1. Improve handoff retention under altered spoon shapes and validate on a new,
+   predeclared stress matrix. Do not alter the evaluator to hide failures.
+2. Run paired OpenVINO measurements and closed-loop evaluation on the required Intel
    hardware, then capture the final narrated demonstration.
 
 GitHub contains source and recorded evidence. GitHub Pages cannot execute FastAPI

@@ -156,7 +156,10 @@ class RuleBasedPlanner:
             if skill == "handoff":
                 conditions = (f"{donor}_holds_{obj}", "shared_pose_reachable")
             zone = "drawer" if obj == "drawer" else "left" if goal == "table_left" else "right" if goal in {"table_right", "table_upper_right"} else "middle"
-            steps.append(SkillStep(len(steps) + 1, skill, arm, (steps[-1].id,) if steps else (), zone, obj, goal, conditions, 30.0, donor, receiver))
+            # Reserve time for the registered bounded corrections; the global
+            # 180-second episode limit and explicit model-plan deadlines remain.
+            timeout = 55.0 if skill == "pick_place" and obj == "fork" else 45.0 if skill == "pick_place" and obj == "spoon" else 30.0
+            steps.append(SkillStep(len(steps) + 1, skill, arm, (steps[-1].id,) if steps else (), zone, obj, goal, conditions, timeout, donor, receiver))
             if skill == "open_drawer":
                 drawer_ready = True
 

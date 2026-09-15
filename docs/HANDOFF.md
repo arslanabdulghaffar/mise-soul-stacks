@@ -62,7 +62,7 @@ The three team suggestions are implemented:
 
 Current retained evidence:
 
-- 83 Python tests pass locally, including actual MuJoCo contact, camera isolation,
+- 96 Python tests pass locally, including actual MuJoCo contact, camera isolation,
   and evaluator regressions;
 - the React/TypeScript production build passes;
 - fixed headless full-task suite: 10/10 seeds pass;
@@ -84,13 +84,14 @@ and parks concurrently with the fork motion instead of parking before recovery.
 
 The successful full-task controller is a deterministic camera-guided hierarchical
 baseline with adaptive recovery. Do not describe it as an end-to-end learned VLA.
-A real compact ACT-style contact policy was trained and exported to OpenVINO for the
-arm-B mug skill, but it did not generalize reliably enough to replace the full-task
-expert. The earlier retained pilot passed 3/10 test seeds. A complete audit of
-`contact_act_final` passed 2/10 test seeds. A backbone-refined checkpoint passed
-1/5 development validation seeds despite better action-prediction error. A
-five-step temporal-ensemble pilot passed 0/5 validation seeds. These experiments
-are retained locally and are not replacements for the validated expert.
+A real compact ACT-style contact policy is integrated for the **nominal arm-B mug
+skill only**. `contact_act_context` passed 10/10 fresh held-out seeds (50000–50009),
+and the local console completed a separately recorded seed-50010 run. It uses RGB,
+robot joints, prior commanded joint targets, and elapsed skill time.
+`accepted_policy.json` binds that capability to the exact OpenVINO IR, frozen scene,
+runtime sources, and evaluation hashes. The full seven-step task remains the
+deterministic expert; do not describe this as learned full-table control. Earlier
+2/10, 1/5, and 0/5 ACT experiments remain retained failures.
 
 Physical SO-101 hardware is not required by the online challenge. Final MuJoCo and
 OpenVINO execution on Intel Core Ultra Series 2 or 3 is required for the 20-point
@@ -98,8 +99,9 @@ Intel category and has not yet been performed.
 
 ## Remaining work
 
-1. Improve and independently validate learned-policy execution and robustness;
-   the retained stress matrix contains failures and must not be replaced or hidden.
+1. Improve handoff retention for changed spoon geometry. The complete fresh 50-case
+   stress matrix passed 29/50 (lighting 9/10, background 10/10, physical 10/10,
+   shape 0/10, combined 0/10); failures remain retained.
 2. On an Intel Core Ultra Series 2/3 machine, install `requirements-learning.txt`,
    generate or copy the exported ACT model, and run `bench/intel_bench.py` with the
    correct `--intel-core-ultra-series` value.
@@ -213,7 +215,7 @@ Docker packaging validation is complete.
 
 ## Historical camera presentation validation
 
-The presentation update passes 83 Python tests and the production frontend build.
+The presentation update passes the 96-test Python regression suite and the production frontend build.
 Browser checks passed for desktop/mobile layout, all five live MJPEG streams,
 archived-camera availability, and preserving the replay playhead when switching views.
 The original ten-seed archive still verifies all 70 artifact checksums.

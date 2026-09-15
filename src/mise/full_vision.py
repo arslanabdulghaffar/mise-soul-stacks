@@ -18,7 +18,7 @@ class Bounds:
     ymax: float
 
 
-def _largest_component(mask: np.ndarray) -> list[tuple[int, int]]:
+def _largest_component(mask: np.ndarray, center_region: np.ndarray | None = None) -> list[tuple[int, int]]:
     visited = np.zeros(mask.shape, dtype=bool)
     biggest: list[tuple[int, int]] = []
     height, width = mask.shape
@@ -34,6 +34,10 @@ def _largest_component(mask: np.ndarray) -> list[tuple[int, int]]:
                 if 0 <= yy < height and 0 <= xx < width and mask[yy, xx] and not visited[yy, xx]:
                     visited[yy, xx] = True
                     stack.append((yy, xx))
+        if center_region is not None:
+            cy, cx = np.mean(component, axis=0).astype(int)
+            if not center_region[cy, cx]:
+                continue
         if len(component) > len(biggest):
             biggest = component
     return biggest
@@ -42,7 +46,7 @@ def _largest_component(mask: np.ndarray) -> list[tuple[int, int]]:
 def locate_color(rgb: np.ndarray, object_name: str, *, object_top: float,
                  bounds: Bounds | None = None, minimum_pixels: int = 20,
                  camera_height: float = 1.75, fovy: float = 58.0,
-                 measure_axis: bool = False) -> Detection:
+                 measure_axis: bool = False, preserve_components: bool = False) -> Detection:
     image = np.asarray(rgb, dtype=float)
     if image.ndim != 3 or image.shape[2] != 3:
         raise ValueError("RGB observation must have shape H x W x 3.")
@@ -62,32 +66,38 @@ def locate_color(rgb: np.ndarray, object_name: str, *, object_top: float,
         raise ValueError(f"Unknown visual fiducial: {object_name}")
     height, width = mask.shape
     scale = 2 * (camera_height - object_top) * np.tan(np.deg2rad(fovy / 2)) / height
+    center_region = None
     if bounds is not None:
         rows, columns = np.indices((height, width))
         world_x = (columns - (width - 1) / 2) * scale
         world_y = ((height - 1) / 2 - rows) * scale
-        mask &= ((world_x >= bounds.xmin) & (world_x <= bounds.xmax)
-                 & (world_y >= bounds.ymin) & (world_y <= bounds.ymax))
-    component = _largest_component(mask)
+        region = ((world_x >= bounds.xmin) & (world_x <= bounds.xmax)
+                  & (world_y >= bounds.ymin) & (world_y <= bounds.ymax))
+        if preserve_components:
+            center_region = region
+        else:
+            mask &= region
+    component = _largest_component(mask, center_region)
     # A tabletop highlight can join the white plate into an implausibly large
     # region. Tighten brightness only in that case, preserving the calibrated
     # centroid under nominal lighting. The bound allows a maximum 20 cm plate extent,
     # projected with camera calibration; no simulator object state is read.
     if object_name == "plate" and len(component) * scale**2 > .20**2:
-        component = _largest_component(mask & (red > 220) & (green > 220) & (blue > 210))
+        component = _largest_component(mask & (red > 220) & (green > 220) & (blue > 210), center_region)
     if len(component) < minimum_pixels:
         raise ValueError(f"The {object_name.replace('_', ' ')} is not sufficiently visible in RGB.")
     row, column = np.mean(component, axis=0)
     xy = ((float(column) - (width - 1) / 2) * scale,
           ((height - 1) / 2 - float(row)) * scale)
-    axis_error = None
+    axis_error = heading = None
     if measure_axis:
         centered = np.asarray(component, dtype=float) - np.asarray([row, column])
         covariance = centered.T @ centered
         axis = np.linalg.eigh(covariance)[1][:, -1]
         # An axis has no sign: both handle-up and handle-down are vertical.
         axis_error = float(np.rad2deg(np.arctan2(abs(axis[1]), abs(axis[0]))))
-    return Detection(xy, len(component), (float(column), float(row)), axis_error)
+        heading = float((np.arctan2(axis[1], axis[0]) + np.pi / 2) % np.pi - np.pi / 2)
+    return Detection(xy, len(component), (float(column), float(row)), axis_error, heading)
 
 
 def locate_handle(rgb: np.ndarray, *, opened: bool = False) -> Detection:
@@ -104,7 +114,8 @@ def locate_plate(rgb: np.ndarray) -> Detection:
 def locate_utensil(rgb: np.ndarray, name: str, *, in_drawer: bool) -> Detection:
     bounds = Bounds(-.08, .06, .26, .38) if in_drawer else Bounds(-.23, .34, -.06, .23)
     return locate_color(rgb, name, object_top=.85 if in_drawer else .80,
-                        bounds=bounds, minimum_pixels=12, measure_axis=True)
+                        bounds=bounds, minimum_pixels=12, measure_axis=True,
+                        preserve_components=not in_drawer)
 
 
 def locate_full_mug(rgb: np.ndarray) -> Detection:

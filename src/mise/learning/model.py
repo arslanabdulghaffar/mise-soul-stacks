@@ -28,6 +28,11 @@ class PolicyConfig:
     decoder_layers: int = 2
     feature_grid: int = 4
     dropout: float = 0.0
+    action_context: bool = False
+
+    @property
+    def state_dim(self):
+        return self.joints * 2 + 1 if self.action_context else self.joints
 
     def to_dict(self):
         return asdict(self)
@@ -91,7 +96,7 @@ class ContactACT(nn.Module):
         self.visual_projection = nn.Linear(512, config.hidden_dim)
         tokens = config.cameras * config.feature_grid * config.feature_grid
         self.position = nn.Parameter(torch.randn(1, tokens + 2, config.hidden_dim) * 0.02)
-        self.state_projection = nn.Linear(config.joints, config.hidden_dim)
+        self.state_projection = nn.Linear(config.state_dim, config.hidden_dim)
         self.latent_projection = nn.Linear(config.latent_dim, config.hidden_dim)
         self.encoder = nn.ModuleList(EncoderBlock(config.hidden_dim, config.heads, config.dropout) for _ in range(config.encoder_layers))
         self.decoder = nn.ModuleList(DecoderBlock(config.hidden_dim, config.heads, config.dropout) for _ in range(config.decoder_layers))

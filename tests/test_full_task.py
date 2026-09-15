@@ -59,7 +59,7 @@ class FullTaskTests(unittest.TestCase):
                         initial_estimate = memory.estimate(context, candidate)
 
                         if interruption == "timeout":
-                            controller._step_started = float(env.data.time) - 31
+                            controller._step_started = float(env.data.time) - controller.active_step.timeout_s - 1
                             controller.advance()
                         else:
                             controller._segment_index = len(controller._segments)
@@ -127,7 +127,7 @@ class FullTaskTests(unittest.TestCase):
             self.assertNotIn("park_after_spoon", phases)
             self.assertIn("parallel_cleanup_started", [event["type"] for event in controller.events])
             self.assertEqual(controller.evidence["recovery"]["mode"], "adaptive")
-            self.assertEqual(len(controller.evidence["recovery"]["candidate_registry"]), 2)
+            self.assertEqual(len(controller.evidence["recovery"]["candidate_registry"]), 3)
             self.assertEqual(memory.summary()["successes"], 1)
             self.assertEqual(
                 [event["type"] for event in controller.events if "recovery" in event["type"]],

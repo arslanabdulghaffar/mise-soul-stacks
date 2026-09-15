@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from torch.utils.data import Dataset
-from .preprocessing import CAMERA_KEYS, preprocess_images
+from .preprocessing import CAMERA_KEYS, preprocess_images, contextual_state
 
 
 def sha256(path: Path):
@@ -81,7 +81,7 @@ def training_statistics(directory: Path, records):
 
 
 class ContactDataset(Dataset):
-    def __init__(self, directory: Path, records, statistics, *, split: str, image_size: int, chunk_size: int):
+    def __init__(self, directory: Path, records, statistics, *, split: str, image_size: int, chunk_size: int, action_context: bool = False):
         self.samples, self.episodes = [], []
         self.chunk_size = chunk_size
         self.state_mean = np.asarray(statistics['state_mean'], np.float32)
@@ -92,9 +92,16 @@ class ContactDataset(Dataset):
             if row['split'] != split:
                 continue
             raw = load_episode(directory / row['path'])
+            states = (raw['observation.state'].astype(np.float32) - self.state_mean) / self.state_std
+            if action_context:
+                states = np.stack([contextual_state(
+                    raw['observation.state'][i], statistics,
+                    raw['action'][index - 1] if index else raw['observation.state'][i],
+                    float(raw['observation.timestamp'][i]))
+                    for i, index in enumerate(raw['observation_action_indices'])])
             images = np.stack([preprocess_images([raw[key][i] for key in CAMERA_KEYS], image_size) for i in range(len(raw['observation.state']))])
             episode = {'images': torch.from_numpy(images),
-                       'states': torch.from_numpy((raw['observation.state'].astype(np.float32) - self.state_mean) / self.state_std),
+                       'states': torch.from_numpy(states),
                        'actions': torch.from_numpy((raw['action'].astype(np.float32) - self.action_mean) / self.action_std),
                        'indices': raw['observation_action_indices'], 'record': row}
             ep_index = len(self.episodes)

@@ -210,7 +210,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--model",
         type=Path,
-        default=Path("artifacts/models/contact_act_final/openvino/contact_act.xml"),
+        default=Path("artifacts/models/contact_act_context/openvino/contact_act.xml"),
     )
     parser.add_argument("--device", default="CPU", help="OpenVINO device, for example CPU, GPU, or NPU")
     parser.add_argument("--precision", choices=["auto", "f32", "f16", "bf16"], default="f32")

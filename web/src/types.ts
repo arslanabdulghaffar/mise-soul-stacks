@@ -1,5 +1,5 @@
 export type RunStatus = 'queued' | 'running' | 'paused' | 'completed' | 'stopped' | 'failed'
-export type Controller = 'contact_expert' | 'scripted_drawer'
+export type Controller = 'contact_expert' | 'scripted_drawer' | 'learned_act'
 export type RecoveryMode = 'none' | 'blind_retry' | 'adaptive'
 export type Camera = 'top' | 'wrist_a' | 'wrist_b' | 'side_a' | 'side_b'
 export type View = 'Overview' | 'Live run' | 'Evidence' | 'Recovery' | 'Benchmarks' | 'Method'

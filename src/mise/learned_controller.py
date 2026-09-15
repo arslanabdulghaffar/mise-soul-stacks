@@ -25,6 +25,9 @@ class LearnedContactController:
                              controller_inputs=['overhead_rgb', 'wrist_a_rgb', 'wrist_b_rgb', 'robot_joint_positions'],
                              object_state_used_for_targets=False, chunk_execution_steps=execution_steps, temporal_ensemble=temporal_ensemble,
                              action_delta_limit_rad=.08, visual_completion_hold_s=1.0)
+        if getattr(policy, 'action_context', False) is True:
+            self.evidence['controller_inputs'] += ['previous_commanded_joint_targets', 'elapsed_skill_seconds']
+            self.evidence['action_context'] = True
         self._action = env.joint_positions()
         self._chunk, self._tick = None, 0
         self._started = float(env.data.time)
@@ -65,7 +68,9 @@ class LearnedContactController:
                 else:
                     self._goal_since = None
                 began = time.perf_counter()
-                self._chunk = np.asarray(self.policy.predict_chunk(observation), dtype=float)
+                context = ({'previous_action': self._action.copy(), 'elapsed_s': now - self._started}
+                           if getattr(self.policy, 'action_context', False) is True else {})
+                self._chunk = np.asarray(self.policy.predict_chunk(observation, **context), dtype=float)
                 latency = (time.perf_counter() - began) * 1000
                 self.inference_ms.append(latency)
                 if self._chunk.ndim != 2 or self._chunk.shape[1] != 12 or len(self._chunk) < self.execution_steps or not np.isfinite(self._chunk).all():

@@ -23,7 +23,7 @@ def bind_inputs(model: Any, metadata: dict[str, Any]) -> None:
     size = int(metadata['config']['image_size'])
     if size < 1:
         raise ValueError('Model image_size must be positive.')
-    shapes = {'images': [1, 3, 3, size, size], 'state': [1, 12]}
+    shapes = {'images': [1, 3, 3, size, size], 'state': [1, 25 if metadata['config'].get('action_context', False) else 12]}
     names = [port.any_name for port in model.inputs]
     if len(names) != 2 or set(names) != set(shapes):
         raise ValueError(f'Unsupported model inputs: {names}; expected images and state')

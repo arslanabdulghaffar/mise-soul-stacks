@@ -44,7 +44,7 @@ def frozen_files(model: Path, scene: Path, backend: str) -> dict[str, str]:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--model', type=Path, default=Path('artifacts/models/contact_act_final'))
+    parser.add_argument('--model', type=Path, default=Path('artifacts/models/contact_act_context'))
     parser.add_argument('--backend', choices=['torch', 'openvino'], default='openvino')
     parser.add_argument('--device', default=None, help='OpenVINO CPU/GPU/NPU or torch cpu/cuda; defaults to CPU/cpu')
     parser.add_argument('--precision', choices=['auto', 'f32', 'f16', 'bf16'], default='f32')

@@ -14,6 +14,7 @@ class Detection:
     pixels: int
     centroid: tuple[float, float]
     axis_error_degrees: float | None = None
+    heading_radians: float | None = None
 
 
 def locate_mug(rgb: np.ndarray, *, camera_height: float = 1.75, fovy: float = 58., object_top: float = .85) -> Detection:

@@ -31,7 +31,7 @@ class RunRequest(BaseModel):
     command: str = Field(default=CONTACT_COMMAND, min_length=3, max_length=500)
     seed: int = Field(default=1001, ge=0, le=2**31 - 1, strict=True)
     preset: Literal["nominal", "low_friction", "displaced_objects"] = "nominal"
-    controller: Literal["contact_expert", "scripted_drawer"] = "contact_expert"
+    controller: Literal["contact_expert", "scripted_drawer", "learned_act"] = "contact_expert"
     view_quality: Literal["economy", "balanced", "detail"] = "economy"
     recovery_mode: Literal["none", "blind_retry", "adaptive"] = "adaptive"
 
@@ -53,7 +53,7 @@ def _interrupted_summary(run: dict[str, Any], reason: str) -> dict[str, Any]:
                "wall_seconds": None}
     if run.get("scope") == "full_task":
         summary["full_task_success"] = False
-    elif run.get("controller") == "contact_expert":
+    elif run.get("controller") in ("contact_expert", "learned_act"):
         summary.update(contact_skill_success=False, autonomous_contact_skill_success=False,
                        contact_evidence=run.get("contact_evidence", {}))
     return summary
@@ -132,6 +132,7 @@ class RunManager:
     def create(self, request: RunRequest) -> dict[str, Any]:
         if self.read_only:
             raise HTTPException(403, "Replay mode is read-only")
+        accepted = None
         try:
             plan = RuleBasedPlanner().plan(request.command)
             if request.controller == "contact_expert":
@@ -140,13 +141,23 @@ class RunManager:
                 validate_contact_plan(plan)
                 if (is_drawer_plan(plan) or is_full_plan(plan)) and request.preset != 'nominal':
                     raise ValueError('This physical controller currently supports the nominal scene only.')
+            elif request.controller == "learned_act":
+                from .manipulation import validate_contact_plan
+                from .learned_assets import accepted_policy
+                validate_contact_plan(plan)
+                if request.preset != "nominal":
+                    raise ValueError("The validated learned mug controller supports the nominal scene only.")
+                accepted = accepted_policy()
             elif not re.fullmatch(r"open (?:the )?(?:top )?drawer(?: with arm a)?[.!]?", request.command.lower()):
                 raise ValueError("The scripted_drawer fixture supports only 'Open the drawer with arm A.'.")
         except ValueError as exc:
             raise HTTPException(422, str(exc)) from exc
         full_run = request.controller == "contact_expert" and is_full_plan(plan)
-        scope = "full_task" if full_run else "contact_skill" if request.controller == "contact_expert" else "drawer_fixture"
+        scope = "full_task" if full_run else "contact_skill" if request.controller in ("contact_expert", "learned_act") else "drawer_fixture"
         disclosure = FULL_NOTE if full_run else CONTACT_NOTE if request.controller == "contact_expert" else FIXTURE_NOTE
+        if accepted:
+            from .learned_assets import LEARNED_NOTE
+            disclosure = LEARNED_NOTE
         with self.lock:
             if self.active_id and self.get(self.active_id)["status"] not in TERMINAL:
                 raise HTTPException(409, "One run is already active")
@@ -186,12 +197,14 @@ class RunManager:
                                     ROOT / "scripts/build_full_scene.py",
                                     ROOT / "vendor/SO-ARM100/Simulation/SO101/so101_new_calib.xml"] if path.exists()}
             config = request.model_dump()
+            if accepted:
+                config["learned_policy"] = accepted
             run = {"schema_version": "mise.run.v1", "id": run_id, "status": "queued", **config,
                    "created_at": utc_now(), "hardware": self.hardware, "scope": scope,
                    "plan": asdict(plan), "active_step": None, "phase": "queued",
                    "config_hash": digest({"request": config, "sources": sources}), "sources_sha256": sources,
                    "summary": None, "last_sequence": 0, "last_observation_at": None,
-                   "checkpoint_hash": None, "disclosure": disclosure,
+                   "checkpoint_hash": accepted["checkpoint_sha256"] if accepted else None, "disclosure": disclosure,
                    "artifacts": {name: f"/api/runs/{run_id}/artifacts/{filename}"
                                  for name, filename in {"trace": "trace.jsonl", "summary": "summary.json",
                                                         "manifest": "manifest.json", "timing": "timing.csv"}.items()}}
@@ -274,17 +287,20 @@ def create_app(*, runs_dir: Path | None = None, read_only: bool = False,
     def health():
         from .skills import SUPPORTED_CONTACT_COMMANDS
         manager = app.state.manager
+        from .learned_assets import policy_installed
+        learned = policy_installed()
         return {"status": "ok", "mode": "replay" if read_only else "local",
                 "hardware": manager.hardware,
                 "capabilities": {"live_control": not read_only, "controller": "contact_expert",
-                                 "controllers": ["contact_expert", "scripted_drawer"],
+                                 "controllers": ["contact_expert", "scripted_drawer"] + (["learned_act"] if learned else []),
                                  "supported_commands": {"contact_expert": list(SUPPORTED_CONTACT_COMMANDS),
-                                                        "scripted_drawer": ["Open the drawer with arm A."]},
+                                                        "scripted_drawer": ["Open the drawer with arm A."],
+                                                        "learned_act": [CONTACT_COMMAND] if learned else []},
                                  "contact_expert": True,
                                  "bounded_recovery": True,
                                  "adaptive_recovery_memory": True,
                                  "recovery_modes": ["none", "blind_retry", "adaptive"],
-                                 "learned_skills": False, "visual_monitor": True,
+                                 "learned_skills": learned, "visual_monitor": True,
                                  "full_task": True, "intel_verified": False},
                 "disclosure": CONTACT_NOTE}
 

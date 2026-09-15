@@ -24,11 +24,14 @@ the pull and at least 80% travel held open after release. Use the nominal preset
 for this standalone skill. `Place the mug in the upper-right with arm B.` remains
 available as another focused physical check.
 
-This is a deterministic contact baseline with approximate finger pads and a solid
-44 mm mug cylinder. Real ACT-style mug checkpoints and OpenVINO exports are available
-as experimental command-line policies. The complete run is a validated deterministic
-engineering expert rather than a trained ACT or vision-language policy. The legacy
-drawer actuator fixture remains separately selectable and labeled.
+The complete run is a deterministic camera-guided engineering expert with approximate
+finger pads and a solid 44 mm mug cylinder. A separately selectable **Learned ACT ·
+mug only** controller is available when its validated model bundle is installed: it
+uses three RGB cameras, robot joints, prior commanded actions, and elapsed skill time.
+Its frozen OpenVINO policy passed 10/10 fresh held-out mug trials and a recorded
+console run. It is deliberately scoped to the mug skill and is not a learned
+full-table policy. The legacy drawer actuator fixture remains separately selectable
+and labeled.
 
 ## Start the console
 
@@ -70,8 +73,8 @@ Software rendering defaults to one Mesa thread to avoid oversubscribing cloud CP
 set `LP_NUM_THREADS` explicitly to benchmark a different value.
 
 Read [the current audit](docs/final-audit.md) before describing the project as
-submission-ready: learned-policy reliability and broader robustness still have
-measured gaps, and final Intel validation is pending.
+submission-ready: broader full-task robustness has measured gaps, and final Intel
+validation is pending.
 
 For frontend development, run `python3 -m mise.cli serve` and, in another terminal,
 `cd web && npm run dev`; Vite proxies the API and WebSocket to port 8000. Rebuild

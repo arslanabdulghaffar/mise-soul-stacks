@@ -29,3 +29,14 @@ def normalize_state(state, statistics):
 
 def denormalize_actions(actions, statistics):
     return np.asarray(actions, dtype=np.float32) * np.asarray(statistics['action_std'], dtype=np.float32) + np.asarray(statistics['action_mean'], dtype=np.float32)
+
+
+def contextual_state(joints, statistics, previous_action, elapsed_s):
+    """Robot proprioception, last commanded action and elapsed skill time only."""
+    previous = np.asarray(previous_action, dtype=np.float32)
+    if previous.shape != (12,) or not np.isfinite(previous).all():
+        raise ValueError('Action context requires twelve finite previous targets')
+    if elapsed_s is None or not np.isfinite(elapsed_s) or elapsed_s < 0:
+        raise ValueError('Elapsed skill time must be finite and nonnegative')
+    previous = (previous - np.asarray(statistics['action_mean'], np.float32)) / np.asarray(statistics['action_std'], np.float32)
+    return np.concatenate((normalize_state(joints, statistics), previous, np.asarray([elapsed_s / 30.], np.float32)))

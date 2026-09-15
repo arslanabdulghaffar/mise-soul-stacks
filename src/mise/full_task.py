@@ -221,6 +221,8 @@ class FullTaskController:
                               .95, 14.0, True, True, True, True, 1),
             RecoveryCandidate("arm_B_cautious_table_regrasp", RecoverabilityVerdict.RETRY, "B",
                               .90, 16.5, True, True, True, True, 1, extra_cost=.5),
+            RecoveryCandidate("arm_A_oriented_fork_regrasp", RecoverabilityVerdict.RETRY, "A",
+                              1.0, 18.0, True, True, True, True, 1),
         )
         self._supervisor = (AdaptiveRecoverySupervisor(recovery_memory, max_attempts=2)
                             if recovery_memory is not None else RecoverySupervisor(max_attempts=2))
@@ -467,7 +469,7 @@ class FullTaskController:
 
     def _recovery_context(self, xy: np.ndarray) -> RecoveryContext:
         bucket = f"table_xy_{round(float(xy[0]) / .02)}_{round(float(xy[1]) / .02)}"
-        return RecoveryContext("pick_place", "spoon", "verify_goal", "outside_goal",
+        return RecoveryContext("pick_place", self.active_step.object, "verify_goal", "outside_goal",
                                bucket, "mise_full_scene_v1", "deterministic_contact_v2")
 
     def _finish_pending_recovery(self, outcome: str) -> None:
@@ -480,7 +482,7 @@ class FullTaskController:
                 context, candidate,
                 attempt_id=f"{self.episode_id}:step{self.active_step.id}:attempt{self.recovery_attempts}",
                 episode_id=self.episode_id, outcome=outcome, duration_s=duration,
-                observation_ref=f"trace:{self.episode_id}:spoon-verify:{self.recovery_attempts}",
+                observation_ref=f"trace:{self.episode_id}:{self.active_step.object}-verify:{self.recovery_attempts}",
             )
         recoveries = self.evidence.get("recoveries", [])
         if recoveries:
@@ -565,11 +567,11 @@ class FullTaskController:
             if error > .025:
                 if step.object == "spoon":
                     return self._handle_spoon_failure(np.asarray(final.xy))
-                raise ValueError(f"RGB verification found the {step.object} outside its goal.")
+                return self._handle_fork_failure(final)
             if final.axis_error_degrees is None or final.axis_error_degrees > 20:
                 if step.object == "spoon":
                     return self._handle_spoon_failure(np.asarray(final.xy))
-                raise ValueError("RGB verification found the fork outside its vertical alignment tolerance.")
+                return self._handle_fork_failure(final)
             verification.update(object=step.object, goal_error_m=error,
                                 axis_error_degrees=final.axis_error_degrees,
                                 detection=asdict(final))
@@ -580,9 +582,66 @@ class FullTaskController:
             verification.update(object="mug", goal_error_m=error, detection=asdict(final))
         self.evidence.setdefault("visual_verifications", []).append(verification)
         self.events.append({"type": "visual_step_verified", **verification})
-        if step.object == "spoon" and self._pending_recovery is not None:
+        if step.object in {"spoon", "fork"} and self._pending_recovery is not None:
             self._finish_pending_recovery("success")
         return True
+
+    def _handle_fork_failure(self, detection) -> bool:
+        """One tested arm-A correction, grounded in full-component RGB geometry."""
+        if self._pending_recovery is not None:
+            self._finish_pending_recovery("failure")
+        if self.recovery_mode != "adaptive":
+            raise ValueError("RGB verification found the fork outside its goal; no oriented recovery in this mode.")
+        xy = np.asarray(detection.xy)
+        heading = detection.heading_radians
+        if heading is None:
+            raise ValueError("A visible fork axis is required for oriented recovery.")
+        # Parallel jaws can grasp either direction of the same axis. This branch
+        # connects to the validated staging pose without crossing wrist limits.
+        yaw = heading + np.pi if heading < 0 else heading - np.pi
+        context = self._recovery_context(xy)
+        candidates = tuple(c for c in self._recovery_candidates if c.arm == "A"
+                           and (c.name, c.arm) not in self._attempted_recoveries
+                           and float(self.env.data.time) - self._step_started + c.duration_s <= self.active_step.timeout_s)
+        evidence = MonitorEvidence(failure_detected=True, fresh=True, stable_for_replan=True)
+        kwargs = dict(elapsed_s=float(self.env.data.time), required_arm="A")
+        if isinstance(self._supervisor, AdaptiveRecoverySupervisor):
+            self._supervisor.decide_with_memory(self.active_step.id, evidence, candidates,
+                context=context, episode_id=self.episode_id, **kwargs)
+        else:
+            self._supervisor.decide(self.active_step.id, evidence, candidates, **kwargs)
+        candidate = self._supervisor.selected
+        if candidate is None:
+            raise ValueError("No untried feasible fork correction fits the instruction and episode budgets.")
+        m = self._motion
+        m.use_tcp("A", narrow=True)
+        segments = [
+            m.move("A", "recovery_fork_hover", [*xy, .91], grip=.22, seconds=2, yaw=yaw),
+            m.move("A", "recovery_fork_descend", [*xy, .805], grip=.22, seconds=1.5, yaw=yaw),
+            m.move("A", "recovery_fork_grasp", grip=-.17, seconds=1),
+            m.move("A", "recovery_fork_lift", [*xy, .91], grip=-.17, seconds=1.5, yaw=yaw),
+            m.move("A", "recovery_fork_stage", [0, .20, .94], grip=-.17, seconds=2, yaw=np.pi / 2),
+            m.move("A", "recovery_fork_rotate", [0, .10, .93], grip=-.17, seconds=2, yaw=0),
+            # Offset compensates the retained handle position after rotation.
+            m.move("A", "recovery_fork_carry", [-.15, .035, .91], grip=-.17, seconds=3, yaw=0),
+            m.move("A", "recovery_fork_lower", [-.15, .035, .82], grip=-.17, seconds=1.5, yaw=0),
+            m.move("A", "recovery_fork_release", grip=.22, seconds=1),
+            m.move("A", "recovery_fork_retract", [-.15, .035, .91], grip=.22, seconds=1, yaw=0),
+            m.home("A", "recovery_fork_park", seconds=1.5),
+        ]
+        self._supervisor.begin_recovery(self.active_step.id)
+        self.recovery_attempts += 1
+        self._attempted_recoveries.add((candidate.name, candidate.arm))
+        self._pending_recovery = (candidate, float(self.env.data.time), context)
+        self.events.extend((dict(type="failure_detected", failure_kind="fork_outside_goal", source="overhead_rgb"),
+                            dict(type="recovery_selected", candidate=candidate.name, action=candidate.name,
+                                 expected_cost=candidate.expected_cost, attempt=self.recovery_attempts, max_attempts=1)))
+        self.evidence.setdefault("recoveries", []).append(dict(step=self.active_step.id,
+            failure_kind="fork_outside_goal", action=candidate.name, attempt=self.recovery_attempts,
+            reset_used=False, outcome="pending", detection=asdict(detection)))
+        self._segments = segments
+        self._segment_index = self._tick = 0
+        return False
 
     def advance(self) -> np.ndarray:
         if self.done or self.failed_reason:

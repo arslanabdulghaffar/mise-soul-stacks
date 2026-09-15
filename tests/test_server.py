@@ -22,6 +22,9 @@ class ServerTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.root = Path(self.temporary.name)
+        self.model_environment = patch.dict("os.environ", {"MISE_CONTACT_ACT_MODEL": str(self.root / "missing-model")})
+        self.model_environment.start()
+        self.addCleanup(self.model_environment.stop)
         self.app = create_app(runs_dir=self.root, launch_workers=False)
         self.client = TestClient(self.app).__enter__()
 
@@ -56,6 +59,33 @@ class ServerTests(unittest.TestCase):
         self.assertIsNone(run["checkpoint_hash"])
         self.assertEqual(run["recovery_mode"], "adaptive")
         self.assertEqual(len(run["config_hash"]), 64)
+
+    def test_learned_controller_rejects_missing_model_and_unsupported_tasks(self):
+        response = self.client.post("/api/runs", json={"controller": "learned_act"})
+        self.assertEqual(response.status_code, 422)
+        self.assertIn("validated ACT bundle", response.json()["detail"])
+        with patch("mise.learned_assets.accepted_policy") as accepted:
+            for values in ({"command": "Set the table."}, {"preset": "low_friction"},
+                           {"command": "Open the drawer with arm A."}):
+                response = self.client.post("/api/runs", json={"controller": "learned_act", **values})
+                self.assertEqual(response.status_code, 422, response.text)
+            accepted.assert_not_called()
+        self.assertEqual(self.client.get("/api/runs").json()["runs"], [])
+
+    def test_learned_run_retains_policy_identity_in_run_and_manifest(self):
+        accepted = {"checkpoint_sha256": "a" * 64, "acceptance_sha256": "b" * 64}
+        with patch("mise.learned_assets.accepted_policy", return_value=accepted):
+            response = self.client.post("/api/runs", json={"controller": "learned_act"})
+        self.assertEqual(response.status_code, 201, response.text)
+        run = response.json()
+        self.assertEqual(run["scope"], "contact_skill")
+        self.assertEqual(run["learned_policy"], accepted)
+        self.assertEqual(run["checkpoint_hash"], "a" * 64)
+        self.assertIn("Learned ACT", run["disclosure"])
+        recorder = RunRecorder(self.root / run["id"], run)
+        recorder.finish("stopped", {"full_task_success": None})
+        manifest = json.loads((self.root / run["id"] / "manifest.json").read_text())
+        self.assertEqual(manifest["checkpoint_hash"], "a" * 64)
 
     def test_contact_command_records_actual_instruction_and_scope(self):
         response = self.client.post("/api/runs", json={})

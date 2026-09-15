@@ -1,0 +1,34 @@
+{
+  "schema_version": "mise.learned-act-validation-summary.v1",
+  "scope": "nominal_arm_B_mug_contact_skill",
+  "controller": "compact_ACT_style_CVAE_with_action_context",
+  "backend": "OpenVINO_CPU_f32",
+  "held_out_seeds": [50000, 50001, 50002, 50003, 50004, 50005, 50006, 50007, 50008, 50009],
+  "successes": 10,
+  "total": 10,
+  "execution_steps": 15,
+  "temporal_ensemble": false,
+  "inputs": [
+    "overhead_rgb",
+    "wrist_A_rgb",
+    "wrist_B_rgb",
+    "robot_joint_positions",
+    "previous_commanded_joint_targets",
+    "elapsed_skill_seconds"
+  ],
+  "independent_predicates": [
+    "bilateral_grasp_observed",
+    "sustained_lift_observed",
+    "upright_released_placement",
+    "stable_table_supported_placement_within_2cm"
+  ],
+  "model_xml_sha256": "60fc0d5b6c98f6c66f61e4e9597f45487f2b90bc643d30630e7cbbbc56a6f7df",
+  "model_bin_sha256": "84eb2df1506312334cb662e55c1b5b8eff72e750cd0d0ad61e8af346f23f34ed",
+  "checkpoint_sha256": "a343ad3313f11de3e03a19ad70967c5f7b42486765695c4f5579b55ce02f3467",
+  "frozen_scene_sha256": "8078ecc28aa60254f6ac8303c3d88e13083bb8166feca5309605067709abcd05",
+  "evaluation_manifest_sha256": "09812e993c6a52b32855e51e51fb36a539ca76291a68d209834612c883c3dfa3",
+  "evaluation_results_sha256": "8784e86b1b81a990a09cb27596aed017c03643f1b152fabdb6cac3e706139cad",
+  "console_smoke_seed": 50010,
+  "console_smoke_success": true,
+  "limitations": "This evidence is only for the nominal mug skill. It does not establish learned full-table execution, altered-scene robustness, physical-hardware behavior, or Intel target validation."
+}
