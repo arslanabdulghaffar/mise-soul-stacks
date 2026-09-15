@@ -110,6 +110,21 @@ class IntelPairTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'incomplete'):
                 compare_pair(*paths)
 
+    def test_controller_configuration_change_is_not_an_inference_optimization(self):
+        for field, value in [('execution_steps', 5), ('temporal_ensemble', True)]:
+            with self.subTest(field=field), tempfile.TemporaryDirectory() as temp:
+                paths = self._pair(Path(temp))
+                manifest_path = paths[1] / 'manifest.json'
+                manifest = json.loads(manifest_path.read_text())
+                manifest[field] = value
+                manifest_path.write_text(json.dumps(manifest))
+                results_path = paths[1] / 'results.json'
+                results = json.loads(results_path.read_text())
+                results['manifest_sha256'] = file_hash(manifest_path)
+                results_path.write_text(json.dumps(results))
+                with self.assertRaisesRegex(ValueError, f'controller settings differ: {field}'):
+                    compare_pair(*paths)
+
 
 if __name__ == '__main__':
     unittest.main()

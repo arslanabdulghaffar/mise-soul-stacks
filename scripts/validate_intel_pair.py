@@ -90,6 +90,9 @@ def compare_pair(reference: Path, candidate: Path, reference_benchmark: Path,
             raise ValueError(f'Paired evaluation mismatch: {field}')
     if ref['backend'] != 'openvino' or opt['backend'] != 'openvino':
         raise ValueError('This comparison requires reference and candidate OpenVINO evaluations.')
+    for field, default in (('execution_steps', 15), ('temporal_ensemble', False)):
+        if ref.get(field, default) != opt.get(field, default):
+            raise ValueError(f'Paired controller settings differ: {field}')
     if ref['runtime_config']['precision'] != 'f32':
         raise ValueError('Reference precision must be f32.')
     if ref['runtime_config'] == opt['runtime_config']:

@@ -4,6 +4,13 @@ The source of requirements is `MISE_project_description.docx`. Its complete para
 and table text is retained in [project-brief.txt](project-brief.txt); the DOCX remains
 the reference for the two figures. Performance and success targets are goals, not results.
 
+## Current audit — 2026-09-15
+
+See [final-audit.md](final-audit.md) for current measurements and unfinished work.
+The milestones below are historical. The full-task expert is usable, but broad
+robustness and reliable learned VLA execution are not established. All five
+presentation views now capture at matching times/rates with smaller inset frames.
+
 ## First integrated milestone
 
 The console uses React, TypeScript and Vite, served with FastAPI. A separate spawned

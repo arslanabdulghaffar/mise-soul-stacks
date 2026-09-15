@@ -75,8 +75,8 @@ def validate_full_plan(plan) -> None:
             completed.add(parallel_mug.id)
 
 
-def create_full_env(seed: int = 0) -> BimanualTableEnv:
-    scene = run_path(str(ROOT / "scripts/build_full_scene.py"))["build_full_scene"]()
+def create_full_env(seed: int = 0, *, scene_path: Path | None = None) -> BimanualTableEnv:
+    scene = scene_path or run_path(str(ROOT / "scripts/build_full_scene.py"))["build_full_scene"]()
     env = BimanualTableEnv(seed=seed, scene_path=scene, randomize=False, initial_observation=False)
     env.data.qpos[env._arm_qpos.ravel()] = HOME
     env.data.ctrl[env._arm_ctrl.ravel()] = HOME

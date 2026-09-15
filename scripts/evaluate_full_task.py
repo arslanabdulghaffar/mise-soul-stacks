@@ -15,9 +15,9 @@ from mise.planner import RuleBasedPlanner
 from mise.telemetry import atomic_json, file_hash, utc_now
 
 
-def evaluate(seed: int, *, recovery_mode: str = "adaptive") -> dict:
+def evaluate(seed: int, *, recovery_mode: str = "adaptive", scene_path: Path | None = None) -> dict:
     started = time.monotonic()
-    env = create_full_env(seed)
+    env = create_full_env(seed, scene_path=scene_path)
     try:
         controller = FullTaskController(env, RuleBasedPlanner().plan("Set the table."),
                                         recovery_mode=recovery_mode,
@@ -40,11 +40,28 @@ def evaluate(seed: int, *, recovery_mode: str = "adaptive") -> dict:
             env.step(action, observe=False)
             evaluator.update(env.data)
         passed = bool(controller.done and evaluator.success and not direct_object_write)
+        failure = controller.failed_reason
+        if not passed and not failure:
+            if direct_object_write:
+                failure = "Controller modified free-object state."
+            elif not controller.done:
+                failure = "Controller did not finish within the evaluation step budget."
+            elif evaluator.snapshot:
+                snapshot = evaluator.snapshot
+                unmet = [f"placement:{name}" for name, valid in snapshot.objects_in_goal.items() if not valid]
+                if not snapshot.drawer_open:
+                    unmet.append("drawer_open")
+                if not snapshot.handoff_complete:
+                    unmet.append("physical_handoff")
+                unmet.extend(snapshot.violations)
+                failure = "Independent evaluation failed: " + ", ".join(unmet or ["contact provenance or geometry certification"])
+            else:
+                failure = "No independent evaluation snapshot was produced."
         return {
             "seed": seed,
             "recovery_mode": recovery_mode,
             "success": passed,
-            "failure": controller.failed_reason,
+            "failure": failure,
             "completed_steps": list(controller.completed_steps),
             "recovery_attempts": controller.recovery_attempts,
             "simulation_seconds": float(env.data.time),

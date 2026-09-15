@@ -1,0 +1,186 @@
+{
+  "run_id": "2f710b64aab8",
+  "seed": 1001,
+  "scope": "single_full_task_camera_regression",
+  "full_task_success": true,
+  "assisted": false,
+  "completed_steps": [
+    1,
+    7,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "collision_count": 0,
+  "recovery_attempts": 1,
+  "timing": {
+    "camera_capture_hz": {
+      "side_a": 2.0,
+      "side_b": 2.0,
+      "top": 2.0,
+      "wrist_a": 2.0,
+      "wrist_b": 2.0
+    },
+    "camera_frame_counts": {
+      "side_a": 277,
+      "side_b": 277,
+      "top": 277,
+      "wrist_a": 277,
+      "wrist_b": 277
+    },
+    "camera_height": 256,
+    "camera_width": 256,
+    "capture_hz": 2.0,
+    "frames_per_camera": 277,
+    "p50_loop_work_ms": 1.7522713169455528,
+    "p95_loop_work_ms": 429.25233487039804,
+    "policy_latency_ms": null,
+    "real_time_factor": 0.6779287203013672,
+    "scope": "full_task_with_cameras_and_recording",
+    "simulation_seconds": 138.29999999993225,
+    "view_quality": "economy",
+    "wall_seconds": 204.00374826788902
+  },
+  "camera_configuration": {
+    "camera_capture_hz": {
+      "side_a": 2.0,
+      "side_b": 2.0,
+      "top": 2.0,
+      "wrist_a": 2.0,
+      "wrist_b": 2.0
+    },
+    "camera_dimensions": {
+      "side_a": {
+        "height": 160,
+        "width": 160
+      },
+      "side_b": {
+        "height": 160,
+        "width": 160
+      },
+      "top": {
+        "height": 256,
+        "width": 256
+      },
+      "wrist_a": {
+        "height": 160,
+        "width": 160
+      },
+      "wrist_b": {
+        "height": 160,
+        "width": 160
+      }
+    },
+    "capture_every": {
+      "side_a": 15,
+      "side_b": 15,
+      "top": 15,
+      "wrist_a": 15,
+      "wrist_b": 15
+    },
+    "controller_camera_size": 256,
+    "height": 256,
+    "interpolated": false,
+    "profile": "economy",
+    "synchronized_capture": true,
+    "timebase": "simulation_seconds",
+    "wall_guard_s": 300,
+    "width": 256
+  },
+  "videos": {
+    "top": {
+      "dimensions": [
+        256,
+        256
+      ],
+      "fps": 2.0,
+      "frames": 277,
+      "duration_s": 138.5
+    },
+    "wrist_a": {
+      "dimensions": [
+        160,
+        160
+      ],
+      "fps": 2.0,
+      "frames": 277,
+      "duration_s": 138.5
+    },
+    "wrist_b": {
+      "dimensions": [
+        160,
+        160
+      ],
+      "fps": 2.0,
+      "frames": 277,
+      "duration_s": 138.5
+    },
+    "side_a": {
+      "dimensions": [
+        160,
+        160
+      ],
+      "fps": 2.0,
+      "frames": 277,
+      "duration_s": 138.5
+    },
+    "side_b": {
+      "dimensions": [
+        160,
+        160
+      ],
+      "fps": 2.0,
+      "frames": 277,
+      "duration_s": 138.5
+    }
+  },
+  "synchronized_observation_batches": 277,
+  "verified_artifact_files": 9,
+  "files_sha256": {
+    "run.json": "e0798be01d59739c9f9be8b5ea05b8668c502fb7645450b92c74c63a0896cdb6",
+    "side_a.mp4": "f568288216d1c421b55fd003d325659da4c54665b1fd85ad52e27c3f374da51e",
+    "side_b.mp4": "8c337ba1bc0a1ba2586f329d70e3e684d2e2d9bd86c1f67cf0c40a7cf6123211",
+    "summary.json": "443caa7fdf469963850bfd549e4168d789b97dfee7ea4727d1727b3e03b038f5",
+    "timing.csv": "ab22ec0a95cdbecc65f5b93c640708550285400a256bae14a71c9eeb9e06da64",
+    "top.mp4": "95029ec1a10e979337e5a438c2e030de307650e5f3286a9d37cc98dd1a4718d1",
+    "trace.jsonl": "ed6815b77aeda3d4cffc6a3b026df83ba2f8381b0054e8f13b9a838c2c89ba8c",
+    "wrist_a.mp4": "5162c48f266d4863c20b07be51d0a3d7c10db9b33dfa34b923c014e92e3cc625",
+    "wrist_b.mp4": "6bbf6cb8993555e06643937c50bbe6d67666bfccc02a2621bda491324443d7eb"
+  },
+  "sources_sha256": {
+    "assets/generated/mise_bimanual.xml": "7120e37bdbd5798dd37b83e4a7c9f99d2cb73b32f328f1ff106f19fef403e720",
+    "assets/generated/mise_contact.xml": "80e2d065123559cc9a6ca7b3711618431c36e1035d4c45ad45840272595be324",
+    "assets/generated/mise_drawer_contact.xml": "d3800639b3f394d6581e44d7f7c16fd8b07e85efd7913442b6220e08e10418c4",
+    "assets/generated/mise_full_task.xml": "311bc6e15851ac025edbf17e6ff4cb38923126ba95449822acb743fe38622a91",
+    "configs/evaluator.yaml": "07ba360af7d7241ea31311bdf5e08a880f07aa273ed373b100e08bf03cb4da95",
+    "configs/full_evaluator.yaml": "1e285348fed15448a7a198da37e3b2690f0b21e2592325a57c91fe6f081de628",
+    "configs/scene_randomization.yaml": "1b45c60c41af24a3919129ef5d71ae14c363f6f76b09dbb36900bb31c499d327",
+    "scripts/build_contact_scene.py": "6b95b15d51cc8e42ca45a97d8d877421558553f35ae516efc45f1ea1099b982b",
+    "scripts/build_drawer_scene.py": "a46283f522be04b6f3bafabb439d76d5aa14e8193f40567d1b17c8a64ec111fe",
+    "scripts/build_full_scene.py": "16bad244f5d39c6783419e95e5d22eeec2dd8c3070e3115b46e75c99bf25d75c",
+    "scripts/build_scene.py": "a1f7aa60b29ce3717f4f6956cd7f0d2b83798ce29ca19220c588be43a1ab813d",
+    "src/mise/contact_evaluation.py": "349b598263e270c3152a5f9e8c4780fcd4d8e2e9126b071000c2827a9416f86c",
+    "src/mise/contact_vision.py": "2a0b39e3a070ea22c3482531d31aeba02894ee88676f0f838ee331a3aad93c04",
+    "src/mise/drawer_evaluation.py": "b90770b9e349dc3b8e83ed6f8b38b004be2c72956b2a737182e04495b37c8442",
+    "src/mise/drawer_skill.py": "808c5179456854366d7c93cfb3f977461be0c7c4f9c63cd29312c041de35ed40",
+    "src/mise/evaluation.py": "58bce5f644d24eaedf93ea3753410d3439c8ada47c6b5c00088abe39a7bd1d4b",
+    "src/mise/full_task.py": "32b79df50b64f84af3b30ee692fe16cf2c7665a015a1bf6507f9541d93127754",
+    "src/mise/full_vision.py": "7681eb79258a59cfb3dcc1f36a7ae4046d47a6753f35132c43762f1675280d8e",
+    "src/mise/kinematics.py": "92a3836d035061ccf2820f1c502d9cda84c19e00a477d1d8fbee22721f3d7945",
+    "src/mise/manipulation.py": "263b9ab1067d448c1a83e77ec926f713abaad8f5c3a7cc27b198ee4f9c09f3e1",
+    "src/mise/planner.py": "dc667ad21d525ec19ac00355e7f594f50d48b2110547b1279102fe16567584f2",
+    "src/mise/presentation.py": "acb16e0de6a8a969a13a39cfbb4da1c8d2a91f91a128e32ead718c64095e1664",
+    "src/mise/randomization.py": "f23bc463779887f7fa064bb8cb72fad3c0b41d69c3626f1aae77f724bd704985",
+    "src/mise/recovery_memory.py": "7a9f47ca8457c26aeee75a9b589071feea23a01cbf96287bf2a938de3641f25b",
+    "src/mise/scene_io.py": "1a723be2edc42613e8bc7f81c6c10c287fd1b9dade9fd9e45e8325acf21bd082",
+    "src/mise/scripted.py": "ef4b2008921dd0bf509e38dddc92044a3c96a24c615011fbb0410c53ae445d11",
+    "src/mise/sim.py": "c0a3fcfade98f0081811207104d6db3ed636a6244a8e761d409640aab07486d3",
+    "src/mise/skills.py": "ff4372a1d1048eb6d6d9e971b0150c158c8a3ab862d6dac88cd400278c73d90e",
+    "src/mise/supervisor.py": "65705131c47380ac7f80885c6fcc99b674e6990171bcc5e94b3906c189913d34",
+    "src/mise/worker.py": "8a7b006a0c170c9152f840ceac761354b8e1144eb890138ba7e2cfaba499403b",
+    "vendor/SO-ARM100/Simulation/SO101/so101_new_calib.xml": "d75253eb568e8a7214db9c631ab7bed4217f608a26f7276ebe9a7636cac82580"
+  },
+  "note": "One measured development-host run. Not an Intel result or a guaranteed wall-clock frame rate. Historical recordings keep their original rates."
+}

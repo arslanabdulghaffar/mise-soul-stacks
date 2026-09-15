@@ -48,6 +48,8 @@ def main():
     parser.add_argument('--backend', choices=['torch', 'openvino'], default='openvino')
     parser.add_argument('--device', default=None, help='OpenVINO CPU/GPU/NPU or torch cpu/cuda; defaults to CPU/cpu')
     parser.add_argument('--precision', choices=['auto', 'f32', 'f16', 'bf16'], default='f32')
+    parser.add_argument('--execution-steps', type=int, default=15, choices=range(1,16))
+    parser.add_argument('--temporal-ensemble', action='store_true')
     parser.add_argument('--threads', type=int, default=2)
     parser.add_argument('--scene', type=Path, default=Path('data/contact/frozen/scene.xml'))
     parser.add_argument('--seeds', type=int, nargs='+', default=list(range(40000, 40010)))
@@ -69,7 +71,7 @@ def main():
                     controller_sha256=file_hash(Path('src/mise/learned_controller.py')),
                     files_sha256=hashes, command=CONTACT_COMMAND, max_steps=1200,
                     created_at_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
-                    runtime_config=None,
+                    runtime_config=None, execution_steps=args.execution_steps, temporal_ensemble=args.temporal_ensemble,
                     scope='learned_mug_contact_skill', full_task_success=None,
                     completion_source='RGB and robot joints; independent physics scoring')
     (args.output / 'manifest.json').write_text(json.dumps(manifest, indent=2))
@@ -88,7 +90,8 @@ def main():
     for seed in args.seeds:
         began = time.monotonic()
         env = create_contact_env(seed, scene_path=scene)
-        controller = LearnedContactController(env, RuleBasedPlanner().plan(CONTACT_COMMAND), policy)
+        controller = LearnedContactController(env, RuleBasedPlanner().plan(CONTACT_COMMAND), policy,
+                                              execution_steps=args.execution_steps, temporal_ensemble=args.temporal_ensemble)
         verifier = ContactSkillEvaluator(env.model)
         trace = []
         try:

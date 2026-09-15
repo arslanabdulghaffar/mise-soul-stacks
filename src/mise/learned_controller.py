@@ -9,7 +9,12 @@ from .manipulation import validate_contact_plan
 
 
 class LearnedContactController:
-    def __init__(self, env, plan, policy):
+    def __init__(self, env, plan, policy, *, execution_steps: int = 15, temporal_ensemble: bool = False):
+        if not 1 <= execution_steps <= 15:
+            raise ValueError("execution_steps must be between 1 and 15")
+        self.execution_steps = execution_steps
+        self.temporal_ensemble = temporal_ensemble
+        self._predictions = []
         validate_contact_plan(plan)
         self.env, self.plan, self.policy = env, plan, policy
         self.active_step = plan.steps[0]
@@ -18,7 +23,7 @@ class LearnedContactController:
         self.phase = 'learned_contact_execution'
         self.evidence = dict(learned_policy=True, method='compact ACT-style CVAE',
                              controller_inputs=['overhead_rgb', 'wrist_a_rgb', 'wrist_b_rgb', 'robot_joint_positions'],
-                             object_state_used_for_targets=False, chunk_execution_steps=15,
+                             object_state_used_for_targets=False, chunk_execution_steps=execution_steps, temporal_ensemble=temporal_ensemble,
                              action_delta_limit_rad=.08, visual_completion_hold_s=1.0)
         self._action = env.joint_positions()
         self._chunk, self._tick = None, 0
@@ -34,7 +39,7 @@ class LearnedContactController:
             now = float(self.env.data.time)
             if now - self._started > self.active_step.timeout_s:
                 raise ValueError('Learned contact policy exceeded the instruction timeout.')
-            if self._tick % 15 == 0:
+            if self._tick % self.execution_steps == 0:
                 observation = self.env.observe()
                 joints = np.asarray(observation.joint_positions)
                 self._ik.scratch.qpos[self._ik.qpos] = joints[6:11]
@@ -63,13 +68,19 @@ class LearnedContactController:
                 self._chunk = np.asarray(self.policy.predict_chunk(observation), dtype=float)
                 latency = (time.perf_counter() - began) * 1000
                 self.inference_ms.append(latency)
-                if self._chunk.ndim != 2 or self._chunk.shape[1] != 12 or len(self._chunk) < 15 or not np.isfinite(self._chunk).all():
+                if self._chunk.ndim != 2 or self._chunk.shape[1] != 12 or len(self._chunk) < self.execution_steps or not np.isfinite(self._chunk).all():
                     raise ValueError('Policy returned an invalid joint-target chunk.')
                 self.evidence['inference_calls'] = len(self.inference_ms)
                 self.evidence['inference_p50_ms'] = float(np.median(self.inference_ms))
                 self.evidence['inference_p95_ms'] = float(np.percentile(self.inference_ms, 95))
-                self.events.append(dict(type='policy_inference', latency_ms=latency, executed_chunk_steps=15))
-            target = self._chunk[self._tick % 15]
+                self.events.append(dict(type='policy_inference', latency_ms=latency, executed_chunk_steps=self.execution_steps))
+                self._predictions = [(start, chunk) for start, chunk in self._predictions if self._tick - start < len(chunk)]
+                self._predictions.append((self._tick, self._chunk.copy()))
+            target = self._chunk[self._tick % self.execution_steps]
+            if self.temporal_ensemble:
+                valid = [(start, chunk) for start, chunk in self._predictions if self._tick - start < len(chunk)]
+                weights = np.exp(-.1 * np.asarray([self._tick - start for start, _ in valid]))
+                target = np.average(np.stack([chunk[self._tick - start] for start, chunk in valid]), axis=0, weights=weights)
             # No object-dependent correction is hidden in this velocity guard.
             target = np.clip(target, self._action - .08, self._action + .08)
             ranges = self.env.model.actuator_ctrlrange[self.env._arm_ctrl.ravel()]

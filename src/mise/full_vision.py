@@ -57,7 +57,7 @@ def locate_color(rgb: np.ndarray, object_name: str, *, object_top: float,
     elif object_name == "mug":
         mask = (blue > 80) & (blue > 1.5 * red) & (blue > 1.5 * green)
     elif object_name == "drawer_handle":
-        mask = (red > 100) & (green > .52 * red) & (green < 1.05 * red) & (blue < .4 * red)
+        mask = (red > 100) & (green > .75 * red) & (green < 1.05 * red) & (blue < .4 * red)
     else:
         raise ValueError(f"Unknown visual fiducial: {object_name}")
     height, width = mask.shape
@@ -69,6 +69,12 @@ def locate_color(rgb: np.ndarray, object_name: str, *, object_top: float,
         mask &= ((world_x >= bounds.xmin) & (world_x <= bounds.xmax)
                  & (world_y >= bounds.ymin) & (world_y <= bounds.ymax))
     component = _largest_component(mask)
+    # A tabletop highlight can join the white plate into an implausibly large
+    # region. Tighten brightness only in that case, preserving the calibrated
+    # centroid under nominal lighting. The bound allows a maximum 20 cm plate extent,
+    # projected with camera calibration; no simulator object state is read.
+    if object_name == "plate" and len(component) * scale**2 > .20**2:
+        component = _largest_component(mask & (red > 220) & (green > 220) & (blue > 210))
     if len(component) < minimum_pixels:
         raise ValueError(f"The {object_name.replace('_', ' ')} is not sufficiently visible in RGB.")
     row, column = np.mean(component, axis=0)

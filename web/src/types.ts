@@ -9,7 +9,7 @@ export type Run = {
   id: string; status: RunStatus; command: string; seed: number; preset: string; controller: string;
   recovery_mode?: RecoveryMode;
   view_quality?: string;
-  camera_configuration?: { width: number; height: number; camera_capture_hz: Partial<Record<Camera, number>> };
+  camera_configuration?: { camera_dimensions?: Partial<Record<Camera, {width: number; height: number}>>; width: number; height: number; camera_capture_hz: Partial<Record<Camera, number>> };
   created_at: string; hardware: Hardware; scope?: string; plan?: { steps: PlanStep[] }; config_hash: string;
   summary?: { full_task_success: boolean | null; scope?: string; reason?: string; wall_seconds?: number;
     assisted?: boolean; autonomous_contact_skill_success?: boolean; completed_steps?: number[]; fixture_success?: boolean; contact_skill_success?: boolean; task_success?: boolean; contact_evidence?: Record<string, unknown>; [key: string]: unknown } | null;

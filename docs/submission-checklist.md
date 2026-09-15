@@ -4,6 +4,9 @@ This checklist maps the five required deliverables and six judging categories in
 `Online_Physical_AI_Challenge_Online (1).pdf` to retained evidence. Empty hardware
 fields must remain empty until the final Intel Core Ultra Series 2/3 run.
 
+This is not a claim of maximum points or complete submission readiness. See
+[the current audit](final-audit.md) for measured learned-policy and robustness gaps.
+
 ## Required deliverables
 
 - [x] Reproducible GitHub repository: pinned Python and npm dependencies, submodule,
@@ -25,7 +28,7 @@ fields must remain empty until the final Intel Core Ultra Series 2/3 run.
 | --- | --- | --- |
 | Task completion and bimanual manipulation (30) | Seven physical-contact steps, passive drawer, four placed objects, direct A-to-B spoon handoff, independent evaluator, 10/10 fixed-seed headless and recorded suites | Replay the primary uninterrupted run during judging |
 | VLA / multi-modal reasoning (20) | Natural-language task graph, raw RGB object localization, robot-joint history, action context, learned ACT mug experiment, visual recovery trigger | The validated full-task controller is deterministic. Reliable learned full-task VLA execution is not demonstrated |
-| Robustness and generalization (15) | Predeclared seeds, randomized position/mass/friction, displaced and reduced-friction presets, matched recovery comparison, ten successful seed videos with no selective reruns | Present the results; unseen shape, lighting, and background variation remain unevaluated |
+| Robustness and generalization (15) | Predeclared seeds, randomized position/mass/friction, displaced and reduced-friction presets, matched recovery comparison, ten successful seed videos with no selective reruns | Additional stress audits passed 18/50 initially and 24/50 with an intermediate perception change; altered shape and combined variants passed 0/10 each. See final-audit.md for final-source validation and retained failures |
 | OpenVINO and Intel optimization (20) | Real ACT export with numerical parity and benchmark tooling | Run reference and chosen optimized precision on Intel Core Ultra Series 2/3; retain paired closed-loop outcomes |
 | Technical quality and reproducibility (10) | Locked dependencies, Dockerfile, submodule, CI, tests, checksums, immutable run archives | Hosted image build and autonomous mug smoke passed; seven artifact hashes verified |
 | Innovation and demonstration (5) | Cost-selected bounded recovery, persistent failure memory, dependency graph, resource locks, safe parallel drawer/mug execution | Show the seed-1001 recovery timeline and matched 9/10 vs 10/10 comparison |
@@ -35,7 +38,9 @@ fields must remain empty until the final Intel Core Ultra Series 2/3 run.
 New console runs offer Economy (256×256), Balanced (384×384), and Detail
 (720×720), with overhead, two wrist, and two fixed arm-side views. These are
 presentation settings; the calibrated controller observations stay unchanged.
-Capture rates and dimensions are retained in each run. Higher display quality is
+New runs capture every view at the same instant and rate, with smaller inset
+frames: Fast live 256/160 pixels at 2 FPS, Balanced 384/256 at 3 FPS, Detail
+720/384 at 2 FPS. Capture rates and per-camera dimensions are retained in each run. Higher display quality is
 not evidence of improved task success or Intel performance. Historical recordings
 are preserved at their original resolution.
 

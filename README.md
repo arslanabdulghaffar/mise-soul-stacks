@@ -57,14 +57,21 @@ view to enlarge it; replay play/pause, seeking, and playback speed stay synchron
 The combined layout reuses the existing captured frames.
 
 Camera quality applies to the next run: **Fast live** (the browser default, API
-`economy`) captures 256×256 with fewer frames to reduce rendering time. **Balanced** captures
-384×384 with overhead at 6 FPS, each wrist at 2 FPS, and each side at 3 FPS.
-**Detail** captures 720×720 at 3 FPS overhead and 1 FPS on the other views. These are real captured
+`economy`) captures a 256×256 overhead view and 160×160 close-ups at 2 FPS.
+**Balanced** captures 384×384 overhead and 256×256 close-ups at 3 FPS.
+**Detail** captures 720×720 overhead and 384×384 close-ups at 2 FPS.
+All five views capture the same simulation instant at the same rate. These are real
 frames per simulation second, not promised live wall-clock frame rates. Software
 rendering can take longer than the simulated episode. All five views are recorded
 and checksummed; switching replay cameras retains the playback position. Older
 recordings keep their original resolution and expose only their recorded views.
 Display rendering is separate from the unchanged 256×256 controller observations.
+Software rendering defaults to one Mesa thread to avoid oversubscribing cloud CPUs;
+set `LP_NUM_THREADS` explicitly to benchmark a different value.
+
+Read [the current audit](docs/final-audit.md) before describing the project as
+submission-ready: learned-policy reliability and broader robustness still have
+measured gaps, and final Intel validation is pending.
 
 For frontend development, run `python3 -m mise.cli serve` and, in another terminal,
 `cd web && npm run dev`; Vite proxies the API and WebSocket to port 8000. Rebuild

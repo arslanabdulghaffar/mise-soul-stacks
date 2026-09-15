@@ -1,0 +1,1008 @@
+{
+  "note": "Every declared attempt is retained. These are research audits, not full submission readiness or Intel-target evidence. Source manifests bind historical experiments; later fixes require separate validation.",
+  "reports": {
+    "initial_stress": {
+      "path": "artifacts/robustness/final-matrix",
+      "results_sha256": "cc55e9d9be64f92b6c84f28ae38be65c7cdc222e2faada3b1649a3d93e674f41",
+      "manifest_sha256": "dcbfba6502dbccdb1626964bd05a095ef867aab310e1348f4af8bd51cac268ec",
+      "complete": true,
+      "successes": 18,
+      "total": 50,
+      "by_family": {
+        "background": {
+          "successes": 6,
+          "total": 10
+        },
+        "combined": {
+          "successes": 0,
+          "total": 10
+        },
+        "lighting": {
+          "successes": 5,
+          "total": 10
+        },
+        "physical": {
+          "successes": 7,
+          "total": 10
+        },
+        "shape": {
+          "successes": 0,
+          "total": 10
+        }
+      },
+      "outcomes": [
+        {
+          "seed": 1001,
+          "family": "lighting",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1002,
+          "family": "lighting",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1003,
+          "family": "lighting",
+          "success": false,
+          "failure": "The spoon is not sufficiently visible in RGB."
+        },
+        {
+          "seed": 1004,
+          "family": "lighting",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1005,
+          "family": "lighting",
+          "success": false,
+          "failure": "The spoon is not sufficiently visible in RGB."
+        },
+        {
+          "seed": 1006,
+          "family": "lighting",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1007,
+          "family": "lighting",
+          "success": false,
+          "failure": "The spoon is not sufficiently visible in RGB."
+        },
+        {
+          "seed": 1008,
+          "family": "lighting",
+          "success": false,
+          "failure": "The spoon is not sufficiently visible in RGB."
+        },
+        {
+          "seed": 1009,
+          "family": "lighting",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1010,
+          "family": "lighting",
+          "success": false,
+          "failure": "No reachable downward grasp pose at [-0.008, 0.147, 0.9]"
+        },
+        {
+          "seed": 1001,
+          "family": "background",
+          "success": false,
+          "failure": "RGB verification found the plate outside its center goal."
+        },
+        {
+          "seed": 1002,
+          "family": "background",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1003,
+          "family": "background",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1004,
+          "family": "background",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1005,
+          "family": "background",
+          "success": false,
+          "failure": "RGB verification found the plate outside its center goal."
+        },
+        {
+          "seed": 1006,
+          "family": "background",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1007,
+          "family": "background",
+          "success": false,
+          "failure": "RGB verification found the plate outside its center goal."
+        },
+        {
+          "seed": 1008,
+          "family": "background",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1009,
+          "family": "background",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1010,
+          "family": "background",
+          "success": false,
+          "failure": "Step 5 exceeded its instruction timeout."
+        },
+        {
+          "seed": 1001,
+          "family": "shape",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1002,
+          "family": "shape",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1003,
+          "family": "shape",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1004,
+          "family": "shape",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1005,
+          "family": "shape",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1006,
+          "family": "shape",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1007,
+          "family": "shape",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1008,
+          "family": "shape",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1009,
+          "family": "shape",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1010,
+          "family": "shape",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1001,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1002,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1003,
+          "family": "physical",
+          "success": false,
+          "failure": "RGB verification found the fork outside its goal."
+        },
+        {
+          "seed": 1004,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1005,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1006,
+          "family": "physical",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1007,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1008,
+          "family": "physical",
+          "success": false,
+          "failure": "Step 5 exceeded its instruction timeout."
+        },
+        {
+          "seed": 1009,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1010,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1001,
+          "family": "combined",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1002,
+          "family": "combined",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1003,
+          "family": "combined",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1004,
+          "family": "combined",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1005,
+          "family": "combined",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1006,
+          "family": "combined",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1007,
+          "family": "combined",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1008,
+          "family": "combined",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1009,
+          "family": "combined",
+          "success": false,
+          "failure": null
+        },
+        {
+          "seed": 1010,
+          "family": "combined",
+          "success": false,
+          "failure": null
+        }
+      ]
+    },
+    "brightness_change_stress": {
+      "path": "artifacts/robustness/perception-fix-matrix",
+      "results_sha256": "5a3e3f105c440d456676ec517f5a8874b80df63202a53bbe63092f2f1ab3ac5c",
+      "manifest_sha256": "def0d7599287ee2555b20d035c1c49edafea37a0f05e4699f1e72f819eeb62b9",
+      "complete": true,
+      "successes": 24,
+      "total": 50,
+      "by_family": {
+        "background": {
+          "successes": 8,
+          "total": 10
+        },
+        "combined": {
+          "successes": 0,
+          "total": 10
+        },
+        "lighting": {
+          "successes": 8,
+          "total": 10
+        },
+        "physical": {
+          "successes": 8,
+          "total": 10
+        },
+        "shape": {
+          "successes": 0,
+          "total": 10
+        }
+      },
+      "outcomes": [
+        {
+          "seed": 1001,
+          "family": "lighting",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1002,
+          "family": "lighting",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1003,
+          "family": "lighting",
+          "success": false,
+          "failure": "No reachable downward grasp pose at [-0.003, 0.145, 0.9]"
+        },
+        {
+          "seed": 1004,
+          "family": "lighting",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1005,
+          "family": "lighting",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1006,
+          "family": "lighting",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1007,
+          "family": "lighting",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1008,
+          "family": "lighting",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1009,
+          "family": "lighting",
+          "success": false,
+          "failure": "Independent evaluation failed: placement:spoon"
+        },
+        {
+          "seed": 1010,
+          "family": "lighting",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1001,
+          "family": "background",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1002,
+          "family": "background",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1003,
+          "family": "background",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1004,
+          "family": "background",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1005,
+          "family": "background",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1006,
+          "family": "background",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1007,
+          "family": "background",
+          "success": false,
+          "failure": "Independent evaluation failed: placement:spoon"
+        },
+        {
+          "seed": 1008,
+          "family": "background",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1009,
+          "family": "background",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1010,
+          "family": "background",
+          "success": false,
+          "failure": "Independent evaluation failed: placement:spoon"
+        },
+        {
+          "seed": 1001,
+          "family": "shape",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1002,
+          "family": "shape",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1003,
+          "family": "shape",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1004,
+          "family": "shape",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1005,
+          "family": "shape",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1006,
+          "family": "shape",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1007,
+          "family": "shape",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1008,
+          "family": "shape",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1009,
+          "family": "shape",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1010,
+          "family": "shape",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1001,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1002,
+          "family": "physical",
+          "success": false,
+          "failure": "Step 5 exceeded its instruction timeout."
+        },
+        {
+          "seed": 1003,
+          "family": "physical",
+          "success": false,
+          "failure": "RGB verification found the fork outside its goal."
+        },
+        {
+          "seed": 1004,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1005,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1006,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1007,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1008,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1009,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1010,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 1001,
+          "family": "combined",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1002,
+          "family": "combined",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1003,
+          "family": "combined",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1004,
+          "family": "combined",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1005,
+          "family": "combined",
+          "success": false,
+          "failure": "No reachable downward grasp pose at [0.092, 0.173, 0.9]"
+        },
+        {
+          "seed": 1006,
+          "family": "combined",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1007,
+          "family": "combined",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1008,
+          "family": "combined",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff, forbidden_collision"
+        },
+        {
+          "seed": 1009,
+          "family": "combined",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 1010,
+          "family": "combined",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        }
+      ]
+    },
+    "act_final_test": {
+      "path": "artifacts/learned_checks/final-f32-audit",
+      "results_sha256": "8cefb80a111e7b4e4ab736d5353258bffe361b727d06ca2db4f3450b32fac026",
+      "manifest_sha256": "54d5bdef0096a48d846ed6284cf4167ccd80e32cff60089096e0c2c78b3b5814",
+      "complete": true,
+      "successes": 2,
+      "total": 10,
+      "seeds": [
+        40000,
+        40001,
+        40002,
+        40003,
+        40004,
+        40005,
+        40006,
+        40007,
+        40008,
+        40009
+      ],
+      "scope": "learned_mug_contact_skill",
+      "outcomes": [
+        {
+          "seed": 40000,
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 40001,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        },
+        {
+          "seed": 40002,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        },
+        {
+          "seed": 40003,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        },
+        {
+          "seed": 40004,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        },
+        {
+          "seed": 40005,
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 40006,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        },
+        {
+          "seed": 40007,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        },
+        {
+          "seed": 40008,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        },
+        {
+          "seed": 40009,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        }
+      ]
+    },
+    "refined_act_validation": {
+      "path": "artifacts/learned_checks/refined-validation",
+      "results_sha256": "a0f8e97ae710d5e45f37b48470afbd16dc7f48e4ea0ab00c258969af782c937e",
+      "manifest_sha256": "8a48bdcc5ae2abd1fa03f943789998a1b7a19f69727d5620394f9a6a6d51cb67",
+      "complete": true,
+      "successes": 1,
+      "total": 5,
+      "seeds": [
+        30000,
+        30001,
+        30002,
+        30003,
+        30004
+      ],
+      "scope": "learned_mug_contact_skill",
+      "outcomes": [
+        {
+          "seed": 30000,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        },
+        {
+          "seed": 30001,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        },
+        {
+          "seed": 30002,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        },
+        {
+          "seed": 30003,
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 30004,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        }
+      ]
+    },
+    "temporal_ensemble_validation": {
+      "path": "artifacts/learned_checks/validation-temporal5",
+      "results_sha256": "da746e1c589b63dd4fc54780a98dc2e68d670649be1cb8b6cab46c8a6d43a5ce",
+      "manifest_sha256": "d3da025c3e8a76e4ed3941e47c36f3b1e9ebc3c640cbe01e26fc486a045d3aca",
+      "complete": true,
+      "successes": 0,
+      "total": 5,
+      "seeds": [
+        30000,
+        30001,
+        30002,
+        30003,
+        30004
+      ],
+      "scope": "learned_mug_contact_skill",
+      "outcomes": [
+        {
+          "seed": 30000,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        },
+        {
+          "seed": 30001,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        },
+        {
+          "seed": 30002,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        },
+        {
+          "seed": 30003,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        },
+        {
+          "seed": 30004,
+          "success": false,
+          "failure": "Learned contact policy exceeded the instruction timeout."
+        }
+      ]
+    },
+    "accepted_nominal": {
+      "path": "artifacts/evaluations/sync-accepted-nominal.json",
+      "results_sha256": "b41e761564db073b0e7cd2ad4869596d81d939e23fac5a06860310e29bd5884e",
+      "successes": 10,
+      "total": 10,
+      "outcomes": [
+        {
+          "seed": 1001,
+          "success": true,
+          "failure": null,
+          "recovery_attempts": 1,
+          "simulation_seconds": 138.29999999993225,
+          "forbidden_collisions": 0
+        },
+        {
+          "seed": 1002,
+          "success": true,
+          "failure": null,
+          "recovery_attempts": 1,
+          "simulation_seconds": 138.29999999993225,
+          "forbidden_collisions": 0
+        },
+        {
+          "seed": 1003,
+          "success": true,
+          "failure": null,
+          "recovery_attempts": 1,
+          "simulation_seconds": 138.29999999993225,
+          "forbidden_collisions": 0
+        },
+        {
+          "seed": 1004,
+          "success": true,
+          "failure": null,
+          "recovery_attempts": 1,
+          "simulation_seconds": 138.29999999993225,
+          "forbidden_collisions": 0
+        },
+        {
+          "seed": 1005,
+          "success": true,
+          "failure": null,
+          "recovery_attempts": 0,
+          "simulation_seconds": 124.29999999989171,
+          "forbidden_collisions": 0
+        },
+        {
+          "seed": 1006,
+          "success": true,
+          "failure": null,
+          "recovery_attempts": 1,
+          "simulation_seconds": 138.29999999993225,
+          "forbidden_collisions": 0
+        },
+        {
+          "seed": 1007,
+          "success": true,
+          "failure": null,
+          "recovery_attempts": 1,
+          "simulation_seconds": 138.29999999993225,
+          "forbidden_collisions": 0
+        },
+        {
+          "seed": 1008,
+          "success": true,
+          "failure": null,
+          "recovery_attempts": 1,
+          "simulation_seconds": 138.29999999993225,
+          "forbidden_collisions": 0
+        },
+        {
+          "seed": 1009,
+          "success": true,
+          "failure": null,
+          "recovery_attempts": 0,
+          "simulation_seconds": 124.29999999989171,
+          "forbidden_collisions": 0
+        },
+        {
+          "seed": 1010,
+          "success": true,
+          "failure": null,
+          "recovery_attempts": 1,
+          "simulation_seconds": 138.29999999993225,
+          "forbidden_collisions": 0
+        }
+      ]
+    },
+    "accepted_heldout_stress_pilot": {
+      "path": "artifacts/robustness/accepted-heldout-pilot",
+      "results_sha256": "a2560bae5372ff6a3c60394b0c85e40dfd7c51d49e3b3c60ea8510592b823877",
+      "manifest_sha256": "8382160f1a2f4e112a8c86eb76d40c658a03a09ac029c6066fe6ab84e6c4de26",
+      "complete": true,
+      "successes": 5,
+      "total": 10,
+      "by_family": {
+        "background": {
+          "successes": 1,
+          "total": 2
+        },
+        "combined": {
+          "successes": 0,
+          "total": 2
+        },
+        "lighting": {
+          "successes": 2,
+          "total": 2
+        },
+        "physical": {
+          "successes": 2,
+          "total": 2
+        },
+        "shape": {
+          "successes": 0,
+          "total": 2
+        }
+      },
+      "outcomes": [
+        {
+          "seed": 6001,
+          "family": "lighting",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 6002,
+          "family": "lighting",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 6001,
+          "family": "background",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 6002,
+          "family": "background",
+          "success": false,
+          "failure": "Step 5 exceeded its instruction timeout."
+        },
+        {
+          "seed": 6001,
+          "family": "shape",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 6002,
+          "family": "shape",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 6001,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 6002,
+          "family": "physical",
+          "success": true,
+          "failure": null
+        },
+        {
+          "seed": 6001,
+          "family": "combined",
+          "success": false,
+          "failure": "Independent evaluation failed: physical_handoff"
+        },
+        {
+          "seed": 6002,
+          "family": "combined",
+          "success": false,
+          "failure": "No reachable downward grasp pose at [0.092, 0.174, 0.9]"
+        }
+      ]
+    }
+  }
+}

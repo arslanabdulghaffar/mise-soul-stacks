@@ -33,6 +33,9 @@ def _saved_plan(run: dict[str, Any]) -> Plan:
 def run_worker(directory_string: str, display_queue: Any, controls: Any) -> None:
     # Import MuJoCo only after choosing the renderer, in the worker process.
     os.environ.setdefault("MUJOCO_GL", os.environ.get("MISE_MUJOCO_GL", "osmesa"))
+    # Mesa's default thread pool can overwhelm small camera renders on large
+    # cloud CPUs. Keep software rasterization bounded; an explicit value wins.
+    os.environ.setdefault("LP_NUM_THREADS", "1")
     import imageio.v2 as iio
     import numpy as np
     from PIL import Image
@@ -115,11 +118,12 @@ def run_worker(directory_string: str, display_queue: Any, controls: Any) -> None
         else:
             expert = DrawerExpert(env)
             fixture_steps = round(expert.duration_seconds * env.control_hz)
-        presentation = PresentationRenderer(env, settings["width"])
+        presentation = PresentationRenderer(env, settings["width"], camera_dimensions=settings["camera_dimensions"])
         evaluator = TaskEvaluator(env.model)
         for camera in CAMERAS:
             writers[camera] = iio.get_writer(str(directory / f"{camera}.mp4"), fps=capture_hz[camera],
-                                              codec="libx264", quality=7, macro_block_size=16)
+                                              codec="libx264", quality=7, macro_block_size=16,
+                                              ffmpeg_params=["-threads", "1", "-preset", "ultrafast"])
         capture_every = {camera: max(1, round(env.control_hz / capture_hz[camera])) for camera in CAMERAS}
         previous_step, previous_phase = None, None
 

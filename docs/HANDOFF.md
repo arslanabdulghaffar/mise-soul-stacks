@@ -4,6 +4,14 @@ Use this document when continuing the project in a new Codex or ChatGPT account.
 The repository is the durable source of context; chat history and account memory are
 not expected to transfer.
 
+## Latest continuation — 2026-09-15
+
+Read [final-audit.md](final-audit.md) first. The camera synchronization fix and
+new robustness/learned-policy evaluations supersede earlier readiness estimates.
+The successful original nominal demonstrations do not establish generalization.
+Do not say only deployment remains: the learned policy and shape robustness are
+not reliable yet. Intel demonstration is explicitly deferred by the user.
+
 ## Project identity
 
 - Team: **SeoulStack**
@@ -16,6 +24,12 @@ not expected to transfer.
 The authoritative challenge text is `Online_Physical_AI_Challenge_Online (1).pdf`.
 The revised design is `MISE_project_description.docx`; its searchable text is
 `docs/project-brief.txt`.
+
+Current synchronized recording: `artifacts/final-runs/2f710b64aab8` completed
+all seven steps with one recovery and zero collisions. All five videos contain
+277 matching-time frames at 2 FPS; 138.3 simulation seconds took 204.00 wall seconds.
+See `docs/evidence/synchronized-camera-validation.json`. The original lower-rate
+close-up recording was faster; do not promise unchanged wall-clock speed.
 
 ## Implemented and verified
 
@@ -72,8 +86,11 @@ The successful full-task controller is a deterministic camera-guided hierarchica
 baseline with adaptive recovery. Do not describe it as an end-to-end learned VLA.
 A real compact ACT-style contact policy was trained and exported to OpenVINO for the
 arm-B mug skill, but it did not generalize reliably enough to replace the full-task
-expert. The retained pilot passed 3/10 test seeds; a newer checkpoint failed its
-first closed-loop validation seed despite passing numerical export parity.
+expert. The earlier retained pilot passed 3/10 test seeds. A complete audit of
+`contact_act_final` passed 2/10 test seeds. A backbone-refined checkpoint passed
+1/5 development validation seeds despite better action-prediction error. A
+five-step temporal-ensemble pilot passed 0/5 validation seeds. These experiments
+are retained locally and are not replacements for the validated expert.
 
 Physical SO-101 hardware is not required by the online challenge. Final MuJoCo and
 OpenVINO execution on Intel Core Ultra Series 2 or 3 is required for the 20-point
@@ -81,14 +98,16 @@ Intel category and has not yet been performed.
 
 ## Remaining work
 
-1. On an Intel Core Ultra Series 2/3 machine, install `requirements-learning.txt`,
+1. Improve and independently validate learned-policy execution and robustness;
+   the retained stress matrix contains failures and must not be replaced or hidden.
+2. On an Intel Core Ultra Series 2/3 machine, install `requirements-learning.txt`,
    generate or copy the exported ACT model, and run `bench/intel_bench.py` with the
    correct `--intel-core-ultra-series` value.
-2. Run reference and proposed optimized configurations on identical frozen seeds.
+3. Run reference and proposed optimized configurations on identical frozen seeds.
    Only mark quality preservation verified after reviewing paired task outcomes.
-3. Record the narrated pitch using `docs/demo-guide.md`; its script and shot list are
+4. Record the narrated pitch using `docs/demo-guide.md`; its script and shot list are
    prepared, but the Intel segment must wait for measured target results.
-4. A public interactive runtime is optional. GitHub Pages cannot host FastAPI or
+5. A public interactive runtime is optional. GitHub Pages cannot host FastAPI or
    MuJoCo; any public site must be a labeled read-only replay unless backed by a
    suitable server.
 
@@ -109,8 +128,9 @@ this is not a ten-seed or target-hardware quality claim.
 The team name is now **SeoulStack**. Existing recordings retain their original labels
 and provenance. The repository URL is unchanged. Higher display resolution and two fixed side cameras are now implemented. The
 browser defaults to Fast live (`economy`, 256×256) for shorter render times;
-Balanced offers 384×384 at overhead 6 FPS and Detail offers 720×720
-with lower capture rates. All five cameras are recorded. A separate display
+All five views now capture together: Fast live uses 256×256 overhead and
+160×160 insets at 2 FPS; Balanced uses 384×384/256×256 at 3 FPS; Detail uses
+720×720/384×384 at 2 FPS. Historical archives retain their original rates. All five cameras are recorded. A separate display
 renderer keeps calibrated controller images unchanged. Camera FPS refers to
 simulation time; live wall speed depends on rendering hardware.
 
@@ -133,7 +153,7 @@ available; the generated artifacts directory is intentionally excluded from Git.
 
 ## Files to read before editing
 
-1. `README.md`
+1. `README.md` and `docs/final-audit.md`
 2. `docs/HANDOFF.md`
 3. `docs/implementation-status.md`
 4. `docs/submission-checklist.md`
@@ -191,7 +211,7 @@ The tested GitHub code revision is `701170de23a7226273cb3a2b6a7b02c5ce0c1426`
 local regression and browser checks; see the camera validation record below.
 Docker packaging validation is complete.
 
-## Camera presentation validation
+## Historical camera presentation validation
 
 The presentation update passes 83 Python tests and the production frontend build.
 Browser checks passed for desktop/mobile layout, all five live MJPEG streams,
@@ -206,7 +226,7 @@ This is a single presentation regression, not a replacement ten-seed or Intel re
 See `docs/evidence/camera-validation.json`. Detail-mode rendering at 720×720 also
 passes the camera/physics isolation test; no full Detail-mode episode is claimed.
 
-## Combined camera view
+## Historical combined camera view validation
 
 The console now shows one large camera with the other four below it. Clicking a
 small view promotes it. Recorded views follow the main view's play/pause, seek, and

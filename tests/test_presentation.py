@@ -15,12 +15,15 @@ class PresentationTests(unittest.TestCase):
             qpos, qvel, ctrl = env.data.qpos.copy(), env.data.qvel.copy(), env.data.ctrl.copy()
             sim_time = env.data.time
             for profile in PROFILES:
-                size = capture_settings(profile)["width"]
-                renderer = PresentationRenderer(env, size)
+                settings = capture_settings(profile)
+                size = settings["width"]
+                self.assertEqual(len(set(settings["capture_every"].values())), 1)
+                renderer = PresentationRenderer(env, size, camera_dimensions=settings["camera_dimensions"])
                 try:
                     for camera in CAMERAS:
                         frame = renderer.render(camera)
-                        self.assertEqual(frame.shape, (size, size, 3))
+                        dimensions = settings["camera_dimensions"][camera]
+                        self.assertEqual(frame.shape, (dimensions["height"], dimensions["width"], 3))
                         self.assertGreater(frame.std(), 5, "Camera must contain a visible scene")
                 finally:
                     renderer.close()
